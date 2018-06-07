@@ -72,8 +72,8 @@ class ObjectAnalyzer:
     outMin = 2
     outMax = 3
     
-    
-    
+
+        
     def map(self, value, inMin, inMax, outMin, outMax):
         # Figure out how 'wide' each range is
         leftSpan = inMax - inMin
@@ -277,9 +277,54 @@ class ObjectAnalyzer:
     
     def findCircle(self, frame):
         grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        blurred = cv2.GaussianBlur(grey, (7, 7), 0)
-        #blurred1 = cv2.medianBlur(grey.copy(),5)        #Might be better for filtering noise. 
+        #blurred = cv2.GaussianBlur(grey, (7, 7), 0)
+        blurred = cv2.medianBlur(grey.copy(),7)        #Might be better for filtering noise. 
+        edged = cv2.Canny(blurred, self.edgedLowLimit, self.edgedHighLimit)
+        cv2.imshow("Edged",edged)
+        
+        
+        circles = cv2.HoughCircles(edged.copy(), cv2.HOUGH_GRADIENT, self.houghDP, self.houghMinDist, param1 = self.houghParam1, param2 = self.houghParam2, minRadius = self.houghMinRadius, maxRadius = self.houghMaxRadius)
 
+        if circles is not None:
+            circles = np.uint16(np.around(circles))
+            for i in circles[0, :]:
+                #If radius is zero, circle doesn't exist..
+                if i[2] == 0:
+                    break
+                #Create the new circle.
+                newCircle = ([i[0],i[1],i[2]])
+          
+                self.circleObj.circleKnown(newCircle)
+                self.circleObj.enoughNewCircles(frame, width, height)
+                
+                
+                # Display the resulting frame
+        cv2.imshow('frame', frame)
+        cv2.moveWindow('frame', 20, 20)
+        
+        #--- First obtain the threshold using the greyscale image ---
+        _,th = cv2.threshold(edged,127,255, 0)
+        
+        #--- Find all the contours in the binary image ---
+        _, contours,hierarchy = cv2.findContours(th,2,1)
+        cnt = contours
+        big_contour = []
+        maxArea = 0
+        for i in cnt:
+            area = cv2.contourArea(i) #--- find the contour having biggest area ---
+            if(area > maxArea):
+                maxArea = area
+                big_contour = i 
+            
+        final = cv2.drawContours(frame.copy(), big_contour, -1, (0,255,0), 3)
+        cv2.imshow('final', final)
+        
+       
+        
+        
+        
+        
+        
 
 
         
@@ -291,66 +336,8 @@ class ObjectAnalyzer:
             #self.maskLimit = self.map(self.perceivedBrightness, self.inMin, self.inMax, self.outMin, self.outMax)
             
             redImage = self.getRedHSVImage(frame)
+            self.findCircle(redImage)
           
-          
-            #bilateral = cv2.bilateralFilter(red_output, 5, 250, 250)
-            #imgray = cv2.cvtColor(bilateral, cv2.COLOR_BGR2GRAY)
-            #blur = cv2.GaussianBlur(imgray, (5, 5), 0)
-            #ret, thresh = cv2.threshold(blur, 40, 255, 0)
-            
-            grey = cv2.cvtColor(redImage, cv2.COLOR_BGR2GRAY)
-            #cv2.imshow("Grey",grey)
-            
-            
-            
-            
-            #waitKey(2500)
-            blurred = cv2.GaussianBlur(grey, (7, 7), 0)
-            blurred1 = cv2.medianBlur(grey.copy(),5)
-            
-            #Test Try and change the values above. 
-            
-            #cv2.imshow("blurred",blurred)
-            #cv2.imshow("blurred1", blurred1)
-
-            edged = cv2.Canny(blurred, self.edgedLowLimit, self.edgedHighLimit)
-            #edged1 = cv2.Canny(blurred1, self.edgedLowLimit, self.edgedHighLimit)
-            cv2.imshow("Edged",edged)
-            #cv2.imshow("edged1",edged1)
-            #_, contours, hierarchy = cv2.findContours(edged1.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
-            circles = cv2.HoughCircles(edged.copy(), cv2.HOUGH_GRADIENT, self.houghDP, self.houghMinDist, param1 = self.houghParam1, param2 = self.houghParam2, minRadius = self.houghMinRadius, maxRadius = self.houghMaxRadius)
-            #ret,thresh = cv2.threshold(grey,127,255,0)
-            #
-            #edged2 = cv2.Canny(thresh, self.edgedLowLimit, self.edgedHighLimit)
-            #cv2.imshow("edged2",edged2)
-            #adaptive = cv2.adaptiveThreshold(blurred,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
-            #th3 = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
-            #_, contours = cv2.findContours(thresh, 1, 2)
-            
-            #cv2.imshow("thresh",thresh)
-            #ellipse = cv2.fitEllipse(contours)
-            #ellipse = cv2.ellipse(img, ellipse, (0,255,0), 2)
-            #cv2.imshow("Adaptive", adaptive)
-            
-            #rows = thresh.shape[0]
-            
-            #circles = cv2.HoughCircles(blur, cv2.HOUGH_GRADIENT, 1, rows / 8, param1=100, param2=30, minRadius=40, maxRadius=400)
-            
-            if circles is not None:
-                circles = np.uint16(np.around(circles))
-                for i in circles[0, :]:
-                    #If radius is zero, circle doesn't exist..
-                    if i[2] == 0:
-                        break
-                    #Create the new circle.
-                    newCircle = ([i[0],i[1],i[2]])
-              
-                    self.circleObj.circleKnown(newCircle)
-                    self.circleObj.enoughNewCircles(frame, width, height)
-                    # Display the resulting frame
-            cv2.imshow('frame', frame)
-            cv2.moveWindow('frame', 20, 20)
-    
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
     
