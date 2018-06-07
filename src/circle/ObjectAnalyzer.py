@@ -20,7 +20,7 @@ class ObjectAnalyzer:
     circleObj = cl.Circle()
     
     maskLimit = 100
-    upperMaskLimit = 255
+    #upperMaskLimit = 255
     
     
     #Mask 
@@ -93,18 +93,26 @@ class ObjectAnalyzer:
     cv2.namedWindow('HSV')
     cv2.namedWindow('Trackbar')
     cv2.resizeWindow('Trackbar',780,780)
+    cv2.resizeWindow('HSV',780,780)
     # create trackbars for color change
     
+    
+    #HSV Hue
+    cv2.createTrackbar('lowMaskLowHue1','HSV',0,255,nothing)
+    cv2.createTrackbar('lowMaskHighHue2','HSV',0,255,nothing)
+    cv2.createTrackbar('highMaskLowHue3','HSV',0,255,nothing)
+    cv2.createTrackbar('highMaskHighHue4','HSV',0,255,nothing)
+    
     #HSV saturation
-    cv2.createTrackbar('lowMaskLowSat','HSV',0,255,nothing)
-    cv2.createTrackbar('lowMaskHighSat','HSV',0,255,nothing)
-    cv2.createTrackbar('highMaskLowSat','HSV',0,255,nothing)
-    cv2.createTrackbar('highMaskHighSat','HSV',0,255,nothing)
+    cv2.createTrackbar('lowMaskLowSat5','HSV',0,255,nothing)
+    cv2.createTrackbar('lowMaskHighSat6','HSV',0,255,nothing)
+    cv2.createTrackbar('highMaskLowSat7','HSV',0,255,nothing)
+    cv2.createTrackbar('highMaskHighSat8','HSV',0,255,nothing)
     #HSV value
-    cv2.createTrackbar('lowMaskLowVal','HSV',0,255,nothing)
-    cv2.createTrackbar('lowMaskHighVal','HSV',0,255,nothing)
-    cv2.createTrackbar('highMaskLowVal','HSV',0,255,nothing)
-    cv2.createTrackbar('highMaskHighVal','HSV',0,255,nothing)
+    cv2.createTrackbar('lowMaskLowVal9','HSV',0,255,nothing)
+    cv2.createTrackbar('lowMaskHighVal10','HSV',0,255,nothing)
+    cv2.createTrackbar('highMaskLowVal11','HSV',0,255,nothing)
+    cv2.createTrackbar('highMaskHighVal12','HSV',0,255,nothing)
     
     
     
@@ -160,7 +168,7 @@ class ObjectAnalyzer:
     
     def updateValues(self):
         #self.maskLimit = cv2.getTrackbarPos('MaskLimit','Trackbar')
-        self.upperMaskLimit = cv2.getTrackbarPos('UpperMaskLimit','Trackbar')
+        #self.upperMaskLimit = cv2.getTrackbarPos('UpperMaskLimit','Trackbar')
     
         #self.lowMaskLowRed = cv2.getTrackbarPos('lowMaskLowRed','Trackbar')
         #self.lowMaskUpperRed = cv2.getTrackbarPos('lowMaskUpperRed','Trackbar')
@@ -168,15 +176,20 @@ class ObjectAnalyzer:
         #self.highMaskUpperRed = cv2.getTrackbarPos('highMaskUpperRed','Trackbar')
         
         #HSV 
-        self.lowMaskLowSat = cv2.getTrackbarPos('lowMaskLowSat','HSV')
-        self.lowMaskHighSat = cv2.getTrackbarPos('lowMaskHighSat','HSV')
-        self.highMaskLowSat = cv2.getTrackbarPos('highMaskLowSat','HSV')
-        self.highMaskHighSat = cv2.getTrackbarPos('highMaskHighSat','HSV')
+        self.lowMaskLowHue = cv2.getTrackbarPos('lowMaskLowHue1','HSV')
+        self.lowMaskHighHue = cv2.getTrackbarPos('lowMaskHighHue2','HSV')
+        self.highMaskLowHue = cv2.getTrackbarPos('highMaskLowHue3','HSV')
+        self.highMaskHighHue = cv2.getTrackbarPos('highMaskHighHue4','HSV')
         
-        self.lowMaskLowVal = cv2.getTrackbarPos('lowMaskLowVal','HSV')
-        self.lowMaskHighVal = cv2.getTrackbarPos('lowMaskHighVal','HSV')
-        self.highMaskLowVal = cv2.getTrackbarPos('highMaskLowVal','HSV')
-        self.highMaskHighVal = cv2.getTrackbarPos('highMaskHighVal','HSV')
+        self.lowMaskLowSat = cv2.getTrackbarPos('lowMaskLowSat5','HSV')
+        self.lowMaskHighSat = cv2.getTrackbarPos('lowMaskHighSat6','HSV')
+        self.highMaskLowSat = cv2.getTrackbarPos('highMaskLowSat7','HSV')
+        self.highMaskHighSat = cv2.getTrackbarPos('highMaskHighSat8','HSV')
+        
+        self.lowMaskLowVal = cv2.getTrackbarPos('lowMaskLowVal9','HSV')
+        self.lowMaskHighVal = cv2.getTrackbarPos('lowMaskHighVal10','HSV')
+        self.highMaskLowVal = cv2.getTrackbarPos('highMaskLowVal11','HSV')
+        self.highMaskHighVal = cv2.getTrackbarPos('highMaskHighVal12','HSV')
         
  
         
@@ -235,8 +248,6 @@ class ObjectAnalyzer:
     
     def setTestValues(self, frame):
         self.updateValues() #Used for testing.     
-        brightnessFrame = self.setImageBrightNess(frame, self.brightness)
-        frame = np.array(brightnessFrame)
         self.calculateBrightness(frame)             #Calculate the perceived brightness. 
 
 
@@ -262,12 +273,12 @@ class ObjectAnalyzer:
         
         # join my masks
         mask = mask0 + mask1
-        
+        imshow('Mask',mask)
         
         # set my output img to zero everywhere except my mask
         red_output = frame.copy()
-        
-        red_output = cv2.bitwise_and(red_output, red_output, mask = mask)
+        red_output[np.where(mask==0)] = 0
+        #red_output = cv2.bitwise_and(red_output, red_output, mask = mask)
         
         
         imshow("Red", red_output)
@@ -277,85 +288,83 @@ class ObjectAnalyzer:
     
     def findCircle(self, frame):
         grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        blurred = cv2.GaussianBlur(grey, (7, 7), 0)
-        #blurred1 = cv2.medianBlur(grey.copy(),5)        #Might be better for filtering noise. 
-
+        #blurred = cv2.GaussianBlur(grey, (7, 7), 0)
+        blurred = cv2.medianBlur(grey.copy(),7)        #Might be better for filtering noise. 
+        imshow("blurred",blurred)
 
 
         
     def analyzeFrame(self,frame):
-        while (True):
-            self.setTestValues(frame)
-            
-            #Maps perceived brigthness to masklimit. Only used in the final version. Requires further testing. 
-            #self.maskLimit = self.map(self.perceivedBrightness, self.inMin, self.inMax, self.outMin, self.outMax)
-            
-            redImage = self.getRedHSVImage(frame)
-          
-          
-            #bilateral = cv2.bilateralFilter(red_output, 5, 250, 250)
-            #imgray = cv2.cvtColor(bilateral, cv2.COLOR_BGR2GRAY)
-            #blur = cv2.GaussianBlur(imgray, (5, 5), 0)
-            #ret, thresh = cv2.threshold(blur, 40, 255, 0)
-            
-            grey = cv2.cvtColor(redImage, cv2.COLOR_BGR2GRAY)
-            #cv2.imshow("Grey",grey)
-            
-            
-            
-            
-            #waitKey(2500)
-            blurred = cv2.GaussianBlur(grey, (7, 7), 0)
-            blurred1 = cv2.medianBlur(grey.copy(),5)
-            
-            #Test Try and change the values above. 
-            
-            #cv2.imshow("blurred",blurred)
-            #cv2.imshow("blurred1", blurred1)
+    
+        self.setTestValues(frame)
+        brightnessFrame = self.setImageBrightNess(frame, self.brightness)
+        frame = np.array(brightnessFrame)
+        
+        
+        #Maps perceived brigthness to masklimit. Only used in the final version. Requires further testing. 
+        #self.maskLimit = self.map(self.perceivedBrightness, self.inMin, self.inMax, self.outMin, self.outMax)
+        
+        redImage = self.getRedHSVImage(frame)
+      
+        self.findCircle(redImage)
+      
+        #bilateral = cv2.bilateralFilter(red_output, 5, 250, 250)
+        #imgray = cv2.cvtColor(bilateral, cv2.COLOR_BGR2GRAY)
+        #blur = cv2.GaussianBlur(imgray, (5, 5), 0)
+        #ret, thresh = cv2.threshold(blur, 40, 255, 0)
+        
+        grey = cv2.cvtColor(redImage, cv2.COLOR_BGR2GRAY)
+        #cv2.imshow("Grey",grey)
+        
+        
+        
+        
+        #waitKey(2500)
+        blurred = cv2.GaussianBlur(grey, (7, 7), 0)
+        #blurred1 = cv2.medianBlur(grey.copy(),5)
+        
+        #Test Try and change the values above. 
+        
+        #cv2.imshow("blurred",blurred)
+        #cv2.imshow("blurred1", blurred1)
 
-            edged = cv2.Canny(blurred, self.edgedLowLimit, self.edgedHighLimit)
-            #edged1 = cv2.Canny(blurred1, self.edgedLowLimit, self.edgedHighLimit)
-            cv2.imshow("Edged",edged)
-            #cv2.imshow("edged1",edged1)
-            #_, contours, hierarchy = cv2.findContours(edged1.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
-            circles = cv2.HoughCircles(edged.copy(), cv2.HOUGH_GRADIENT, self.houghDP, self.houghMinDist, param1 = self.houghParam1, param2 = self.houghParam2, minRadius = self.houghMinRadius, maxRadius = self.houghMaxRadius)
-            #ret,thresh = cv2.threshold(grey,127,255,0)
-            #
-            #edged2 = cv2.Canny(thresh, self.edgedLowLimit, self.edgedHighLimit)
-            #cv2.imshow("edged2",edged2)
-            #adaptive = cv2.adaptiveThreshold(blurred,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
-            #th3 = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
-            #_, contours = cv2.findContours(thresh, 1, 2)
-            
-            #cv2.imshow("thresh",thresh)
-            #ellipse = cv2.fitEllipse(contours)
-            #ellipse = cv2.ellipse(img, ellipse, (0,255,0), 2)
-            #cv2.imshow("Adaptive", adaptive)
-            
-            #rows = thresh.shape[0]
-            
-            #circles = cv2.HoughCircles(blur, cv2.HOUGH_GRADIENT, 1, rows / 8, param1=100, param2=30, minRadius=40, maxRadius=400)
-            
-            if circles is not None:
-                circles = np.uint16(np.around(circles))
-                for i in circles[0, :]:
-                    #If radius is zero, circle doesn't exist..
-                    if i[2] == 0:
-                        break
-                    #Create the new circle.
-                    newCircle = ([i[0],i[1],i[2]])
-              
-                    self.circleObj.circleKnown(newCircle)
-                    self.circleObj.enoughNewCircles(frame, width, height)
-                    # Display the resulting frame
-            cv2.imshow('frame', frame)
-            cv2.moveWindow('frame', 20, 20)
-    
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-    
-        cv2.destroyAllWindows()
-    
+        edged = cv2.Canny(blurred, self.edgedLowLimit, self.edgedHighLimit)
+        #edged1 = cv2.Canny(blurred1, self.edgedLowLimit, self.edgedHighLimit)
+        cv2.imshow("Edged",edged)
+        #cv2.imshow("edged1",edged1)
+        #_, contours, hierarchy = cv2.findContours(edged1.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+        circles = cv2.HoughCircles(edged.copy(), cv2.HOUGH_GRADIENT, self.houghDP, self.houghMinDist, param1 = self.houghParam1, param2 = self.houghParam2, minRadius = self.houghMinRadius, maxRadius = self.houghMaxRadius)
+        #ret,thresh = cv2.threshold(grey,127,255,0)
+        #
+        #edged2 = cv2.Canny(thresh, self.edgedLowLimit, self.edgedHighLimit)
+        #cv2.imshow("edged2",edged2)
+        #adaptive = cv2.adaptiveThreshold(blurred,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
+        #th3 = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
+        #_, contours = cv2.findContours(thresh, 1, 2)
+        
+        #cv2.imshow("thresh",thresh)
+        #ellipse = cv2.fitEllipse(contours)
+        #ellipse = cv2.ellipse(img, ellipse, (0,255,0), 2)
+        #cv2.imshow("Adaptive", adaptive)
+        
+        #rows = thresh.shape[0]
+        
+        #circles = cv2.HoughCircles(blur, cv2.HOUGH_GRADIENT, 1, rows / 8, param1=100, param2=30, minRadius=40, maxRadius=400)
+        
+        if circles is not None:
+            circles = np.uint16(np.around(circles))
+            for i in circles[0, :]:
+                #If radius is zero, circle doesn't exist..
+                if i[2] == 0:
+                    break
+                #Create the new circle.
+                newCircle = ([i[0],i[1],i[2]])
+          
+                self.circleObj.circleKnown(newCircle)
+                self.circleObj.enoughNewCircles(frame, width, height)
+                # Display the resulting frame
+        cv2.imshow('frame', frame)
+       
     
 
     

@@ -19,34 +19,38 @@ class Controller(object):
     '''
     classdocs
     '''
-    state = DroneState()
+    #state = DroneState()
 
     
-    def __init__(self, params):
+    def __init__(self):
         '''
         Constructor
         '''
         
     def main(self):
         self.initializeCamera()
-        analyzer = oa()
+        analyzer = oa.ObjectAnalyzer()
         while (True):
             
             grabbed, frame = self.capture.read()
-            
             if not grabbed:
                 #print("Frame not grabbed")
                 continue
             analyzer.analyzeFrame(frame)
             
+            
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+               break
+            
         
         # When everything done, release the capture
         self.capture.release()
+        cv2.destroyAllWindows()
     
         
     def initializeCamera(self):
-        self.capture.open("tcp://192.168.1.1:5555")
-        
+        #self.capture.open("tcp://192.168.1.1:5555")
+        self.capture.open(0)
         
 controllerObj = Controller()
 controllerObj.main()
