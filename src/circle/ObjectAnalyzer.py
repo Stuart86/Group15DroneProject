@@ -72,8 +72,8 @@ class ObjectAnalyzer:
     outMin = 2
     outMax = 3
     
-    
-    
+
+        
     def map(self, value, inMin, inMax, outMin, outMax):
         # Figure out how 'wide' each range is
         leftSpan = inMax - inMin
@@ -290,11 +290,61 @@ class ObjectAnalyzer:
         grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         #blurred = cv2.GaussianBlur(grey, (7, 7), 0)
         blurred = cv2.medianBlur(grey.copy(),7)        #Might be better for filtering noise. 
+<<<<<<< HEAD
         imshow("blurred",blurred)
+=======
+        edged = cv2.Canny(blurred, self.edgedLowLimit, self.edgedHighLimit)
+        cv2.imshow("Edged",edged)
+        
+        
+        circles = cv2.HoughCircles(edged.copy(), cv2.HOUGH_GRADIENT, self.houghDP, self.houghMinDist, param1 = self.houghParam1, param2 = self.houghParam2, minRadius = self.houghMinRadius, maxRadius = self.houghMaxRadius)
+
+        if circles is not None:
+            circles = np.uint16(np.around(circles))
+            for i in circles[0, :]:
+                #If radius is zero, circle doesn't exist..
+                if i[2] == 0:
+                    break
+                #Create the new circle.
+                newCircle = ([i[0],i[1],i[2]])
+          
+                self.circleObj.circleKnown(newCircle)
+                self.circleObj.enoughNewCircles(frame, width, height)
+                
+                
+                # Display the resulting frame
+        cv2.imshow('frame', frame)
+        cv2.moveWindow('frame', 20, 20)
+        
+        #--- First obtain the threshold using the greyscale image ---
+        _,th = cv2.threshold(edged,127,255, 0)
+        
+        #--- Find all the contours in the binary image ---
+        _, contours,hierarchy = cv2.findContours(th,2,1)
+        cnt = contours
+        big_contour = []
+        maxArea = 0
+        for i in cnt:
+            area = cv2.contourArea(i) #--- find the contour having biggest area ---
+            if(area > maxArea):
+                maxArea = area
+                big_contour = i 
+            
+        final = cv2.drawContours(frame.copy(), big_contour, -1, (0,255,0), 3)
+        cv2.imshow('final', final)
+        
+       
+        
+        
+        
+        
+        
+>>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
 
 
         
     def analyzeFrame(self,frame):
+<<<<<<< HEAD
     
         self.setTestValues(frame)
         brightnessFrame = self.setImageBrightNess(frame, self.brightness)
@@ -365,6 +415,22 @@ class ObjectAnalyzer:
                 # Display the resulting frame
         cv2.imshow('frame', frame)
        
+=======
+        while (True):
+            self.setTestValues(frame)
+            
+            #Maps perceived brigthness to masklimit. Only used in the final version. Requires further testing. 
+            #self.maskLimit = self.map(self.perceivedBrightness, self.inMin, self.inMax, self.outMin, self.outMax)
+            
+            redImage = self.getRedHSVImage(frame)
+            self.findCircle(redImage)
+          
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+    
+        cv2.destroyAllWindows()
+    
+>>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
     
 
     

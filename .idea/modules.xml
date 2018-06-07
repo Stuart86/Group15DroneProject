@@ -3,6 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Group15DroneProject.iml" filepath="$PROJECT_DIR$/.idea/Group15DroneProject.iml" />
+<<<<<<< HEAD
+=======
+      <module fileurl="file://$USER_HOME$/Desktop/python-ardrone-master/.idea/python-ardrone-master.iml" filepath="$USER_HOME$/Desktop/python-ardrone-master/.idea/python-ardrone-master.iml" />
+>>>>>>> branch 'master' of https://github.com/Stuart86/Group15DroneProject
     </modules>
   </component>
 </project>
