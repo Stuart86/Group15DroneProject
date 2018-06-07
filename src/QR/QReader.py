@@ -1,11 +1,14 @@
 
 
-import cv2
-import numpy as np
 import math
 import time
-from pyzbar.pyzbar import decode
+
+import cv2
 from pyzbar.pyzbar import ZBarSymbol
+from pyzbar.pyzbar import decode
+
+import numpy as np
+
 
 NORTH_ORIENTATION  = 0
 SOUTH_ORIENTATION = 1
