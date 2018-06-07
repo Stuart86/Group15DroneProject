@@ -3,6 +3,8 @@ import math
 
 import numpy as np
 
+from state import DroneState
+
 
 #Variables
 #Frames and such
@@ -22,7 +24,7 @@ class Circle:
         self.amountOfCircles = circles
         
         
-    def printCircleOnFrame(self, circleToBePrinted, frame, width, height):
+    def printCircleOnFrame(self, circleToBePrinted, frame, width, height, State):
         avarageCenter = (int(round(circleToBePrinted[0])),int(round(circleToBePrinted[1])))
         avarageRadius = int(round(circleToBePrinted[2]))
         cv2.circle(frame, avarageCenter, avarageRadius, (255, 0, 255), 3)
@@ -35,17 +37,28 @@ class Circle:
         #trackedCenter = (avarageCenter[0],avarageCenter[1]-60)
         #cv2.putText(frame, 'Tracked', trackedCenter, cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 2, cv2.LINE_AA)
 
+
         print(width/2)
         print(height/2)
         print(avarageCenter)
+        #Return to this and make it more efficient. No if statements.
         if (width/2) < avarageCenter[0]*2:
-            print("left of center")
+            State.leftOfCenter = True
+        else:
+            State.leftOfCenter = False
         if (width / 2) > avarageCenter[0]*2:
-            print("right of center")
+            State.rightOfCenter = True
+        else: 
+            State.rightOfCenter = False
         if (height / 2) < avarageCenter[1]*2:
-            print("under of center")
+            State.underCenter = True
+        else:
+            State.underCenter = False
         if (height / 2) > avarageCenter[1]*2:
-            print("above of center")
+            State.aboveCenter = True
+        else:
+            State.aboveCenter = False
+        
 
         #cv2.line(frame, (int(width / 2), int(height / 2)), avarageCenter, (0, 255, 0), 5)
     
@@ -86,12 +99,12 @@ class Circle:
         
     
             
-    def enoughNewCircles(self, frame, width, height):
+    def enoughNewCircles(self, frame, width, height, state):
         for c in self.listOfCircles:
             if(len(c) == self.amountOfCircles):
                 print(self.amountOfCircles)
                 circleToBePrinted = np.mean(c, axis = 0)
-                self.printCircleOnFrame(circleToBePrinted,frame,width, height)
+                self.printCircleOnFrame(circleToBePrinted,frame,width, height, state)
                 self.listOfCircles.remove(c)
         return;
 

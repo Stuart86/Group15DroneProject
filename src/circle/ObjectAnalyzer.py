@@ -286,7 +286,7 @@ class ObjectAnalyzer:
     
     
     
-    def findCircle(self, frame):
+    def findCircle(self, frame, state):
         grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         #blurred = cv2.GaussianBlur(grey, (7, 7), 0)
         blurred = cv2.medianBlur(grey.copy(),7)        #Might be better for filtering noise. 
@@ -306,7 +306,7 @@ class ObjectAnalyzer:
                 newCircle = ([i[0],i[1],i[2]])
           
                 self.circleObj.circleKnown(newCircle)
-                self.circleObj.enoughNewCircles(frame, width, height)
+                self.circleObj.enoughNewCircles(frame, width, height, state)
                 
                 
                 # Display the resulting frame
@@ -339,7 +339,7 @@ class ObjectAnalyzer:
 
 
         
-    def analyzeFrame(self,frame):
+    def analyzeFrame(self,frame, state):
         
         self.setTestValues(frame)
         
@@ -347,7 +347,7 @@ class ObjectAnalyzer:
         #self.maskLimit = self.map(self.perceivedBrightness, self.inMin, self.inMax, self.outMin, self.outMax)
         
         redImage = self.getRedHSVImage(frame)
-        self.findCircle(redImage)
+        self.findCircle(redImage, state)
       
         
     

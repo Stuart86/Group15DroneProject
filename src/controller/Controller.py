@@ -19,7 +19,7 @@ class Controller(object):
     '''
     classdocs
     '''
-    #state = DroneState()
+    state = DroneState.State()
 
     
     def __init__(self):
@@ -36,11 +36,12 @@ class Controller(object):
             if not grabbed:
                 #print("Frame not grabbed")
                 continue
-            analyzer.analyzeFrame(frame)
+            analyzer.analyzeFrame(frame, self.state)
+            self.state.printInfo()
             
             
             if cv2.waitKey(1) & 0xFF == ord('q'):
-               break
+                break
             
         
         # When everything done, release the capture
