@@ -137,7 +137,7 @@ class ObjectAnalyzer:
     #Used for testing. 
     cv2.createTrackbar('Edged low limit','Trackbar',0,255,nothing)
     cv2.createTrackbar('Edged high limit','Trackbar',0,255,nothing)
-    cv2.createTrackbar('blur','Trackbar',1,50,nothing)
+    cv2.createTrackbar('blur','Trackbar',1,100,nothing)
     
     #hough circles
     cv2.createTrackbar('Hough: dp','Trackbar',1,100,nothing) # Inverse ratio of the accumulator resolution to the image resolution. For example, if dp=1 , the accumulator has the same resolution as the input image. If dp=2 , the accumulator has half as big width and height.
@@ -158,7 +158,27 @@ class ObjectAnalyzer:
     cv2.createTrackbar('tLow','Trackbar',0,255,nothing)
     cv2.createTrackbar('tHigh','Trackbar',0,255,nothing)
 
-    
+    cv2.setTrackbarPos('blur','Trackbar',100)
+    cv2.setTrackbarPos('tHigh','Trackbar',255)
+    cv2.setTrackbarPos('Brightness','Trackbar',1000)
+
+
+    cv2.setTrackbarPos('lowMaskLowHue1','HSV',0)
+    cv2.setTrackbarPos('lowMaskHighHue2','HSV',10)
+    cv2.setTrackbarPos('highMaskLowHue3','HSV',160)
+    cv2.setTrackbarPos('highMaskHighHue4','HSV',180)
+
+    cv2.setTrackbarPos('lowMaskLowSat5','HSV',115)
+    cv2.setTrackbarPos('lowMaskHighSat6','HSV',255)
+    cv2.setTrackbarPos('highMaskLowSat7','HSV',81)
+    cv2.setTrackbarPos('highMaskHighSat8','HSV',255)
+
+    cv2.setTrackbarPos('lowMaskLowVal9','HSV',55)
+    cv2.setTrackbarPos('lowMaskHighVal10','HSV',255)
+    cv2.setTrackbarPos('highMaskLowVal11','HSV',1)
+    cv2.setTrackbarPos('highMaskHighVal12','HSV',255)
+
+
     def calculateBrightness(self,image):
         pImage = Image.fromarray(image)
         stat = p.ImageStat.Stat(pImage)
@@ -200,7 +220,6 @@ class ObjectAnalyzer:
         self.highMaskHighVal = cv2.getTrackbarPos('highMaskHighVal12','HSV')
         
  
-        
         error = cv2.getTrackbarPos('Error','Trackbar')
         amountOfCircles = cv2.getTrackbarPos('Amount of Circles','Trackbar')
         self.edgedLowLimit = cv2.getTrackbarPos('Edged low limit','Trackbar')
@@ -302,16 +321,20 @@ class ObjectAnalyzer:
     
     
     
-    def findCircle(self, frame, state):
+    def findCircle(self, frame, originalPic, state):
         
         grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        OGrey = cv2.cvtColor(originalPic, cv2.COLOR_BGR2GRAY)
         blurred1 = cv2.GaussianBlur(grey, (self.blurValue, self.blurValue), 0)
+        circleBlurred = cv2.GaussianBlur(grey, (7,7), 0)
+        oCircle = cv2.GaussianBlur(OGrey, (7,7), 0)
+        imshow("OCircle",oCircle)
         blurred = cv2.medianBlur(grey,self.blurValue)        #Might be better for filtering noise. 
         
-        edged = cv2.Canny(blurred, self.edgedLowLimit, self.edgedHighLimit)
+        edged = cv2.Canny(circleBlurred, self.edgedLowLimit, self.edgedHighLimit)
         edged1 = cv2.Canny(blurred1, self.edgedLowLimit, self.edgedHighLimit)
-        cv2.imshow("Edged",edged)
-        cv2.imshow("Edged1", edged1)
+        #cv2.imshow("Edged",edged)
+        #cv2.imshow("Edged1", edged1)
         
         
         circles = cv2.HoughCircles(edged.copy(), cv2.HOUGH_GRADIENT, self.houghDP, self.houghMinDist, param1 = self.houghParam1, param2 = self.houghParam2, minRadius = self.houghMinRadius, maxRadius = self.houghMaxRadius)
@@ -339,16 +362,18 @@ class ObjectAnalyzer:
         cv2.imshow("threshold,",th)
         
         #--- Find all the contours in the binary image ---
-        _, contours,hierarchy = cv2.findContours(th,2,1)
+        _, contours,hierarchy = cv2.findContours(th,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
         cnt = contours
         big_contour = []
         maxArea = 0
+        i = 0
         for i in cnt:
             area = cv2.contourArea(i) #--- find the contour having biggest area ---
             if(area > maxArea):
                 maxArea = area
-                big_contour = i 
-            
+                big_contour = i
+
+        #print(hierarchy)
         final = cv2.drawContours(frame.copy(), big_contour, -1, (0,255,0), 3)
         cv2.imshow('final', final)
         
@@ -369,7 +394,7 @@ class ObjectAnalyzer:
         #Maps perceived brigthness to masklimit. Only used in the final version. Requires further testing. 
         #self.maskLimit = self.map(self.perceivedBrightness, self.inMin, self.inMax, self.outMin, self.outMax)
             
-        self.findCircle(redImage, state)
+        self.findCircle(redImage, frame, state)
       
         
     
