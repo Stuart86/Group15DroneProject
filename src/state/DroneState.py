@@ -8,6 +8,9 @@ Created on 6. jun. 2018
 class State(object):
     circleSeen = False
     QRCodeSeen = False
+    
+    mostRecentCircle = None
+    
 
     # Where is the image center compared to the circle
     aboveCenter = False

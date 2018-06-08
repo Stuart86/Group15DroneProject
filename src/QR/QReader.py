@@ -298,8 +298,10 @@ def findAndReadQR(img):
                     #cv2.drawContours(img, nv, -1, (0, 255, 0), 3)
 
                     text = qrResult[0][0]
+                    if text in dict:
+                        qrResults.append(QRresult(text, (qrX, qrY), dist, dict[text]))
+
                     #print "Circle width: ",dict[text], "cm"
-                    qrResults.append(QRresult(text , (qrX , qrY) , dist , dict[text]))
                 else:
                     #qrX = (qrCorners[0][0] + qrCorners[1][0] + qrCorners[2][0] + qrCorners[3][0]) / 4
                     #qrY = (qrCorners[0][1] + qrCorners[1][1] + qrCorners[2][1] + qrCorners[3][1]) / 4

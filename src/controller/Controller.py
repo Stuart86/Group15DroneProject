@@ -1,12 +1,8 @@
-'''
-Created on 7. jun. 2018
-
-@author: lasse
-'''
+import cv2
 from state import DroneState
 from circle import ObjectAnalyzer as oa
-
-import cv2
+from QR.QReader import findAndReadQR
+import time
 
     #Camera
     
@@ -21,6 +17,7 @@ class Controller(object):
     '''
     state = DroneState.State()
 
+
     
     def __init__(self):
         '''
@@ -30,14 +27,32 @@ class Controller(object):
     def main(self):
         self.initializeCamera()
         analyzer = oa.ObjectAnalyzer()
+        frameCounter = 0
         while (True):
+            t1 = time.time()
+
+
             
             grabbed, frame = self.capture.read()
             if not grabbed:
                 #print("Frame not grabbed")
                 continue
+            frameCounter = (frameCounter + 1)%2
+
+            if (frameCounter % 2 == 0):
+
+                continue
+            result = findAndReadQR(frame)
+            if(len(result) > 0):
+                for i in result:
+                    print (i)
+
             analyzer.analyzeFrame(frame, self.state)
-            self.state.printInfo()
+
+            t2 = time.time()
+            print("Time: ", t2-t1)
+
+            #self.state.printInfo()
             
             
             if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -50,8 +65,8 @@ class Controller(object):
     
         
     def initializeCamera(self):
-        #self.capture.open("tcp://192.168.1.1:5555")
-        self.capture.open(0)
+        self.capture.open("tcp://192.168.1.1:5555")
+        #self.capture.open(0)
         
 controllerObj = Controller()
 controllerObj.main()
