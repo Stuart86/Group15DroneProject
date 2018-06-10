@@ -51,10 +51,12 @@ def main():
         ret, frame = video_capture.read()
 
         # Our operations on the frame come here
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        if ret == True:
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            cv2.imshow('frame', gray)
 
         # Display the resulting frame
-        cv2.imshow('frame',gray)
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

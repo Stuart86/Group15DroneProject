@@ -141,6 +141,7 @@ class NavDataThread(threading.Thread):
                 except IOError:
                     break
             navdata = libardrone.decode_navdata(data)
+            print navdata
             self.drone.navdata
             self.onNavdataReceive(navdata)
         nav_socket.close()

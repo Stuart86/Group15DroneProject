@@ -62,6 +62,7 @@ class ARDrone(object):
         #self.ipc_thread = arnetwork.IPCThread(self)
         #self.ipc_thread.start()
         self.nav_thread = arnetwork.NavDataThread(self , onNavDataReceive)
+        self.nav_thread.start()
         self.image = ""
         self.navdata = dict()
         self.time = 0
