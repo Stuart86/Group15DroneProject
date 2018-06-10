@@ -67,7 +67,7 @@ class Controller(object):
             
             #-----Converting image from LAB Color model to RGB model--------------------
             final = cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
-            cv2.imshow('final', final)
+            cv2.imshow('finalLab', final)
 
             result = findAndReadQR(frame)
             if(len(result) > 0):
