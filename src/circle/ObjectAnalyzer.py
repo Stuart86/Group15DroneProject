@@ -76,6 +76,7 @@ class ObjectAnalyzer:
     threshLow = 0
     threshHigh = 0
 
+    constrastCutoff = 0
 
         
     def map(self, value, inMin, inMax, outMin, outMax):
@@ -87,7 +88,8 @@ class ObjectAnalyzer:
         # Convert the left range into a 0-1 range (float)
         valueScaled = float(value - inMin) / float(leftSpan)
         
-        # Convert the 0-1 range into a value in the right range.    
+        # Convert the 0-1 range into a value in the right range.
+            
         return int(outMin + (valueScaled * rightSpan))
 
     
@@ -95,6 +97,7 @@ class ObjectAnalyzer:
         pass
     
     cv2.namedWindow('HSV')
+    cv2.namedWindow('ImageSettings')
     cv2.namedWindow('Trackbar')
     cv2.resizeWindow('Trackbar',780,780)
     cv2.resizeWindow('HSV',780,780)
@@ -157,7 +160,14 @@ class ObjectAnalyzer:
 
     cv2.createTrackbar('tLow','Trackbar',0,255,nothing)
     cv2.createTrackbar('tHigh','Trackbar',0,255,nothing)
-
+    
+    #Test
+    cv2.createTrackbar('C-cutoff','ImageSettings',0,100,nothing)
+    
+    
+    
+    
+    #Normal values that we use
     cv2.setTrackbarPos('blur','Trackbar',100)
     cv2.setTrackbarPos('tHigh','Trackbar',255)
     cv2.setTrackbarPos('Brightness','Trackbar',1000)
@@ -256,7 +266,9 @@ class ObjectAnalyzer:
 
         self.threshLow = cv2.getTrackbarPos('tLow','Trackbar')
         self.threshHigh = cv2.getTrackbarPos('tHigh', 'Trackbar')
-
+        
+        self.constrastCutoff = cv2.getTrackbarPos('C-cutoff','ImageSettings')
+        
         if error == 0:
                 error = 1
         if amountOfCircles == 0:
@@ -336,6 +348,9 @@ class ObjectAnalyzer:
         #cv2.imshow("Edged",edged)
         #cv2.imshow("Edged1", edged1)
         
+        #Test
+        
+        
         
         circles = cv2.HoughCircles(edged.copy(), cv2.HOUGH_GRADIENT, self.houghDP, self.houghMinDist, param1 = self.houghParam1, param2 = self.houghParam2, minRadius = self.houghMinRadius, maxRadius = self.houghMaxRadius)
 
@@ -390,6 +405,10 @@ class ObjectAnalyzer:
         
         self.setTestValues(frame)
         redImage = self.getRedHSVImage(frame)
+        autocontrast = p.ImageOps.autocontrast(frame, self.constrastCutoff, None)
+        imshow("AutoConstrast",autocontrast)
+        
+
 
         #Maps perceived brigthness to masklimit. Only used in the final version. Requires further testing. 
         #self.maskLimit = self.map(self.perceivedBrightness, self.inMin, self.inMax, self.outMin, self.outMax)

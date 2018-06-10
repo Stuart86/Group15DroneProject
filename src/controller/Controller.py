@@ -68,8 +68,8 @@ class Controller(object):
     
         
     def initializeCamera(self):
-        self.capture.open("tcp://192.168.1.1:5555")
-        #self.capture.open(0)
+        #self.capture.open("tcp://192.168.1.1:5555")
+        self.capture.open(0)
 
 
 
