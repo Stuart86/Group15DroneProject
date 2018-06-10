@@ -30,7 +30,6 @@ import socket
 import struct
 import sys
 import threading
-import multiprocessing
 
 import arnetwork
 
@@ -58,13 +57,11 @@ class ARDrone(object):
         self.lock = threading.Lock()
         self.speed = 0.1
         self.at(at_config, "general:navdata_demo", "TRUE")
-        self.video_pipe, video_pipe_other = multiprocessing.Pipe()
-        self.nav_pipe, nav_pipe_other = multiprocessing.Pipe()
-        self.com_pipe, com_pipe_other = multiprocessing.Pipe()
-        self.network_process = arnetwork.ARDroneNetworkProcess(nav_pipe_other, video_pipe_other, com_pipe_other)
-        self.network_process.start()
-        self.ipc_thread = arnetwork.IPCThread(self)
-        self.ipc_thread.start()
+        #self.network_process = arnetwork.ARDroneNetworkProcess()
+        #self.network_process.start()
+        #self.ipc_thread = arnetwork.IPCThread(self)
+        #self.ipc_thread.start()
+        self.nav_thread = arnetwork.NavDataThread(self , onNavDataReceive)
         self.image = ""
         self.navdata = dict()
         self.time = 0
@@ -164,11 +161,13 @@ class ARDrone(object):
         """
         self.lock.acquire()
         self.com_watchdog_timer.cancel()
-        self.com_pipe.send('die!')
-        self.network_process.terminate()
-        self.network_process.join()
-        self.ipc_thread.stop()
-        self.ipc_thread.join()
+        #self.com_pipe.send('die!')
+        #self.network_process.terminate()
+        #self.network_process.join()
+        #self.ipc_thread.stop()
+        #self.ipc_thread.join()
+        self.nav_thread.stop()
+        self.nav_thread.join()
         self.lock.release()
         
     def move(self,lr, fb, vv, va):
@@ -320,6 +319,10 @@ def at(command, seq, params):
     msg = "AT*%s=%i%s\r" % (command, seq, param_str)
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(msg, ("192.168.1.1", ARDRONE_COMMAND_PORT))
+
+def onNavDataReceive(data):
+    print data
+
 
 def f2i(f):
     """Interpret IEEE-754 floating-point value as signed integer.

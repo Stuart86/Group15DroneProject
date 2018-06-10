@@ -180,6 +180,8 @@ def findAndReadQR(img):
     grayScale = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     #blurred = cv2.GaussianBlur(grayScale , (5,5) ,1)
     #blurred = cv2.medianBlur(grayScale , 5)
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+    grayScale = clahe.apply(grayScale)
     thresh = cv2.adaptiveThreshold(grayScale , 255 , cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY, 63, 4)
     #cv2.imshow("Gray" , thresh)
     _ , cnts , heiarchy = cv2.findContours(thresh , cv2.RETR_TREE , cv2.CHAIN_APPROX_SIMPLE)
@@ -313,12 +315,20 @@ def findAndReadQR(img):
                     continue
     return qrResults
 ##This main is just for testing
+def doStuff(img):
+    res = cv2.cvtColor(img , cv2.COLOR_BGR2HSV)
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+    h , s, v = cv2.split(res)
+    res = clahe.apply(s)
+    res = cv2.merge((h , res, v))
+    res = cv2.cvtColor(res , cv2.COLOR_HSV2BGR)
+    return np.hstack((img , res))
 
 
 if __name__ == "__main__":
     #cap = cv2.VideoCapture("tcp://192.168.1.1:5555")
     cap = cv2.VideoCapture(0)
-    #cv2.namedWindow("Window" , cv2.WINDOW_NORMAL)
+    cv2.namedWindow("Window" , cv2.WINDOW_NORMAL)
     #cv2.namedWindow("Gray" , cv2.WINDOW_NORMAL)
     n = 0
     lastDistance = 50
@@ -328,19 +338,21 @@ if __name__ == "__main__":
     while 1:
         n = (n+1)%2
         ret , frame = cap.read()
-        #cv2.imshow("Window", frame)
-        if ret and n == 0:
+
+        if ret and n%2 == 0:
             tBefore = time.time()
+            hsv = doStuff(frame)
+            cv2.imshow("Window", hsv)
             results = findAndReadQR(frame)
             #r = decode(frame , [ZBarSymbol.QRCODE])
             tPassed = time.time() - tBefore
             #cv2.imshow("Window", frame)
             #if len(r) is not 0:
             #    print r
-            #for q in results:
-                #print q.data , " distance(cm) " , q.distance , " velocity(ms)" , ((lastDistance-q.distance)/100)/(tBefore - lastTime)
-                #lastTime = time.time()
-                #lastDistance = q.distance
+            for q in results:
+                print q.data , " distance(cm) " , q.distance , " velocity(ms)" , ((lastDistance-q.distance)/100)/(tBefore - lastTime)
+                lastTime = time.time()
+                lastDistance = q.distance
         cv2.waitKey(1)
     cap.release()
 
