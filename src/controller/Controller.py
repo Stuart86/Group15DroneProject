@@ -12,7 +12,7 @@ class Controller(object):
 
     
     capture = cv2.VideoCapture()
-    drone = libardrone.ARDrone()
+    #drone = libardrone.ARDrone()
 
     '''
     classdocs
@@ -30,7 +30,7 @@ class Controller(object):
         self.initializeCamera()
         analyzer = oa.ObjectAnalyzer()
         frameCounter = 0
-        self.drone.takeoff()
+        #self.drone.takeoff()
 
         while (True):
             t1 = time.time()

@@ -3,6 +3,7 @@ from cv2 import imshow
 import cv2
 
 import PIL as p
+from PIL import ImageOps
 from circle import Circle as cl
 import numpy as np
 
@@ -77,6 +78,10 @@ class ObjectAnalyzer:
     threshHigh = 0
 
     constrastCutoff = 0
+    unSharpMaskRadius = 0
+    unSharpMaskPercent = 0
+    unSharpMaskThreshhold = 0
+    
 
         
     def map(self, value, inMin, inMax, outMin, outMax):
@@ -163,7 +168,9 @@ class ObjectAnalyzer:
     
     #Test
     cv2.createTrackbar('C-cutoff','ImageSettings',0,100,nothing)
-    
+    cv2.createTrackbar('Un-radius','ImageSettings',0,100,nothing)
+    cv2.createTrackbar('Un-percent','ImageSettings',0,100,nothing)
+    cv2.createTrackbar('Un-thresh','ImageSettings',0,100,nothing)
     
     
     
@@ -199,6 +206,11 @@ class ObjectAnalyzer:
     
     def setImageBrightNess(self,image,value):
         PilImage = Image.fromarray(image)
+        autocontrast = ImageOps.autocontrast(PilImage, self.constrastCutoff, None)
+        autocontrastFrame = np.array(autocontrast)
+        
+        imshow("AutoConstrast",autocontrastFrame)
+        
         enhancer = ImageEnhance.Brightness(PilImage)        
         image = enhancer.enhance(value)
         return image
@@ -267,7 +279,13 @@ class ObjectAnalyzer:
         self.threshLow = cv2.getTrackbarPos('tLow','Trackbar')
         self.threshHigh = cv2.getTrackbarPos('tHigh', 'Trackbar')
         
+        
         self.constrastCutoff = cv2.getTrackbarPos('C-cutoff','ImageSettings')
+        self.unSharpMaskRadius = cv2.getTrackbarPos('Un-radius','ImageSettings')
+        self.unSharpMaskPercent = cv2.getTrackbarPos('Un-percent','ImageSettings')
+        self.unSharpMaskThreshhold = cv2.getTrackbarPos('Un-thresh','ImageSettings')
+        
+       
         
         if error == 0:
                 error = 1
@@ -402,11 +420,18 @@ class ObjectAnalyzer:
 
         
     def analyzeFrame(self,frame, state):
+        imshow("Original Image",frame)
+        PilImage = Image.fromarray(frame)
+        unsharpmask = p.ImageFilter.UnsharpMask(self.unSharpMaskRadius, self.unSharpMaskPercent, self.unSharpMaskThreshhold)
+        unsharp = PilImage.filter(unsharpmask)
         
+        unsharpFrame = np.array(unsharp)
+        
+        imshow("UnsharpMask",unsharpFrame)
+        
+        self.setImageBrightNess(frame, self.brightness)
         self.setTestValues(frame)
-        redImage = self.getRedHSVImage(frame)
-        autocontrast = p.ImageOps.autocontrast(frame, self.constrastCutoff, None)
-        imshow("AutoConstrast",autocontrast)
+        redImage = self.getRedHSVImage(unsharpFrame)
         
 
 
