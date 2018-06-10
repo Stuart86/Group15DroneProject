@@ -130,7 +130,7 @@ class NavDataThread(threading.Thread):
 
     def run(self):
         nav_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        nav_socket.setblocking(0)
+        nav_socket.setblocking(1)
         nav_socket.bind(('', libardrone.ARDRONE_NAVDATA_PORT))
         nav_socket.sendto("\x01\x00\x00\x00", ('192.168.1.1', libardrone.ARDRONE_NAVDATA_PORT))
         data = ""
@@ -138,12 +138,11 @@ class NavDataThread(threading.Thread):
             while 1:
                 try:
                     data = nav_socket.recv(65535)
+                    if data is not None:
+                        navdata = libardrone.decode_navdata(data)
+                        self.onNavdataReceive(navdata)
                 except IOError:
                     break
-            navdata = libardrone.decode_navdata(data)
-            print navdata
-            self.drone.navdata
-            self.onNavdataReceive(navdata)
         nav_socket.close()
 
     def stop(self):

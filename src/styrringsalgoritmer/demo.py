@@ -31,19 +31,48 @@ stream.
 import pygame
 import cv2
 import libardrone
-import QR.QReader
+from QR.QReader import findAndReadQR
+import time
 
 video_capture = cv2.VideoCapture()
 video_capture.open('tcp://192.168.1.1:5555')
+qFound = False
+running = True
+takeoff = False
+leftRightFix = 0.0201
+backwardsForwardsFix = 0.0119
+
+def qrRoutine(drone):
+    global takeoff
+    global qFound
+    t1  = time.time()
+    drone.move(leftRightFix , backwardsForwardsFix , drone.speed , 0)
+    while (time.time() - t1) < 5:
+        video_capture.read()
+        time.sleep(0.05)
+    t1 = time.time()
+    drone.move(leftRightFix , backwardsForwardsFix-drone.speed , 0 ,0)
+    while (time.time() - t1) < 2:
+        video_capture.read()
+        time.sleep(0.05)
+    drone.land()
+    takeoff = False
+    qFound = False
 
 
 def main():
+    global qFound
+    global running
+    global takeoff
     pygame.init()
     W, H = 320, 240
     screen = pygame.display.set_mode((W, H))
     drone = libardrone.ARDrone()
     clock = pygame.time.Clock()
     running = True
+    n = 0
+    takeoff = False
+    t1 = time.time()
 
     while running:
 
@@ -51,13 +80,20 @@ def main():
         ret, frame = video_capture.read()
 
         # Our operations on the frame come here
+
         if ret == True:
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            cv2.imshow('frame', gray)
+            #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            #cv2.imshow('frame', frame)
+            n = (n+1)%2
+            if n == 0:
+                res = findAndReadQR(frame)
+
+                if len(res) > 0 and qFound == False:
+                    qFound = True
+                    print res[0].data
+                    qrRoutine(drone)
 
         # Display the resulting frame
-
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False 
@@ -68,10 +104,15 @@ def main():
                     drone.reset()
                     running = False
                 # takeoff / land
+                elif event.key == pygame.K_k:
+                    drone.calibrate()
                 elif event.key == pygame.K_RETURN:
+                    t1 = time.time()
                     drone.takeoff()
+                    takeoff = True
                 elif event.key == pygame.K_SPACE:
                     drone.land()
+                    takeoff = False
                 # emergency
                 elif event.key == pygame.K_BACKSPACE:
                     drone.reset()
@@ -116,7 +157,11 @@ def main():
                     drone.speed = 0.9
                 elif event.key == pygame.K_0:
                     drone.speed = 1.0
-
+        if (takeoff and (time.time() - t1) > 2):
+            None
+            #leftRight = 0.0201
+            #ackwardsForward = 0.0119
+            #drone.move(leftRight , backwardsForward ,0 ,0)
         try:
             surface = pygame.image.fromstring(drone.image, (W, H), 'RGB')
             # battery status

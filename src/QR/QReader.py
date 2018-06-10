@@ -182,7 +182,7 @@ def findAndReadQR(img):
     #blurred = cv2.medianBlur(grayScale , 5)
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
     grayScale = clahe.apply(grayScale)
-    thresh = cv2.adaptiveThreshold(grayScale , 255 , cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY, 63, 4)
+    thresh = cv2.adaptiveThreshold(grayScale , 255 , cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY, 23, 4)
     #cv2.imshow("Gray" , thresh)
     _ , cnts , heiarchy = cv2.findContours(thresh , cv2.RETR_TREE , cv2.CHAIN_APPROX_SIMPLE)
     #cv2.drawContours(img , cnts, -1, (0, 255, 0), 3)

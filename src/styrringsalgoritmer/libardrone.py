@@ -30,6 +30,7 @@ import socket
 import struct
 import sys
 import threading
+import os
 
 import arnetwork
 
@@ -100,6 +101,8 @@ class ARDrone(object):
     def move_forward(self):
         """Make the drone move forward."""
         self.at(at_pcmd, True, 0, -self.speed, 0, 0)
+    def calibrate(self):
+        self.at(at_calib , 0)
 
     def move_backward(self):
         """Make the drone move backwards."""
@@ -187,6 +190,9 @@ class ARDrone(object):
 ###############################################################################
 ### Low level AT Commands
 ###############################################################################
+
+def at_calib(seq , device_number):
+    at("CALIB",seq, [device_number])
 
 def at_ref(seq, takeoff, emergency=False):
     """
@@ -318,11 +324,28 @@ def at(command, seq, params):
         elif type(p) == str:
             param_str += ',"'+p+'"'
     msg = "AT*%s=%i%s\r" % (command, seq, param_str)
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.sendto(msg, ("192.168.1.1", ARDRONE_COMMAND_PORT))
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.sendto(msg, ("192.168.1.1", ARDRONE_COMMAND_PORT))
+    except IOError:
+        print "Coudln't send Command"
+
+NAV_COUNTER = 0
 
 def onNavDataReceive(data):
-    print data
+    b = 1
+    if 0 in data and NAV_COUNTER%10 == 0 and b == 0:
+        theta = data[0]['theta']
+        #psi = data[0]['psi']
+        phi = data[0]['phi']
+        vx = data[0]["vx"]
+        vz = data[0]["vz"]
+        vy = data[0]["vy"]
+        alt = data[0]["altitude"]
+
+        #print "theta: " , theta , " phi: ", phi
+        #print "altitude: ", alt
+        print "vx: ",vx , " vy: ",vy , " vz: ",vz
 
 
 def f2i(f):
@@ -393,8 +416,8 @@ def decode_navdata(packet):
             # convert the millidegrees into degrees and round to int, as they
             # are not so precise anyways
             for i in 'theta', 'phi', 'psi':
-                values[i] = int(values[i] / 1000)
-                #values[i] /= 1000
+                #values[i] = int(values[i] / 1000)
+                values[i] /= 1000
         data[id_nr] = values
     return data
 
