@@ -27,8 +27,7 @@ import select
 import socket
 import threading
 import multiprocessing
-import win32pipe
-import win32file
+import cv2
 
 import libardrone
 import arvideo
@@ -140,10 +139,38 @@ class NavDataThread(threading.Thread):
                     data = nav_socket.recv(65535)
                     if data is not None:
                         navdata = libardrone.decode_navdata(data)
-                        self.onNavdataReceive(navdata)
+
+                        if 0 in navdata:
+                            self.drone.navdata = navdata
+                            self.onNavdataReceive(navdata)
                 except IOError:
                     break
         nav_socket.close()
+
+    def stop(self):
+        self.stopping = True
+
+class VideoThread(threading.Thread):
+
+    def __init__(self, drone):
+        threading.Thread.__init__(self)
+        self.drone = drone
+        self.stopping = False
+
+    def run(self):
+
+        cap = cv2.VideoCapture('tcp://192.168.1.1:5555')
+        if(cap.isOpened() == False):
+            cap.open('tcp://192.168.1.1:5555')
+        cv2.namedWindow("DRONE FEED", cv2.WINDOW_AUTOSIZE)
+        while not self.stopping:
+            ret , frame = cap.read()
+            if ret:
+                cv2.imshow("DRONE FEED" , frame)
+                self.drone.newVideoFrame(frame)
+            cv2.waitKey(1)
+        cap.release()
+
 
     def stop(self):
         self.stopping = True

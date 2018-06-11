@@ -56,6 +56,8 @@ class ARDrone(object):
         self.timer_t = 0.2
         self.com_watchdog_timer = threading.Timer(self.timer_t, self.commwdg)
         self.lock = threading.Lock()
+        self.video_lock = threading.Lock()
+        self.nav_lock = threading.Lock()
         self.speed = 0.1
         self.at(at_config, "general:navdata_demo", "TRUE")
         #self.network_process = arnetwork.ARDroneNetworkProcess()
@@ -64,9 +66,39 @@ class ARDrone(object):
         #self.ipc_thread.start()
         self.nav_thread = arnetwork.NavDataThread(self , onNavDataReceive)
         self.nav_thread.start()
-        self.image = ""
-        self.navdata = dict()
+        self.video_thread = arnetwork.VideoThread(self)
+        self.video_thread.start()
+        self.image = None
+        self.navdata = None
         self.time = 0
+
+
+    def getNavData(self):
+        self.nav_lock.acquire()
+        ret  = False
+        navdata = None
+        if self.navdata is not None:
+            ret = True
+            navdata = self.navdata
+            self.navdata = None
+        self.nav_lock.release()
+        return ret , navdata
+
+    def readVideo(self):
+        self.video_lock.acquire()
+        ret = False
+        frame = None
+        if self.image is not None:
+            ret = True
+            frame = self.image.copy()
+            self.image = None
+        self.video_lock.release()
+        return ret , frame
+
+    def newVideoFrame(self , frame):
+        self.video_lock.acquire()
+        self.image = frame
+        self.video_lock.release()
 
     def takeoff(self):
         """Make the drone takeoff."""
@@ -172,6 +204,8 @@ class ARDrone(object):
         #self.ipc_thread.join()
         self.nav_thread.stop()
         self.nav_thread.join()
+        self.video_thread.stop()
+        self.video_thread.join()
         self.lock.release()
         
     def move(self,lr, fb, vv, va):
@@ -328,13 +362,15 @@ def at(command, seq, params):
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.sendto(msg, ("192.168.1.1", ARDRONE_COMMAND_PORT))
     except IOError:
-        print "Coudln't send Command"
+        print "Couldn't send Command"
 
 NAV_COUNTER = 0
 
 def onNavDataReceive(data):
+    global NAV_COUNTER
     b = 1
-    if 0 in data and NAV_COUNTER%10 == 0 and b == 0:
+    NAV_COUNTER = (NAV_COUNTER + 1)%10
+    if NAV_COUNTER%10 == 0 and b == 0:
         theta = data[0]['theta']
         #psi = data[0]['psi']
         phi = data[0]['phi']
@@ -342,10 +378,10 @@ def onNavDataReceive(data):
         vz = data[0]["vz"]
         vy = data[0]["vy"]
         alt = data[0]["altitude"]
+        bat = data[0]["battery"]
 
         #print "theta: " , theta , " phi: ", phi
-        #print "altitude: ", alt
-        print "vx: ",vx , " vy: ",vy , " vz: ",vz
+        print "vx: ",vx , " vy: ",vy , " altitude: ", alt, "POWER: " , bat, "%"
 
 
 def f2i(f):

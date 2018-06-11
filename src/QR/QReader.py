@@ -341,8 +341,8 @@ if __name__ == "__main__":
 
         if ret and n%2 == 0:
             tBefore = time.time()
-            hsv = doStuff(frame)
-            cv2.imshow("Window", hsv)
+            #hsv = doStuff(frame)
+            #cv2.imshow("Window", hsv)
             results = findAndReadQR(frame)
             #r = decode(frame , [ZBarSymbol.QRCODE])
             tPassed = time.time() - tBefore
