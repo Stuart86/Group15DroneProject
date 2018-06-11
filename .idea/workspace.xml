@@ -3,10 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="85e3e3ed-61c9-462f-81b9-748605eba83c" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/src/QR/QReader.py" afterPath="$PROJECT_DIR$/src/QR/QReader.py" />
-      <change beforePath="$PROJECT_DIR$/src/styrringsalgoritmer/arnetwork.py" afterPath="$PROJECT_DIR$/src/styrringsalgoritmer/arnetwork.py" />
-      <change beforePath="$PROJECT_DIR$/src/styrringsalgoritmer/demo.py" afterPath="$PROJECT_DIR$/src/styrringsalgoritmer/demo.py" />
-      <change beforePath="$PROJECT_DIR$/src/styrringsalgoritmer/libardrone.py" afterPath="$PROJECT_DIR$/src/styrringsalgoritmer/libardrone.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -472,7 +468,14 @@
       <option name="project" value="LOCAL" />
       <updated>1528638032542</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="more demo work done">
+      <created>1528712102518</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1528712102518</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -504,7 +507,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Works on windows" />
     <MESSAGE value="Works on windows, done more tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="Works on windows, done more tests" />
+    <MESSAGE value="more demo work done" />
+    <option name="LAST_COMMIT_MESSAGE" value="more demo work done" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
