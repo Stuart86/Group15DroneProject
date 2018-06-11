@@ -3,6 +3,7 @@ from cv2 import imshow
 import cv2
 
 import PIL as p
+from PIL import ImageOps
 from circle import Circle as cl
 import numpy as np
 
@@ -20,7 +21,7 @@ class ObjectAnalyzer:
     circleObj = cl.Circle()
     
     maskLimit = 100
-    upperMaskLimit = 255
+    #upperMaskLimit = 255
     
     
     #Mask 
@@ -43,6 +44,7 @@ class ObjectAnalyzer:
     #Requires further testing
     edgedLowLimit = 0
     edgedHighLimit = 0
+    blurValue = 1
     
     #Requires further testing
     houghDP = 1
@@ -71,6 +73,14 @@ class ObjectAnalyzer:
     inMax = 1
     outMin = 2
     outMax = 3
+
+    threshLow = 0
+    threshHigh = 0
+
+    constrastCutoff = 0
+    unSharpMaskRadius = 0
+    unSharpMaskPercent = 0
+    unSharpMaskThreshhold = 0
     
 
         
@@ -83,7 +93,8 @@ class ObjectAnalyzer:
         # Convert the left range into a 0-1 range (float)
         valueScaled = float(value - inMin) / float(leftSpan)
         
-        # Convert the 0-1 range into a value in the right range.    
+        # Convert the 0-1 range into a value in the right range.
+            
         return int(outMin + (valueScaled * rightSpan))
 
     
@@ -91,20 +102,29 @@ class ObjectAnalyzer:
         pass
     
     cv2.namedWindow('HSV')
+    cv2.namedWindow('ImageSettings')
     cv2.namedWindow('Trackbar')
     cv2.resizeWindow('Trackbar',780,780)
+    cv2.resizeWindow('HSV',780,780)
     # create trackbars for color change
     
+    
+    #HSV Hue
+    cv2.createTrackbar('lowMaskLowHue1','HSV',0,180,nothing)
+    cv2.createTrackbar('lowMaskHighHue2','HSV',0,180,nothing)
+    cv2.createTrackbar('highMaskLowHue3','HSV',0,180,nothing)
+    cv2.createTrackbar('highMaskHighHue4','HSV',0,180,nothing)
+    
     #HSV saturation
-    cv2.createTrackbar('lowMaskLowSat','HSV',0,255,nothing)
-    cv2.createTrackbar('lowMaskHighSat','HSV',0,255,nothing)
-    cv2.createTrackbar('highMaskLowSat','HSV',0,255,nothing)
-    cv2.createTrackbar('highMaskHighSat','HSV',0,255,nothing)
+    cv2.createTrackbar('lowMaskLowSat5','HSV',0,255,nothing)
+    cv2.createTrackbar('lowMaskHighSat6','HSV',0,255,nothing)
+    cv2.createTrackbar('highMaskLowSat7','HSV',0,255,nothing)
+    cv2.createTrackbar('highMaskHighSat8','HSV',0,255,nothing)
     #HSV value
-    cv2.createTrackbar('lowMaskLowVal','HSV',0,255,nothing)
-    cv2.createTrackbar('lowMaskHighVal','HSV',0,255,nothing)
-    cv2.createTrackbar('highMaskLowVal','HSV',0,255,nothing)
-    cv2.createTrackbar('highMaskHighVal','HSV',0,255,nothing)
+    cv2.createTrackbar('lowMaskLowVal9','HSV',0,255,nothing)
+    cv2.createTrackbar('lowMaskHighVal10','HSV',0,255,nothing)
+    cv2.createTrackbar('highMaskLowVal11','HSV',0,255,nothing)
+    cv2.createTrackbar('highMaskHighVal12','HSV',0,255,nothing)
     
     
     
@@ -125,6 +145,7 @@ class ObjectAnalyzer:
     #Used for testing. 
     cv2.createTrackbar('Edged low limit','Trackbar',0,255,nothing)
     cv2.createTrackbar('Edged high limit','Trackbar',0,255,nothing)
+    cv2.createTrackbar('blur','Trackbar',1,100,nothing)
     
     #hough circles
     cv2.createTrackbar('Hough: dp','Trackbar',1,100,nothing) # Inverse ratio of the accumulator resolution to the image resolution. For example, if dp=1 , the accumulator has the same resolution as the input image. If dp=2 , the accumulator has half as big width and height.
@@ -141,8 +162,40 @@ class ObjectAnalyzer:
     #cv2.createTrackbar('inMax','Trackbar',1,180,nothing)
     #cv2.createTrackbar('outMin','Trackbar',2,180,nothing)
     #cv2.createTrackbar('outMax','Trackbar',3,180,nothing)
-                       
+
+    cv2.createTrackbar('tLow','Trackbar',0,255,nothing)
+    cv2.createTrackbar('tHigh','Trackbar',0,255,nothing)
     
+    #Test
+    cv2.createTrackbar('C-cutoff','ImageSettings',0,100,nothing)
+    cv2.createTrackbar('Un-radius','ImageSettings',0,100,nothing)
+    cv2.createTrackbar('Un-percent','ImageSettings',0,100,nothing)
+    cv2.createTrackbar('Un-thresh','ImageSettings',0,100,nothing)
+    
+    
+    
+    #Normal values that we use
+    cv2.setTrackbarPos('blur','Trackbar',100)
+    cv2.setTrackbarPos('tHigh','Trackbar',255)
+    cv2.setTrackbarPos('Brightness','Trackbar',1000)
+
+
+    cv2.setTrackbarPos('lowMaskLowHue1','HSV',0)
+    cv2.setTrackbarPos('lowMaskHighHue2','HSV',10)
+    cv2.setTrackbarPos('highMaskLowHue3','HSV',160)
+    cv2.setTrackbarPos('highMaskHighHue4','HSV',180)
+
+    cv2.setTrackbarPos('lowMaskLowSat5','HSV',115)
+    cv2.setTrackbarPos('lowMaskHighSat6','HSV',255)
+    cv2.setTrackbarPos('highMaskLowSat7','HSV',81)
+    cv2.setTrackbarPos('highMaskHighSat8','HSV',255)
+
+    cv2.setTrackbarPos('lowMaskLowVal9','HSV',55)
+    cv2.setTrackbarPos('lowMaskHighVal10','HSV',255)
+    cv2.setTrackbarPos('highMaskLowVal11','HSV',1)
+    cv2.setTrackbarPos('highMaskHighVal12','HSV',255)
+
+
     def calculateBrightness(self,image):
         pImage = Image.fromarray(image)
         stat = p.ImageStat.Stat(pImage)
@@ -153,6 +206,11 @@ class ObjectAnalyzer:
     
     def setImageBrightNess(self,image,value):
         PilImage = Image.fromarray(image)
+        autocontrast = ImageOps.autocontrast(PilImage, self.constrastCutoff, None)
+        autocontrastFrame = np.array(autocontrast)
+        
+        imshow("AutoConstrast",autocontrastFrame)
+        
         enhancer = ImageEnhance.Brightness(PilImage)        
         image = enhancer.enhance(value)
         return image
@@ -160,7 +218,7 @@ class ObjectAnalyzer:
     
     def updateValues(self):
         #self.maskLimit = cv2.getTrackbarPos('MaskLimit','Trackbar')
-        self.upperMaskLimit = cv2.getTrackbarPos('UpperMaskLimit','Trackbar')
+        #self.upperMaskLimit = cv2.getTrackbarPos('UpperMaskLimit','Trackbar')
     
         #self.lowMaskLowRed = cv2.getTrackbarPos('lowMaskLowRed','Trackbar')
         #self.lowMaskUpperRed = cv2.getTrackbarPos('lowMaskUpperRed','Trackbar')
@@ -168,22 +226,30 @@ class ObjectAnalyzer:
         #self.highMaskUpperRed = cv2.getTrackbarPos('highMaskUpperRed','Trackbar')
         
         #HSV 
-        self.lowMaskLowSat = cv2.getTrackbarPos('lowMaskLowSat','HSV')
-        self.lowMaskHighSat = cv2.getTrackbarPos('lowMaskHighSat','HSV')
-        self.highMaskLowSat = cv2.getTrackbarPos('highMaskLowSat','HSV')
-        self.highMaskHighSat = cv2.getTrackbarPos('highMaskHighSat','HSV')
+        self.lowMaskLowHue = cv2.getTrackbarPos('lowMaskLowHue1','HSV')
+        self.lowMaskHighHue = cv2.getTrackbarPos('lowMaskHighHue2','HSV')
+        self.highMaskLowHue = cv2.getTrackbarPos('highMaskLowHue3','HSV')
+        self.highMaskHighHue = cv2.getTrackbarPos('highMaskHighHue4','HSV')
         
-        self.lowMaskLowVal = cv2.getTrackbarPos('lowMaskLowVal','HSV')
-        self.lowMaskHighVal = cv2.getTrackbarPos('lowMaskHighVal','HSV')
-        self.highMaskLowVal = cv2.getTrackbarPos('highMaskLowVal','HSV')
-        self.highMaskHighVal = cv2.getTrackbarPos('highMaskHighVal','HSV')
+        self.lowMaskLowSat = cv2.getTrackbarPos('lowMaskLowSat5','HSV')
+        self.lowMaskHighSat = cv2.getTrackbarPos('lowMaskHighSat6','HSV')
+        self.highMaskLowSat = cv2.getTrackbarPos('highMaskLowSat7','HSV')
+        self.highMaskHighSat = cv2.getTrackbarPos('highMaskHighSat8','HSV')
+        
+        self.lowMaskLowVal = cv2.getTrackbarPos('lowMaskLowVal9','HSV')
+        self.lowMaskHighVal = cv2.getTrackbarPos('lowMaskHighVal10','HSV')
+        self.highMaskLowVal = cv2.getTrackbarPos('highMaskLowVal11','HSV')
+        self.highMaskHighVal = cv2.getTrackbarPos('highMaskHighVal12','HSV')
         
  
-        
         error = cv2.getTrackbarPos('Error','Trackbar')
         amountOfCircles = cv2.getTrackbarPos('Amount of Circles','Trackbar')
         self.edgedLowLimit = cv2.getTrackbarPos('Edged low limit','Trackbar')
         self.edgedHighLimit = cv2.getTrackbarPos('Edged high limit','Trackbar')
+        self.blurValue = cv2.getTrackbarPos('blur','Trackbar')
+        if self.blurValue%2 == 0:
+            self.blurValue += 1
+        
         
         self.houghDP = cv2.getTrackbarPos('Hough: dp','Trackbar')/10
         
@@ -208,6 +274,18 @@ class ObjectAnalyzer:
         self.houghMaxRadius = cv2.getTrackbarPos('maxRadius','Trackbar')
         if self.houghMaxRadius == 0:
                 self.houghMaxRadius = 1
+
+
+        self.threshLow = cv2.getTrackbarPos('tLow','Trackbar')
+        self.threshHigh = cv2.getTrackbarPos('tHigh', 'Trackbar')
+        
+        
+        self.constrastCutoff = cv2.getTrackbarPos('C-cutoff','ImageSettings')
+        self.unSharpMaskRadius = cv2.getTrackbarPos('Un-radius','ImageSettings')
+        self.unSharpMaskPercent = cv2.getTrackbarPos('Un-percent','ImageSettings')
+        self.unSharpMaskThreshhold = cv2.getTrackbarPos('Un-thresh','ImageSettings')
+        
+       
         
         if error == 0:
                 error = 1
@@ -235,8 +313,6 @@ class ObjectAnalyzer:
     
     def setTestValues(self, frame):
         self.updateValues() #Used for testing.     
-        brightnessFrame = self.setImageBrightNess(frame, self.brightness)
-        frame = np.array(brightnessFrame)
         self.calculateBrightness(frame)             #Calculate the perceived brightness. 
 
 
@@ -262,11 +338,11 @@ class ObjectAnalyzer:
         
         # join my masks
         mask = mask0 + mask1
-        
+        imshow('Mask',mask)
         
         # set my output img to zero everywhere except my mask
         red_output = frame.copy()
-        
+        #red_output[np.where(mask==0)] = 0
         red_output = cv2.bitwise_and(red_output, red_output, mask = mask)
         
         
@@ -275,12 +351,23 @@ class ObjectAnalyzer:
     
     
     
-    def findCircle(self, frame):
+    def findCircle(self, frame, originalPic, state):
+        
         grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        #blurred = cv2.GaussianBlur(grey, (7, 7), 0)
-        blurred = cv2.medianBlur(grey.copy(),7)        #Might be better for filtering noise. 
-        edged = cv2.Canny(blurred, self.edgedLowLimit, self.edgedHighLimit)
-        cv2.imshow("Edged",edged)
+        OGrey = cv2.cvtColor(originalPic, cv2.COLOR_BGR2GRAY)
+        blurred1 = cv2.GaussianBlur(grey, (self.blurValue, self.blurValue), 0)
+        circleBlurred = cv2.GaussianBlur(grey, (7,7), 0)
+        oCircle = cv2.GaussianBlur(OGrey, (7,7), 0)
+        imshow("OCircle",oCircle)
+        blurred = cv2.medianBlur(grey,self.blurValue)        #Might be better for filtering noise. 
+        
+        edged = cv2.Canny(circleBlurred, self.edgedLowLimit, self.edgedHighLimit)
+        edged1 = cv2.Canny(blurred1, self.edgedLowLimit, self.edgedHighLimit)
+        #cv2.imshow("Edged",edged)
+        #cv2.imshow("Edged1", edged1)
+        
+        #Test
+        
         
         
         circles = cv2.HoughCircles(edged.copy(), cv2.HOUGH_GRADIENT, self.houghDP, self.houghMinDist, param1 = self.houghParam1, param2 = self.houghParam2, minRadius = self.houghMinRadius, maxRadius = self.houghMaxRadius)
@@ -295,7 +382,7 @@ class ObjectAnalyzer:
                 newCircle = ([i[0],i[1],i[2]])
           
                 self.circleObj.circleKnown(newCircle)
-                self.circleObj.enoughNewCircles(frame, width, height)
+                self.circleObj.enoughNewCircles(frame, width, height, state)
                 
                 
                 # Display the resulting frame
@@ -303,19 +390,23 @@ class ObjectAnalyzer:
         cv2.moveWindow('frame', 20, 20)
         
         #--- First obtain the threshold using the greyscale image ---
-        _,th = cv2.threshold(edged,127,255, 0)
+        _,th = cv2.threshold(blurred1,self.threshLow,self.threshHigh, 0)
+
+        cv2.imshow("threshold,",th)
         
         #--- Find all the contours in the binary image ---
-        _, contours,hierarchy = cv2.findContours(th,2,1)
+        _, contours,hierarchy = cv2.findContours(th,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
         cnt = contours
         big_contour = []
         maxArea = 0
+        i = 0
         for i in cnt:
             area = cv2.contourArea(i) #--- find the contour having biggest area ---
             if(area > maxArea):
                 maxArea = area
-                big_contour = i 
-            
+                big_contour = i
+
+        #print(hierarchy)
         final = cv2.drawContours(frame.copy(), big_contour, -1, (0,255,0), 3)
         cv2.imshow('final', final)
         
@@ -328,24 +419,28 @@ class ObjectAnalyzer:
 
 
         
-    def analyzeFrame(self,frame):
-        while (True):
-            self.setTestValues(frame)
-            
-            #Maps perceived brigthness to masklimit. Only used in the final version. Requires further testing. 
-            #self.maskLimit = self.map(self.perceivedBrightness, self.inMin, self.inMax, self.outMin, self.outMax)
-            
-            redImage = self.getRedHSVImage(frame)
-            self.findCircle(redImage)
-          
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-    
-        cv2.destroyAllWindows()
-    
-    
+    def analyzeFrame(self,frame, state):
+        imshow("Original Image",frame)
+        PilImage = Image.fromarray(frame)
+        unsharpmask = p.ImageFilter.UnsharpMask(self.unSharpMaskRadius, self.unSharpMaskPercent, self.unSharpMaskThreshhold)
+        unsharp = PilImage.filter(unsharpmask)
+        
+        unsharpFrame = np.array(unsharp)
+        
+        imshow("UnsharpMask",unsharpFrame)
+        
+        self.setImageBrightNess(frame, self.brightness)
+        self.setTestValues(frame)
+        redImage = self.getRedHSVImage(unsharpFrame)
+        
 
-    
+
+        #Maps perceived brigthness to masklimit. Only used in the final version. Requires further testing. 
+        #self.maskLimit = self.map(self.perceivedBrightness, self.inMin, self.inMax, self.outMin, self.outMax)
+            
+        self.findCircle(redImage, frame, state)
+      
+        
     
 #recorderObj = Recorder()
 #recorderObj.main()

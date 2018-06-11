@@ -8,6 +8,9 @@ Created on 6. jun. 2018
 class State(object):
     circleSeen = False
     QRCodeSeen = False
+    
+    mostRecentCircle = None
+    
 
     # Where is the image center compared to the circle
     aboveCenter = False
@@ -22,7 +25,7 @@ class State(object):
     # circle
     circleCorrect = False  # Correct circle order. 1 to n
 
-    def __init__(self, params):
+    def __init__(self):
         '''
         Constructor
         '''
@@ -33,21 +36,13 @@ class State(object):
     def setQRCodeSeen(self, QRCodeSeen): 
         self.QRCodeSeen = QRCodeSeen    
 
-    def setAboveCenter(self, aboveCenter):
-        self.aboveCenter = aboveCenter
+    def printInfo(self): 
+        print("DroneState:")
+        print("aboveCenter: ", self.aboveCenter)
+        print("underCenter: ", self.underCenter)
+        print("rightOfCenter: ", self.rightOfCenter)
+        print("leftOfCenter: ", self.leftOfCenter)
         
-    def setUnderCenter(self, underCenter):
-        self.underCenter = underCenter
-        
-    def setRightOfCenter(self, rightOfCenter):
-        self.rightOfCenter = rightOfCenter
-        
-    def setLeftOfCenter(self, leftOfCenter):
-        self.leftOfCenter = leftOfCenter
-        
-    def setMiddleOfCenter(self, middleOfCenter):
-        self.middleOfCenter = middleOfCenter
-    
     
     
     
