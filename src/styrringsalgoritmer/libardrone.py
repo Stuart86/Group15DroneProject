@@ -62,12 +62,6 @@ class ARDrone(object):
         self.nav_lock = threading.Lock()
         self.speed = 0.1
         self.at(at_config, "general:navdata_demo", "TRUE")
-        #self.network_process = arnetwork.ARDroneNetworkProcess()
-        #self.network_process.start()
-        #self.ipc_thread = arnetwork.IPCThread(self)
-        #self.ipc_thread.start()
-        #self.control_thread = arnetwork.ControlThread(self)
-        #self.control_thread.start()
         self.nav_thread = arnetwork.NavDataThread(self , onNavDataReceive)
         self.nav_thread.start()
         self.video_thread = arnetwork.VideoThread(self)
@@ -75,8 +69,13 @@ class ARDrone(object):
         self.image = None
         self.navdata = None
         self.time = 0
+        self.command_thread = arnetwork.CommandThread(self)
+        self.command_thread.start()
 
 
+    def asyncCommand(self , lr , bf , ud , rot, sleep1 , sleep2):
+        cmd = [lr, bf , ud, rot, sleep1 , sleep2]
+        self.command_thread.cmd = cmd
     def getNavData(self):
         self.nav_lock.acquire()
         ret  = False
@@ -137,8 +136,8 @@ class ARDrone(object):
     def move_forward(self):
         """Make the drone move forward."""
         self.at(at_pcmd, True, 0, -self.speed, 0, 0)
-    def calibrate(self):
-        self.at(at_calib , 0)
+    def calibrate(self, device):
+        self.at(at_calib , device)
 
     def move_backward(self):
         """Make the drone move backwards."""

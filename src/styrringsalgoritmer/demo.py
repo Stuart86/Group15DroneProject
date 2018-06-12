@@ -110,29 +110,50 @@ def stable_hover(drone):
     drone.move(0 , 0 ,0 ,0)
 
 def stable_move(drone , eLR , eBF , eUD , eTURN):
-    vx = 0
+    RAD2DEG = 57.2957795131
+    euler_max = 0.20943952*RAD2DEG
+    vx = 0 ,
     vy = 0
     theta = 0
     phi = 0
     t1 = 0
-    while 1:
-        ret , n = drone.navdata
+
+    lastvx = 0
+    lastvy = 0
+    movedX = 0 #in millimeters
+    movedY = 0 #in millimeters
+    a = 0
+    ts = time.time()
+    t2 = -1
+    while (time.time() - ts ) < 6:
+        ret , n = drone.getNavData()
+        if t2 == -1:
+            lastvx = n[0]["vx"]
+            lastvy = n[0]["vy"]
+            t2 = n["timestamp"] - ts
+            continue
         if ret:
-            vx = n[0]["vX"]
-            vy = n[0]["vY"]
+            vx = n[0]["vx"]
+            vy = n[0]["vy"]
             theta = n[0]["theta"]
             phi = n[0]["phi"]
-            t1 = n["timestamp"]
-            break
-        time.sleep(0.04)
-    offsetLR = 0
-    offsetBF = 0
-    offsetUD = 0
-    offsetTURN = 0
-    drone.move(eLR+offsetLR , eBF+offsetBF , eUD+offsetUD , eTURN+offsetTURN)
-    time.sleep(0.05)
-
-
+            t1 = n["timestamp"] - ts
+            dt = t1 - t2
+            ax = (vx - lastvx) / dt
+            ay = (vy - lastvy) / dt
+            movedX += 0.5*ax*(t1**2) - 0.5*ax*(t2**2)
+            movedY += 0.5 * ay * (t1 ** 2) - 0.5* ay * (t2 ** 2)
+            offsetLR = eLR - phi / euler_max*0.5
+            offsetBF = eBF - theta / euler_max*0.5
+            offsetUD = 0
+            offsetTURN = 0
+            lastvy = vy
+            lastvx = vx
+            t2 = t1
+            drone.move(eLR + offsetLR, eBF + offsetBF, eUD + offsetUD, eTURN + offsetTURN)
+    print "moved in x direction " , -movedX/float(1000)
+    print "moved in y direction " , movedY/float(1000)
+    drone.land()
 
 
 
@@ -185,9 +206,14 @@ def main():
                     running = False
                 # takeoff / land
                 elif event.key == pygame.K_k:
-                    drone.calibrate()
+                    drone.calibrate(0)
                 elif event.key == pygame.K_h:
-                    stable_hover(drone)
+                    #stable_move(drone , 0, 0, 0, 0)
+                    drone.calibrate(1)
+                elif event.key == pygame.K_j:
+                    drone.calibrate(2)
+                elif event.key == pygame.K_l:
+                    drone.calibrate(3)
                 elif event.key == pygame.K_o:
                     drone.getConfigurationInfo()
                 elif event.key == pygame.K_RETURN:

@@ -28,6 +28,7 @@ import socket
 import threading
 import multiprocessing
 import cv2
+import time
 
 import libardrone
 import arvideo
@@ -128,6 +129,7 @@ class NavDataThread(threading.Thread):
         self.onNavdataReceive = onNavdataReceive
 
     def run(self):
+        print "Nav data thread ready"
         nav_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         nav_socket.setblocking(1)
         nav_socket.bind(('', libardrone.ARDRONE_NAVDATA_PORT))
@@ -158,7 +160,7 @@ class VideoThread(threading.Thread):
         self.stopping = False
 
     def run(self):
-
+        print "Video Thread Ready"
         cap = cv2.VideoCapture('tcp://192.168.1.1:5555')
         if(cap.isOpened() == False):
             cap.open('tcp://192.168.1.1:5555')
@@ -175,31 +177,35 @@ class VideoThread(threading.Thread):
     def stop(self):
         self.stopping = True
 
-class ControlThread(threading.Thread):
+class CommandThread(threading.Thread):
 
     def __init__(self, drone):
         threading.Thread.__init__(self)
         self.drone = drone
         self.stopping = False
+        self.cmd = None
 
     def run(self):
-        s = socket.create_connection(('192.168.1.1', libardrone.ARDRONE_CONTROL_PORT))
-        print s
-        s.connect(('192.168.1.1', libardrone.ARDRONE_CONTROL_PORT))
+        print "Command Thread ready"
         while not self.stopping:
-            while 1:
-                try:
-                    data = s.recv(65535)
-                    if data is not None:
-                        print data
-                except IOError:
-                    break
+            while self.cmd is None:
+               time.time(0.005)
+            cmd = self.cmd
+            self.cmd = None
+            self.runCmd(self, cmd)
 
-        s.close()
-
-
-
-
+    def runCmd(self , cmd):
+        lr = cmd[0]
+        bf = cmd[1]
+        ud = cmd[2]
+        rot = cmd[3]
+        sleep1 = cmd[4]
+        sleep2 = cmd[5]
+        self.drone.move(lr , bf , ud , rot)
+        time.sleep(sleep1)
+        self.drone.move(0 , 0 , 0 , 0)
+        time.sleep(sleep2)
 
     def stop(self):
         self.stopping = True
+
