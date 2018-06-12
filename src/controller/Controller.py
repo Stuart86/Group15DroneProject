@@ -2,7 +2,6 @@ import cv2
 from state import DroneState
 from circle import ObjectAnalyzer as oa
 from QR.QReader import findAndReadQR
-from styrringsalgoritmer import libardrone
 import time
 
     #Camera
@@ -29,7 +28,7 @@ class Controller(object):
     def main(self):
         self.initializeCamera()
         analyzer = oa.ObjectAnalyzer()
-        frameCounter = 0
+       
         #self.drone.takeoff()
 
         while (True):
@@ -41,40 +40,13 @@ class Controller(object):
             if not grabbed:
                 #print("Frame not grabbed")
                 continue
-            frameCounter = (frameCounter + 1)%2
-
-            if (frameCounter % 2 == 0):
-
-                continue
-            #-----Converting image to LAB Color model----------------------------------- 
-            lab= cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
-            cv2.imshow("lab",lab)
             
-            #-----Splitting the LAB image to different channels-------------------------
-            l, a, b = cv2.split(lab)
-            cv2.imshow('l_channel', l)
-            cv2.imshow('a_channel', a)
-            cv2.imshow('b_channel', b)
-            
-            #-----Applying CLAHE to L-channel-------------------------------------------
-            clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
-            cl = clahe.apply(l)
-            cv2.imshow('CLAHE output', cl)
-            
-            #-----Merge the CLAHE enhanced L-channel with the a and b channel-----------
-            limg = cv2.merge((cl,a,b))
-            cv2.imshow('limg', limg)
-            
-            #-----Converting image from LAB Color model to RGB model--------------------
-            final = cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
-            cv2.imshow('finalLab', final)
-
-            result = findAndReadQR(frame)
-            if(len(result) > 0):
-                for i in result:
-                    print (i)
-
+            #Scan the image for different figures. 
+            self.getQRResult(frame)
             analyzer.analyzeFrame(frame, self.state)
+            self.navigate()
+            self.state.updateCounters()
+            
 
             t2 = time.time()
             #print("Time: ", t2-t1)
@@ -91,11 +63,60 @@ class Controller(object):
     
         
     def initializeCamera(self):
-        #self.capture.open("tcp://192.168.1.1:5555")
-        self.capture.open(0)
+        self.capture.open("tcp://192.168.1.1:5555")
+        #self.capture.open(0)
 
+    def getQRResult(self,frame):
+        result = findAndReadQR(frame)
+        if(len(result) > 0):
+            for i in result:                   
+                self.state.QRCodeSeen = True
+                self.state.QRdistance = i.distance
+                self.state.mostRecentQR = i
+                self.state.QRxCoor = i.x
+                self.state.QRyCoor = i.y
+                self.state.QRdata = i.data
+    
 
-
-
+    def navigate(self):
+        if self.state.ellipseSeen:                                          #We see something red
+            if self.state.circleSeen:                                       #We are able to detect a circle
+                if self.state.areasSimilar():                               #The ellipse and the circles area are similar enough to conclude that we are in front of the are. 
+                    if self.state.QRCodeSeen:
+                        if self.state.droneCentered():
+                            print "Fly forward. "
+                        else:
+                            if self.state.droneAboveCenter():
+                                print "Fly up"
+                            if self.state.droneUnderCenter():
+                                print "Fly down"
+                            if self.state.droneRightOfCenter():
+                                print "Fly right"
+                            if self.state.droneLeftOfCenter():
+                                print "Fly left"
+                    else:
+                        self.navigateDroneTowardsCenter()
+                else:
+                    
+                    print "Navigate to right or left to make the ellipses area bigger"
+            else:
+                print "Fly closer to ellipse"
+        else:
+            print "Rotate to find ellipse"
+            
+    
+    def navigateDroneTowardsCenter(self):
+        if self.state.droneCentered():
+            print "Fly forward. Navigate "
+        else:
+            if self.state.droneAboveCenter():
+                print "Fly up"
+            if self.state.droneUnderCenter():
+                print "Fly down"
+            if self.state.droneRightOfCenter():
+                print "Fly right"
+            if self.state.droneLeftOfCenter():
+                print "Fly left"
+    
 controllerObj = Controller()
 controllerObj.main()

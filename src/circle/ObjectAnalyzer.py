@@ -405,10 +405,13 @@ class ObjectAnalyzer:
             if(area > maxArea):
                 maxArea = area
                 big_contour = i
-
+        
+        
         #print(hierarchy)
         final = cv2.drawContours(frame.copy(), big_contour, -1, (0,255,0), 3)
         cv2.imshow('final', final)
+        state.ellipseArea = maxArea
+        state.ellipseSeen = True
         
        
         
