@@ -30,6 +30,7 @@ import socket
 import struct
 import sys
 import threading
+import time
 import os
 
 import arnetwork
@@ -41,6 +42,7 @@ __author__ = "Bastian Venthur"
 ARDRONE_NAVDATA_PORT = 5554
 ARDRONE_VIDEO_PORT = 5555
 ARDRONE_COMMAND_PORT = 5556
+ARDRONE_CONTROL_PORT = 5559
 
 
 class ARDrone(object):
@@ -64,6 +66,8 @@ class ARDrone(object):
         #self.network_process.start()
         #self.ipc_thread = arnetwork.IPCThread(self)
         #self.ipc_thread.start()
+        self.control_thread = arnetwork.ControlThread(self)
+        self.control_thread.start()
         self.nav_thread = arnetwork.NavDataThread(self , onNavDataReceive)
         self.nav_thread.start()
         self.video_thread = arnetwork.VideoThread(self)
@@ -143,6 +147,8 @@ class ARDrone(object):
     def turn_left(self):
         """Make the drone rotate left."""
         self.at(at_pcmd, True, 0, 0, 0, -self.speed)
+    def getConfigurationInfo(self):
+        self.at(at_ctrl , 4)
 
     def turn_right(self):
         """Make the drone rotate right."""
@@ -331,6 +337,9 @@ def at_led(seq, anim, f, d):
     """
     pass
 
+def at_ctrl(seq , mode):
+    at("CTRL" , seq , [mode])
+
 def at_anim(seq, anim, d):
     """
     Makes the drone execute a predefined movement (animation).
@@ -430,6 +439,7 @@ def decode_navdata(packet):
     drone_state['com_watchdog_mask']    = _[1] >> 30 & 1 # Communication Watchdog : (1) com problem, (0) Com is ok */
     drone_state['emergency_mask']       = _[1] >> 31 & 1 # Emergency landing : (0) no emergency, (1) emergency */
     data = dict()
+    data['timestamp'] = time.time()
     data['drone_state'] = drone_state
     data['header'] = _[0]
     data['seq_nr'] = _[2]

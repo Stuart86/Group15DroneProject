@@ -108,6 +108,34 @@ def stable_hover(drone):
             drone.move(0 , 0 , 0, 0)
             time.sleep(0.3)
     drone.move(0 , 0 ,0 ,0)
+
+def stable_move(drone , eLR , eBF , eUD , eTURN):
+    vx = 0
+    vy = 0
+    theta = 0
+    phi = 0
+    t1 = 0
+    while 1:
+        ret , n = drone.navdata
+        if ret:
+            vx = n[0]["vX"]
+            vy = n[0]["vY"]
+            theta = n[0]["theta"]
+            phi = n[0]["phi"]
+            t1 = n["timestamp"]
+            break
+        time.sleep(0.04)
+    offsetLR = 0
+    offsetBF = 0
+    offsetUD = 0
+    offsetTURN = 0
+    drone.move(eLR+offsetLR , eBF+offsetBF , eUD+offsetUD , eTURN+offsetTURN)
+    time.sleep(0.05)
+
+
+
+
+
 def main():
     global qFound
     global running
@@ -135,12 +163,13 @@ def main():
             #cv2.imshow('frame', frame)
             n = (n+1)%2
             if n == 0:
-                res = findAndReadQR(frame)
+                None
+                #res = findAndReadQR(frame)
 
-                if len(res) > 0 and qFound == False:
+                #if len(res) > 0 and qFound == False:
                     #qFound = True
-                    print i , " " ,res[0].data
-                    i += 1
+                #    print i , " " ,res[0].data
+                #    i += 1
         #            qrRoutine(drone)
 
 
@@ -159,6 +188,8 @@ def main():
                     drone.calibrate()
                 elif event.key == pygame.K_h:
                     stable_hover(drone)
+                elif event.key == pygame.K_o:
+                    drone.getConfigurationInfo()
                 elif event.key == pygame.K_RETURN:
                     t1 = time.time()
                     drone.takeoff()

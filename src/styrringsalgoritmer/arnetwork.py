@@ -174,3 +174,32 @@ class VideoThread(threading.Thread):
 
     def stop(self):
         self.stopping = True
+
+class ControlThread(threading.Thread):
+
+    def __init__(self, drone):
+        threading.Thread.__init__(self)
+        self.drone = drone
+        self.stopping = False
+
+    def run(self):
+        s = socket.create_connection(('192.168.1.1', libardrone.ARDRONE_CONTROL_PORT))
+        print s
+        s.connect(('192.168.1.1', libardrone.ARDRONE_CONTROL_PORT))
+        while not self.stopping:
+            while 1:
+                try:
+                    data = s.recv(65535)
+                    if data is not None:
+                        print data
+                except IOError:
+                    break
+
+        s.close()
+
+
+
+
+
+    def stop(self):
+        self.stopping = True
