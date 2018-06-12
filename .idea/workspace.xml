@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="85e3e3ed-61c9-462f-81b9-748605eba83c" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/src/styrringsalgoritmer/libardrone.py" afterPath="$PROJECT_DIR$/src/styrringsalgoritmer/libardrone.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -99,11 +100,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="libardrone.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="libardrone.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/libardrone.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="65" column="20" lean-forward="true" selection-start-line="65" selection-start-column="20" selection-end-line="65" selection-end-column="20" />
+            <state relative-caret-position="240">
+              <caret line="74" column="0" lean-forward="true" selection-start-line="74" selection-start-column="0" selection-end-line="74" selection-end-column="0" />
               <folding>
                 <element signature="e#1218#1231#0" expanded="true" />
               </folding>
@@ -111,10 +112,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="arnetwork.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="arnetwork.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/arnetwork.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-302">
+            <state relative-caret-position="-860">
               <caret line="131" column="36" lean-forward="false" selection-start-line="131" selection-start-column="36" selection-end-line="131" selection-end-column="36" />
               <folding>
                 <element signature="e#1171#1184#0" expanded="true" />
@@ -156,9 +157,9 @@
         <option value="$PROJECT_DIR$/src/styrringsalgoritmer/commTest.py" />
         <option value="$PROJECT_DIR$/src/styrringsalgoritmer/arvideo.py" />
         <option value="$PROJECT_DIR$/src/QR/QReader.py" />
-        <option value="$PROJECT_DIR$/src/styrringsalgoritmer/libardrone.py" />
         <option value="$PROJECT_DIR$/src/styrringsalgoritmer/demo.py" />
         <option value="$PROJECT_DIR$/src/styrringsalgoritmer/arnetwork.py" />
+        <option value="$PROJECT_DIR$/src/styrringsalgoritmer/libardrone.py" />
       </list>
     </option>
   </component>
@@ -493,7 +494,14 @@
       <option name="project" value="LOCAL" />
       <updated>1528814691830</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Merge remote-tracking branch 'origin/Objektgenkendelse' into Windows-version&#10;&#10;# Conflicts:&#10;#&#9;.idea/modules.xml&#10;#&#9;.idea/workspace.xml">
+      <created>1528814712735</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1528814712735</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -917,22 +925,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/libardrone.py">
+    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/arnetwork.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="65" column="20" lean-forward="true" selection-start-line="65" selection-start-column="20" selection-end-line="65" selection-end-column="20" />
+        <state relative-caret-position="-860">
+          <caret line="131" column="36" lean-forward="false" selection-start-line="131" selection-start-column="36" selection-end-line="131" selection-end-column="36" />
           <folding>
-            <element signature="e#1218#1231#0" expanded="true" />
+            <element signature="e#1171#1184#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/arnetwork.py">
+    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/libardrone.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-302">
-          <caret line="131" column="36" lean-forward="false" selection-start-line="131" selection-start-column="36" selection-end-line="131" selection-end-column="36" />
+        <state relative-caret-position="240">
+          <caret line="74" column="0" lean-forward="true" selection-start-line="74" selection-start-column="0" selection-end-line="74" selection-end-column="0" />
           <folding>
-            <element signature="e#1171#1184#0" expanded="true" />
+            <element signature="e#1218#1231#0" expanded="true" />
           </folding>
         </state>
       </provider>

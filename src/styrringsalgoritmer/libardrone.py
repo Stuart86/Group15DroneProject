@@ -69,8 +69,13 @@ class ARDrone(object):
         self.image = None
         self.navdata = None
         self.time = 0
+        self.command_thread = arnetwork.CommandThread(self)
+        self.command_thread.start()
 
 
+    def asyncCommand(self , lr , bf , ud , rot, sleep1 , sleep2):
+        cmd = [lr, bf , ud, rot, sleep1 , sleep2]
+        self.command_thread.cmd = cmd
     def getNavData(self):
         self.nav_lock.acquire()
         ret  = False
