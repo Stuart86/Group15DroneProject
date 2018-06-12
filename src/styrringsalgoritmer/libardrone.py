@@ -30,7 +30,8 @@ import socket
 import struct
 import sys
 import threading
-import multiprocessing
+import time
+import os
 
 import arnetwork
 
@@ -41,6 +42,7 @@ __author__ = "Bastian Venthur"
 ARDRONE_NAVDATA_PORT = 5554
 ARDRONE_VIDEO_PORT = 5555
 ARDRONE_COMMAND_PORT = 5556
+ARDRONE_CONTROL_PORT = 5559
 
 
 class ARDrone(object):
@@ -56,18 +58,51 @@ class ARDrone(object):
         self.timer_t = 0.2
         self.com_watchdog_timer = threading.Timer(self.timer_t, self.commwdg)
         self.lock = threading.Lock()
+        self.video_lock = threading.Lock()
+        self.nav_lock = threading.Lock()
         self.speed = 0.1
         self.at(at_config, "general:navdata_demo", "TRUE")
-        self.video_pipe, video_pipe_other = multiprocessing.Pipe()
-        self.nav_pipe, nav_pipe_other = multiprocessing.Pipe()
-        self.com_pipe, com_pipe_other = multiprocessing.Pipe()
-        self.network_process = arnetwork.ARDroneNetworkProcess(nav_pipe_other, video_pipe_other, com_pipe_other)
-        self.network_process.start()
-        self.ipc_thread = arnetwork.IPCThread(self)
-        self.ipc_thread.start()
-        self.image = ""
-        self.navdata = dict()
+        #self.network_process = arnetwork.ARDroneNetworkProcess()
+        #self.network_process.start()
+        #self.ipc_thread = arnetwork.IPCThread(self)
+        #self.ipc_thread.start()
+        #self.control_thread = arnetwork.ControlThread(self)
+        #self.control_thread.start()
+        self.nav_thread = arnetwork.NavDataThread(self , onNavDataReceive)
+        self.nav_thread.start()
+        self.video_thread = arnetwork.VideoThread(self)
+        self.video_thread.start()
+        self.image = None
+        self.navdata = None
         self.time = 0
+
+
+    def getNavData(self):
+        self.nav_lock.acquire()
+        ret  = False
+        navdata = None
+        if self.navdata is not None:
+            ret = True
+            navdata = self.navdata
+            self.navdata = None
+        self.nav_lock.release()
+        return ret , navdata
+
+    def readVideo(self):
+        self.video_lock.acquire()
+        ret = False
+        frame = None
+        if self.image is not None:
+            ret = True
+            frame = self.image.copy()
+            self.image = None
+        self.video_lock.release()
+        return ret , frame
+
+    def newVideoFrame(self , frame):
+        self.video_lock.acquire()
+        self.image = frame
+        self.video_lock.release()
 
     def takeoff(self):
         """Make the drone takeoff."""
@@ -102,6 +137,8 @@ class ARDrone(object):
     def move_forward(self):
         """Make the drone move forward."""
         self.at(at_pcmd, True, 0, -self.speed, 0, 0)
+    def calibrate(self):
+        self.at(at_calib , 0)
 
     def move_backward(self):
         """Make the drone move backwards."""
@@ -110,6 +147,8 @@ class ARDrone(object):
     def turn_left(self):
         """Make the drone rotate left."""
         self.at(at_pcmd, True, 0, 0, 0, -self.speed)
+    def getConfigurationInfo(self):
+        self.at(at_ctrl , 4)
 
     def turn_right(self):
         """Make the drone rotate right."""
@@ -164,11 +203,15 @@ class ARDrone(object):
         """
         self.lock.acquire()
         self.com_watchdog_timer.cancel()
-        self.com_pipe.send('die!')
-        self.network_process.terminate()
-        self.network_process.join()
-        self.ipc_thread.stop()
-        self.ipc_thread.join()
+        #self.com_pipe.send('die!')
+        #self.network_process.terminate()
+        #self.network_process.join()
+        #self.ipc_thread.stop()
+        #self.ipc_thread.join()
+        self.nav_thread.stop()
+        self.nav_thread.join()
+        self.video_thread.stop()
+        self.video_thread.join()
         self.lock.release()
         
     def move(self,lr, fb, vv, va):
@@ -187,6 +230,9 @@ class ARDrone(object):
 ###############################################################################
 ### Low level AT Commands
 ###############################################################################
+
+def at_calib(seq , device_number):
+    at("CALIB",seq, [device_number])
 
 def at_ref(seq, takeoff, emergency=False):
     """
@@ -291,6 +337,9 @@ def at_led(seq, anim, f, d):
     """
     pass
 
+def at_ctrl(seq , mode):
+    at("CTRL" , seq , [mode])
+
 def at_anim(seq, anim, d):
     """
     Makes the drone execute a predefined movement (animation).
@@ -318,8 +367,31 @@ def at(command, seq, params):
         elif type(p) == str:
             param_str += ',"'+p+'"'
     msg = "AT*%s=%i%s\r" % (command, seq, param_str)
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.sendto(msg, ("192.168.1.1", ARDRONE_COMMAND_PORT))
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.sendto(msg, ("192.168.1.1", ARDRONE_COMMAND_PORT))
+    except IOError:
+        print "Couldn't send Command"
+
+NAV_COUNTER = 0
+
+def onNavDataReceive(data):
+    global NAV_COUNTER
+    b = 1
+    NAV_COUNTER = (NAV_COUNTER + 1)%10
+    if NAV_COUNTER%10 == 0 and b == 0:
+        theta = data[0]['theta']
+        #psi = data[0]['psi']
+        phi = data[0]['phi']
+        vx = data[0]["vx"]
+        vz = data[0]["vz"]
+        vy = data[0]["vy"]
+        alt = data[0]["altitude"]
+        bat = data[0]["battery"]
+
+        #print "theta: " , theta , " phi: ", phi
+        print "vx: ",vx , " vy: ",vy , " altitude: ", alt, "POWER: " , bat, "%"
+
 
 def f2i(f):
     """Interpret IEEE-754 floating-point value as signed integer.
@@ -367,6 +439,7 @@ def decode_navdata(packet):
     drone_state['com_watchdog_mask']    = _[1] >> 30 & 1 # Communication Watchdog : (1) com problem, (0) Com is ok */
     drone_state['emergency_mask']       = _[1] >> 31 & 1 # Emergency landing : (0) no emergency, (1) emergency */
     data = dict()
+    data['timestamp'] = time.time()
     data['drone_state'] = drone_state
     data['header'] = _[0]
     data['seq_nr'] = _[2]
@@ -389,8 +462,8 @@ def decode_navdata(packet):
             # convert the millidegrees into degrees and round to int, as they
             # are not so precise anyways
             for i in 'theta', 'phi', 'psi':
-                values[i] = int(values[i] / 1000)
-                #values[i] /= 1000
+                #values[i] = int(values[i] / 1000)
+                values[i] /= 1000
         data[id_nr] = values
     return data
 

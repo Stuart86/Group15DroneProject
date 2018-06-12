@@ -23,8 +23,10 @@ class State(object):
     ellipseLastSeen = 0
     
     #The maximum value for the counter
-    counterMaxValue = 10
+    counterMaxValue = 50
     
+    routineStarted = False
+    flownOnce = False
     
     #The circle and QR-code object. 
     mostRecentCircle = None
@@ -33,16 +35,19 @@ class State(object):
 
 
     #Circle information
-    circleXCoor = None
-    circleYCoor = None
-    circleRadius = None
-    circleArea = None
+    circleXCoor = 0
+    circleYCoor = 0
+    circleRadius = 0
+    circleArea = 0
     
     #Ellipse information
     ellipseArea = None
     listOfEllipses = []
     oldListOfEllipses = []
     ellipseAreaThreshold = 1                       #Entries in the list before we can determine if the area is bigger. 
+    ellipseXCoor = 0
+    ellipseYCoor = 0
+    ellipseThreshold = 70
     
     #Directions we moved to make ellipse area bigger
     moveLeft = False
@@ -52,7 +57,7 @@ class State(object):
     
     
     #difference in coordinates
-    centerThreshold = 30
+    centerThreshold = 70
     
 
     # Distance
@@ -134,25 +139,48 @@ class State(object):
     
     
     def areasSimilar(self):
-        print "CircleArea: ", self.circleArea, " ellipseArea: ", self.ellipseArea, " ratio: ", (self.circleArea/self.ellipseArea)
+        if self.QRCodeSeen or self.routineStarted:
+            return True
+        #print "CircleArea: ", self.circleArea, " ellipseArea: ", self.ellipseArea, " ratio: ", (self.circleArea/self.ellipseArea)
+        #print "Result: ", (self.circleArea < self.ellipseArea and  self.circleArea/self.ellipseArea > 0.6)
         return self.circleArea < self.ellipseArea and  self.circleArea/self.ellipseArea > 0.6
             
     def droneCentered(self):
-        if math.fabs(self.imageXCenter-self.circleXCoor) > self.centerThreshold:
-            if math.fabs(self.imageYCenter-self.circleYCoor) > self.centerThreshold:
+        if self.routineStarted:
+            return True
+
+        if math.fabs(self.imageXCenter-self.circleXCoor*2) < self.centerThreshold:
+            if math.fabs(self.imageYCenter-self.circleYCoor*2) < self.centerThreshold:
                 return True
         return False
     
+    def printCenters(self):
+        print "ImageYCenter: ", self.imageYCenter, " imageXCenter: ", self.imageXCenter
+        print "CircleYCenter: ", self.circleYCoor*2, " imageYCenter: ", self.circleXCoor*2, "\n"
     
     def droneAboveCenter(self):
+        
         return math.fabs(self.imageYCenter - self.circleYCoor*2) > self.centerThreshold and self.imageYCenter > self.circleYCoor*2
     def droneUnderCenter(self):
         return math.fabs(self.imageYCenter - self.circleYCoor*2) > self.centerThreshold and self.imageYCenter < self.circleYCoor*2
     def droneRightOfCenter(self):
+
         return math.fabs(self.imageXCenter - self.circleXCoor*2) > self.centerThreshold and self.imageXCenter > self.circleXCoor*2
     def droneLeftOfCenter(self):
         return math.fabs(self.imageXCenter - self.circleXCoor*2) > self.centerThreshold and self.imageXCenter < self.circleXCoor*2
         
+    
+    def droneLeftOfEllipse(self):
+        return math.fabs(self.imageXCenter - self.ellipseXCoor) > self.ellipseThreshold and self.imageXCenter < self.ellipseXCoor
+    def droneRightOfEllipse(self):
+        return math.fabs(self.imageXCenter - self.ellipseXCoor) > self.ellipseThreshold and self.imageXCenter > self.ellipseXCoor
+    def droneAboveEllipse(self):
+        return math.fabs(self.imageYCenter - self.ellipseYCoor) > self.ellipseThreshold and self.imageYCenter > self.ellipseYCoor
+    def droneUnderEllipse(self):
+        return math.fabs(self.imageYCenter - self.ellipseYCoor) > self.ellipseThreshold and self.imageYCenter < self.ellipseYCoor
+    
+    
+    
     
     def addEllipseArea(self, area):
         self.listOfEllipses.append(area)

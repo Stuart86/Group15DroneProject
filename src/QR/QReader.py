@@ -14,14 +14,14 @@ NORTH_ORIENTATION  = 0
 SOUTH_ORIENTATION = 1
 EAST_ORIENTATION = 2
 WEST_ORIENTATION = 3
-QRSide = 11.55 ##For small A4 QR
-Pixels = 314.344413374 #For small qr and webcam
-PixelPerCm = Pixels/QRSide ##For webcam
-distanceCm = 30 #for small qr
-#QRSide = 19.6 #For A3 QR
-#Pixels = 224.75 #For Drone camera
-#PixelPerCm = Pixels/QRSide
-#distanceCm = 45 #For drone camera
+#QRSide = 11.55 ##For small A4 QR
+#Pixels = 314.344413374 #For small qr and webcam
+#PixelPerCm = Pixels/QRSide ##For webcam
+#distanceCm = 30 #for small qr
+QRSide = 19.6 #For A3 QR
+Pixels = 224.75 #For Drone camera
+PixelPerCm = Pixels/QRSide
+distanceCm = 45 #For drone camera
 FocalLength = 709.107575363 #In pixels for drone cam (different than Focal)
 horizontalAngleOfView = 84.1352126
 verticalAngleOfView = 53.8320221
@@ -177,14 +177,52 @@ def convertToPoints(contour):
         result.append(Point(p[0][0] , p[0][1]))
     return result
 def findAndReadQR(img):
+    #cv2.imshow("Window" , img)
+    results = decode(img, [ZBarSymbol.QRCODE])
+    #cv2.imshow("Window" , img)
+    closestQR = None
+    for result in results:
+        p1 = result[3][0]
+        p2 = result[3][1]
+        p3 = result[3][2]
+        p4 = result[3][3]
+        side1 = math.sqrt((p1.x - p2.x)**2 + (p1.y - p2.y)**2)
+        side2 = math.sqrt((p1.x - p4.x) ** 2 + (p1.y - p4.y) ** 2)
+        side3 = math.sqrt((p2.x - p3.x) ** 2 + (p2.y - p3.y) ** 2)
+        side4 = math.sqrt((p3.x - p4.x) ** 2 + (p3.y - p4.y) ** 2)
+        sideAvg = (side1 + side2 + side3 + side4)/4
+        distance = Focal/sideAvg
+        centerX = (p1.x + p2.x + p3.x + p4.x)/4
+        centerY = (p1.y + p2.y + p3.y + p4.y)/4
+        #ctr = np.array([centerX , centerY]).reshape((-1, 1, 2)).astype(np.int32)
+        #corners = [[p1.x , p1.y], [p2.x , p2.y] , [p3.x , p3.y] , [p4.x , p4.y]]
+        #corn2 = np.array(corners).reshape((-1, 1, 2)).astype(np.int32)
+        #cv2.drawContours(img , [corn2] , 0 , (0 , 255 , 0) , 5)
+        #cv2.drawContours(img , ctr , 0, (255 , 0 , 0) , 5)
+        #cv2.putText(img, '1', (p1.x, p1.y), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2, cv2.LINE_AA)
+        #cv2.putText(img, '2', (p2.x, p2.y), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2, cv2.LINE_AA)
+        #cv2.putText(img, '3', (p3.x, p3.y), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2, cv2.LINE_AA)
+        #cv2.putText(img, '4', (p4.x, p4.y), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2, cv2.LINE_AA)
+        #cv2.imshow("Window" , img)
+        print result[0]
+        if result[0] not in dict:
+            continue
+        if closestQR == None:
+            closestQR = QRresult(result[0] , (centerX , centerY) , distance, dict[result[0]])
+        elif closestQR.distance > distance:
+            closestQR = QRresult(result[0], (centerX, centerY), distance, dict[result[0]])
+    #cv2.imshow("Window" , img)
+    return closestQR
     grayScale = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     #blurred = cv2.GaussianBlur(grayScale , (5,5) ,1)
     #blurred = cv2.medianBlur(grayScale , 5)
-    thresh = cv2.adaptiveThreshold(grayScale , 255 , cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY, 63, 4)
-    #cv2.imshow("Gray" , thresh)
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+
+    grayScale = clahe.apply(grayScale)
+    thresh = cv2.adaptiveThreshold(grayScale , 255 , cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY, 23, 4)
+    cv2.imshow("Gray" , thresh)
     _ , cnts , heiarchy = cv2.findContours(thresh , cv2.RETR_TREE , cv2.CHAIN_APPROX_SIMPLE)
     #cv2.drawContours(img , cnts, -1, (0, 255, 0), 3)
-
     qrResults = []
     if heiarchy is not None:
         #Go through contour heiarchy and find the 3 squares(Finder patterns) in the QR code
@@ -226,7 +264,6 @@ def findAndReadQR(img):
                 #Once we've figured that out we know which finder pattern is the "bottom" and the "right"
                 a , b , c = linearEquation(sideCenters[0] , sideCenters[1])
                 if b == 0:
-                    print "Possible QR Found"
                     continue
                 dist = distFromPointToLine(a, b, c , centers[top])
 
@@ -315,34 +352,36 @@ def findAndReadQR(img):
                     continue
     return qrResults
 ##This main is just for testing
+def doStuff(img):
+    res = cv2.cvtColor(img , cv2.COLOR_BGR2HSV)
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+    h , s, v = cv2.split(res)
+    res = clahe.apply(s)
+    res = cv2.merge((h , res, v))
+    res = cv2.cvtColor(res , cv2.COLOR_HSV2BGR)
+    return np.hstack((img , res))
 
 
 if __name__ == "__main__":
-    #cap = cv2.VideoCapture("tcp://192.168.1.1:5555")
-    cap = cv2.VideoCapture(0)
-    #cv2.namedWindow("Window" , cv2.WINDOW_NORMAL)
+    cap = cv2.VideoCapture("tcp://192.168.1.1:5555")
+    #cap = cv2.VideoCapture(0)
+    cv2.namedWindow("Window" , cv2.WINDOW_AUTOSIZE)
     #cv2.namedWindow("Gray" , cv2.WINDOW_NORMAL)
     n = 0
     lastDistance = 50
     lastTime = time.time()
     if cap.isOpened() == False:
-        cap.open()
+        cap.open("tcp://192.168.1.1:5555")
     while 1:
         n = (n+1)%2
         ret , frame = cap.read()
-        #cv2.imshow("Window", frame)
-        if ret and n == 0:
+
+        if ret and n%2 == 0:
             tBefore = time.time()
+            #hsv = doStuff(frame)
+            #cv2.imshow("Window", hsv)
             results = findAndReadQR(frame)
-            #r = decode(frame , [ZBarSymbol.QRCODE])
             tPassed = time.time() - tBefore
-            #cv2.imshow("Window", frame)
-            #if len(r) is not 0:
-            #    print r
-            #for q in results:
-                #print q.data , " distance(cm) " , q.distance , " velocity(ms)" , ((lastDistance-q.distance)/100)/(tBefore - lastTime)
-                #lastTime = time.time()
-                #lastDistance = q.distance
         cv2.waitKey(1)
     cap.release()
 

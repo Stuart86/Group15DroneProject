@@ -48,6 +48,7 @@ class Circle:
         State.circleXCoor = circleToBePrinted[0]
         State.circleYCoor = circleToBePrinted[1]
         State.circleSeen = True
+        State.resetCircleCounter()
         
 
         #cv2.line(frame, (int(width / 2), int(height / 2)), avarageCenter, (0, 255, 0), 5)
