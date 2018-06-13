@@ -204,7 +204,9 @@ class CommandThread(threading.Thread):
         sleep2 = cmd[5]
         self.drone.move(lr , bf , ud , rot)
         time.sleep(sleep1)
-        self.drone.move(0 , 0 , 0 , 0)
+        self.drone.move(-lr/4 , -bf/4 ,0, 0)
+        time.sleep(0.025)
+        self.drone.move(0,0,0,0)
         time.sleep(sleep2)
 
     def stop(self):

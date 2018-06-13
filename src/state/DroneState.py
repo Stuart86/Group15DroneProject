@@ -13,7 +13,7 @@ class State(object):
     imageYCenter = 360 #720/2
 
 
-    maximumCircleRadius = 35
+    maximumCircleRadius = 45
     
 
     #Do we see the circle or QR-code
@@ -27,7 +27,7 @@ class State(object):
     ellipseLastSeen = 0
     
     #The maximum value for the counter
-    counterMaxValue = 50
+    counterMaxValue = 25
     
     routineStarted = False
     flownOnce = False
@@ -211,7 +211,8 @@ class State(object):
                 return False
         return None
                 
-    
+    def resetCircleInfo(self):
+      self.circleSeen = False  
     
     
     
