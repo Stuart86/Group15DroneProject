@@ -40,6 +40,9 @@ class State(object):
     circleRadius = 0
     circleArea = 0
     
+    
+    
+    
     #Ellipse information
     ellipseArea = None
     listOfEllipses = []
@@ -58,6 +61,9 @@ class State(object):
     
     #difference in coordinates
     centerThreshold = 70
+    
+    ellipseCircleThreshold = 35
+    
     
 
     # Distance
@@ -141,33 +147,35 @@ class State(object):
     def areasSimilar(self):
         if self.QRCodeSeen or self.routineStarted:
             return True
-        #print "CircleArea: ", self.circleArea, " ellipseArea: ", self.ellipseArea, " ratio: ", (self.circleArea/self.ellipseArea)
-        #print "Result: ", (self.circleArea < self.ellipseArea and  self.circleArea/self.ellipseArea > 0.6)
-        return self.circleArea < self.ellipseArea and  self.circleArea/self.ellipseArea > 0.6
+        return math.fabs(self.circleXCoor-self.ellipseXCoor) < self.ellipseCircleThreshold and math.fabs(self.circleYCoor-self.ellipseYCoor) < self.ellipseCircleThreshold
             
     def droneCentered(self):
         if self.routineStarted:
             return True
 
-        if math.fabs(self.imageXCenter-self.circleXCoor*2) < self.centerThreshold:
-            if math.fabs(self.imageYCenter-self.circleYCoor*2) < self.centerThreshold:
+        if math.fabs(self.imageXCenter-self.circleXCoor) < self.centerThreshold:
+            if math.fabs(self.imageYCenter-self.circleYCoor) < self.centerThreshold:
                 return True
         return False
     
+    def droneCenteredWithEllipse(self):
+        return math.fabs(self.ellipseXCoor - self.imageXCenter) < self.ellipseThreshold
+        #math.fabs(self.ellipseYCoor - self.imageYCenter) < self.ellipseThreshold and 
+            
     def printCenters(self):
         print "ImageYCenter: ", self.imageYCenter, " imageXCenter: ", self.imageXCenter
-        print "CircleYCenter: ", self.circleYCoor*2, " imageYCenter: ", self.circleXCoor*2, "\n"
+        print "CircleYCenter: ", self.circleYCoor, " CircleXCenter: ", self.circleXCoor
+        print "EllipseYCenter: ", self.ellipseYCoor, " EllipseXCoor: ", self.ellipseXCoor
+        print "AreaSimilar: ", self.areasSimilar(), " circleArea/ellipseArea: ", self.circleArea/self.ellipseArea,  "\n"
     
     def droneAboveCenter(self):
-        
-        return math.fabs(self.imageYCenter - self.circleYCoor*2) > self.centerThreshold and self.imageYCenter > self.circleYCoor*2
+        return math.fabs(self.imageYCenter - self.circleYCoor) > self.centerThreshold and self.imageYCenter < self.circleYCoor
     def droneUnderCenter(self):
-        return math.fabs(self.imageYCenter - self.circleYCoor*2) > self.centerThreshold and self.imageYCenter < self.circleYCoor*2
+        return math.fabs(self.imageYCenter - self.circleYCoor) > self.centerThreshold and self.imageYCenter > self.circleYCoor
     def droneRightOfCenter(self):
-
-        return math.fabs(self.imageXCenter - self.circleXCoor*2) > self.centerThreshold and self.imageXCenter > self.circleXCoor*2
+        return math.fabs(self.imageXCenter - self.circleXCoor) > self.centerThreshold and self.imageXCenter > self.circleXCoor
     def droneLeftOfCenter(self):
-        return math.fabs(self.imageXCenter - self.circleXCoor*2) > self.centerThreshold and self.imageXCenter < self.circleXCoor*2
+        return math.fabs(self.imageXCenter - self.circleXCoor) > self.centerThreshold and self.imageXCenter < self.circleXCoor
         
     
     def droneLeftOfEllipse(self):
@@ -187,8 +195,9 @@ class State(object):
     
     
     def ellipseAreaGettingBigger(self):
-        if len(self.ellipseArea) > 30:
-            if np.mean(self.ellipseArea) > np.mean(self.oldListOfEllipses):
+        
+        if len(self.listOfEllipses) > 30:
+            if np.mean(self.listOfEllipses) > np.mean(self.oldListOfEllipses):
                 self.oldListOfEllipses = self.listOfEllipses
                 self.listOfEllipses = []
                 return True
@@ -196,10 +205,6 @@ class State(object):
                 return False
         return None
                 
-    
-    def correctDroneMovement(self):
-        return self.ellipseAreaGettingBigger()            
-    
     
     
     

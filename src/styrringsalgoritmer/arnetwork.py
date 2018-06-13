@@ -189,12 +189,13 @@ class CommandThread(threading.Thread):
         print "Command Thread ready"
         while not self.stopping:
             while self.cmd is None:
-               time.time(0.005)
+                time.sleep(0.001)
             cmd = self.cmd
             self.cmd = None
-            self.runCmd(self, cmd)
+            self.runCmd(cmd)
 
     def runCmd(self , cmd):
+        #print "Cmd: ", cmd
         lr = cmd[0]
         bf = cmd[1]
         ud = cmd[2]

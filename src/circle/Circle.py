@@ -4,6 +4,7 @@ import math
 import numpy as np
 
 from state import DroneState
+from cv2 import imshow
 
 
 #Variables
@@ -49,6 +50,7 @@ class Circle:
         State.circleYCoor = circleToBePrinted[1]
         State.circleSeen = True
         State.resetCircleCounter()
+        imshow("Circle", frame)
         
 
         #cv2.line(frame, (int(width / 2), int(height / 2)), avarageCenter, (0, 255, 0), 5)
@@ -71,16 +73,20 @@ class Circle:
 
 
     def circleSimilar(self, circle1, circle2):
-        if(math.fabs(circle1[0]-circle2[0]) >= self.error or math.fabs(circle1[1]-circle2[1]) >= self.error or math.fabs(circle1[2]-circle2[2]) >= self.error):             
-                return False
-        return True  
-     
+        try:
+            if(math.fabs(circle1[0]-circle2[0]) >= self.error or math.fabs(circle1[1]-circle2[1]) >= self.error or math.fabs(circle1[2]-circle2[2]) >= self.error):             
+                    return False
+            return True  
+        except OverflowError: 
+            print "Circle1: ", circle1, " Circle2: ", circle2
+         
     def circleKnown(self, newCircle):
         for c in self.listOfCircles:
             if(len(c) == 1):
                 avarageCircle = c[0]
             else:
                 avarageCircle = np.mean(c, axis = 0)
+                
             if(self.circleSimilar(avarageCircle, newCircle)):
                 c.append(newCircle)
                 
