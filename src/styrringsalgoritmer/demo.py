@@ -200,6 +200,7 @@ def main():
                 running = False 
             elif event.type == pygame.KEYUP:
                 drone.hover()
+                drone.isCollectingData = True
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     drone.reset()
@@ -222,6 +223,8 @@ def main():
                     takeoff = True
                 elif event.key == pygame.K_SPACE:
                     drone.land()
+                    drone.isCollectingData = False
+                    libardrone.saveToCSV()
                     takeoff = False
                 # emergency
                 elif event.key == pygame.K_BACKSPACE:
