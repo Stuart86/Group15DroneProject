@@ -472,14 +472,14 @@ class ObjectAnalyzer:
         
         edged = cv2.Canny(circleBlurred, self.edgedLowLimit, self.edgedHighLimit)
         #edged1 = cv2.Canny(blurred1, self.edgedLowLimit, self.edgedHighLimit)
-        cv2.imshow("Edged",edged)
+        #cv2.imshow("Edged",edged)
         #cv2.imshow("Edged1", edged1)
         
         #Test
         
         
         
-        circles = cv2.HoughCircles(edged.copy(), cv2.HOUGH_GRADIENT, self.houghDP, self.houghMinDist, param1 = self.houghParam1, param2 = self.houghParam2, minRadius = self.houghMinRadius, maxRadius = self.houghMaxRadius)
+        circles = cv2.HoughCircles(edged, cv2.HOUGH_GRADIENT, self.houghDP, self.houghMinDist, param1 = self.houghParam1, param2 = self.houghParam2, minRadius = self.houghMinRadius, maxRadius = self.houghMaxRadius)
 
         if circles is not None:
             circles = np.uint16(np.around(circles))
@@ -561,16 +561,17 @@ class ObjectAnalyzer:
         self.setTestValues(frame)
         redCircleImage = self.getRedHSVImage(frame)
         redEllipseImage = self.getRedEllipseHSVImage(frame)
-        imshow("Red Circle", redCircleImage)
-        imshow('Red Ellipse', redEllipseImage)
 
         #Maps perceived brigthness to masklimit. Only used in the final version. Requires further testing. 
         #self.maskLimit = self.map(self.perceivedBrightness, self.inMin, self.inMax, self.outMin, self.outMax)
             
         self.findCircle(redCircleImage, state)
         self.findEllipse(redEllipseImage, state)
+        #imshow('Red Ellipse', redEllipseImage)
+        imshow("Red Circle", redCircleImage)
+
+     
         
-    
 #recorderObj = Recorder()
 #recorderObj.main()
 
