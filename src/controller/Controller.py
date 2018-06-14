@@ -22,7 +22,52 @@ class Controller(object):
     classdocs
     '''
     state = DroneState.State()
+    
+    
+    LR = 0
+    BF = 0
+    UD = 0
+    ROT = 0
+    time1 = 0
+    trackbarName = "Move"
+    trackbarLRName = "LR"
+    trackbarBFName = "BF"
+    trackbarUDName = "UD"
+    trackbarROTName = "ROT"
+    trackbartime1Name = "time1" 
+    
+    
+    def nothing(self):
+        pass
+    
+    
+    cv2.namedWindow(trackbarName)
+    cv2.resizeWindow(trackbarName,780,780)
+    
+    cv2.createTrackbar(trackbarLRName,trackbarName,0,1000,nothing)
+    cv2.createTrackbar(trackbarBFName,trackbarName,0,1000,nothing)
+    cv2.createTrackbar(trackbarUDName,trackbarName,0,1000,nothing)
+    cv2.createTrackbar(trackbarROTName,trackbarName,0,1000,nothing)
+    
+    cv2.setTrackbarPos(trackbarLRName,trackbarName,20)
+    cv2.setTrackbarPos(trackbarBFName,trackbarName,30)
+    cv2.setTrackbarPos(trackbarUDName,trackbarName,0)
+    cv2.setTrackbarPos(trackbarROTName,trackbarName,0)
+    
 
+    
+    def updateTrackbarValues(self):
+        self.LR = cv2.getTrackbarPos(self.trackbarLRName,self.trackbarName)/float(1000)
+        self.BF = cv2.getTrackbarPos(self.trackbarBFName,self.trackbarName)/float(1000)
+        self.UD = cv2.getTrackbarPos(self.trackbarUDName,self.trackbarName)/float(1000)
+        self.ROT = cv2.getTrackbarPos(self.trackbarROTName,self.trackbarName)/float(1000)
+        
+        
+    
+        
+    
+    
+    
 
     
     def __init__(self):
@@ -63,6 +108,7 @@ class Controller(object):
             self.getQRResult(frame)
             analyzer.analyzeFrame(frame, self.state)
             #print "CircleSeen: ", self.state.circleSeen
+            self.updateTrackbarValues()
             self.navigate()
             self.state.updateCounters()
             
@@ -101,21 +147,22 @@ class Controller(object):
         if not self.state.flownOnce:
             print "FLY "
             self.state.flownOnce = True
-            self.drone.asyncCommand(-0.02, 0.1, 0.5, 0, 1, 0)
-            time.sleep(1)
+            self.drone.asyncCommand(-0.02, 0.02, 0.5, 0, 1, 0)
+            time.sleep(1.5)
             print "afterFly"
             
         #Hover in air to find circle.
         if not self.time1Set:
             self.time1 = time.time()
             self.time1Set = True
-        if time.time() - self.time1 < 0.5:
-            self.drone.asyncCommand(0.01, 0.03, 0, 0, 0.05, 0.05)
+        if time.time() - self.time1 < 0.15:
+            print "LR: ", self.LR, " BF: ", self.BF, " UD: ", self.UD, " ROT: ", self.ROT
+            self.drone.asyncCommand(self.LR,self.BF, self.UD, self.ROT, 0.05, 0.05)
             return
         self.time1Set = False
         
         if self.state.ellipseSeen: 
-            print "Ellipse seen"
+            #print "Ellipse seen"
             #Are the ellipse in the center of the screen?
             if not self.state.droneCenteredWithEllipse():           #We don't give a shit if the drone is centered at the ellipse center
                 #if self.state.droneAboveEllipse():
@@ -125,36 +172,44 @@ class Controller(object):
                 #    self.drone.asyncCommand(0, 0, 0.1, 0, 0.05, 0)
                 #    print "Fly up"
                 if self.state.droneRightOfEllipse():
-                    self.drone.asyncCommand(0, 0, 0, -0.5, 0.05, 0)
+                    #self.drone.asyncCommand(0, 0.1, 0, 0.5, 0.05, 0)
                     print "Rotate left"
                 if self.state.droneLeftOfEllipse():
-                    self.drone.asyncCommand(0, 0, 0, 0.5, 0.05, 0)
+                    #self.drone.asyncCommand(0, 0.1, 0, -0.5, 0.05, 0)
                     print "Rotate right"
 
             if self.state.circleSeen:                                       #We are able to detect a circle
-                print "Circle seen"
+                #print "Circle seen"
                 #Check if circle is in the center of the image
                 if not self.state.droneRightOfCenter() and not self.state.droneLeftOfCenter():
                     if self.state.droneCentered():
-                        self.drone.asyncCommand(0, -0.1, 0, 0, 0.1, 0)
-
+                        self.drone.asyncCommand(0.01, -0.3, 0.05, 0, 0.25, 0)
+                        if self.state.circleDiameterEqualToHeight():
+                            self.drone.asyncCommand(0.01, -0.3, 0.1, 0, 0.5, 0)
                         print "moveForward"
                         
                 else:
+                    lf = 0
+                    bf = 0
+                    ud = 0
+                    rot = 0
+                    timer1 = 0.1
                     if self.state.droneAboveCenter():
                         print "Fly down"
-                        self.drone.asyncCommand(0, 0, -0.5, 0, 0.05, 0)
+                        ud = -0.4
                     if self.state.droneUnderCenter():
-                        print " Fly up"
-                        self.drone.asyncCommand(0, 0, 0.5, 0, 0.05, 0)
+                        print "Fly up"
+                        ud = 0.7
 
                     if self.state.droneRightOfCenter():
-                        self.drone.asyncCommand(-0.5, 0, 0, 0, 0.05, 0)
-
+                        lf = -0.15
                         print "Fly Left"
                     if self.state.droneLeftOfCenter():
                         print "Fly Right"
-                        self.drone.asyncCommand(0.5, 0, 0, 0, 0.05, 0)
+                        lf = 0.15
+                    print "lf: ", lf, " bf: ", bf, " rot: ",rot,#\n"
+                    self.drone.asyncCommand(lf, bf, ud, rot, timer1, 0.5)
+                   
 
                     
             else:

@@ -12,6 +12,10 @@ class State(object):
     imageXCenter = 640 #1280/2
     imageYCenter = 360 #720/2
 
+
+    maximumCircleRadius = 45
+    
+
     #Do we see the circle or QR-code
     circleSeen = False
     QRCodeSeen = False
@@ -23,7 +27,7 @@ class State(object):
     ellipseLastSeen = 0
     
     #The maximum value for the counter
-    counterMaxValue = 50
+    counterMaxValue = 25
     
     routineStarted = False
     flownOnce = False
@@ -60,7 +64,7 @@ class State(object):
     
     
     #difference in coordinates
-    centerThreshold = 70
+    centerThreshold = 75
     
     ellipseCircleThreshold = 35
     
@@ -153,13 +157,13 @@ class State(object):
         if self.routineStarted:
             return True
 
-        if math.fabs(self.imageXCenter-self.circleXCoor) < self.centerThreshold:
-            if math.fabs(self.imageYCenter-self.circleYCoor) < self.centerThreshold:
+        if math.fabs(self.imageXCenter-self.circleXCoor*2) < self.centerThreshold:
+            if math.fabs(self.imageYCenter-self.circleYCoor*2) < self.centerThreshold:
                 return True
         return False
     
     def droneCenteredWithEllipse(self):
-        return math.fabs(self.ellipseXCoor - self.imageXCenter) < self.ellipseThreshold
+        return math.fabs(self.ellipseXCoor*2 - self.imageXCenter) < self.ellipseThreshold
         #math.fabs(self.ellipseYCoor - self.imageYCenter) < self.ellipseThreshold and 
             
     def printCenters(self):
@@ -169,24 +173,26 @@ class State(object):
         print "AreaSimilar: ", self.areasSimilar(), " circleArea/ellipseArea: ", self.circleArea/self.ellipseArea,  "\n"
     
     def droneAboveCenter(self):
-        return math.fabs(self.imageYCenter - self.circleYCoor) > self.centerThreshold and self.imageYCenter < self.circleYCoor
+        return math.fabs(self.imageYCenter - self.circleYCoor*2) > self.centerThreshold and self.imageYCenter < self.circleYCoor*2
     def droneUnderCenter(self):
-        return math.fabs(self.imageYCenter - self.circleYCoor) > self.centerThreshold and self.imageYCenter > self.circleYCoor
+        return math.fabs(self.imageYCenter - self.circleYCoor*2) > self.centerThreshold and self.imageYCenter > self.circleYCoor*2
     def droneRightOfCenter(self):
-        return math.fabs(self.imageXCenter - self.circleXCoor) > self.centerThreshold and self.imageXCenter > self.circleXCoor
+        return math.fabs(self.imageXCenter - self.circleXCoor*2) > self.centerThreshold and self.imageXCenter > self.circleXCoor*2
     def droneLeftOfCenter(self):
-        return math.fabs(self.imageXCenter - self.circleXCoor) > self.centerThreshold and self.imageXCenter < self.circleXCoor
+        return math.fabs(self.imageXCenter - self.circleXCoor*2) > self.centerThreshold and self.imageXCenter < self.circleXCoor*2
         
     
     def droneLeftOfEllipse(self):
-        return math.fabs(self.imageXCenter - self.ellipseXCoor) > self.ellipseThreshold and self.imageXCenter < self.ellipseXCoor
+        return math.fabs(self.imageXCenter - self.ellipseXCoor*2) > self.ellipseThreshold and self.imageXCenter < self.ellipseXCoor*2
     def droneRightOfEllipse(self):
-        return math.fabs(self.imageXCenter - self.ellipseXCoor) > self.ellipseThreshold and self.imageXCenter > self.ellipseXCoor
+        return math.fabs(self.imageXCenter - self.ellipseXCoor*2) > self.ellipseThreshold and self.imageXCenter > self.ellipseXCoor*2
     def droneAboveEllipse(self):
-        return math.fabs(self.imageYCenter - self.ellipseYCoor) > self.ellipseThreshold and self.imageYCenter > self.ellipseYCoor
+        return math.fabs(self.imageYCenter - self.ellipseYCoor*2) > self.ellipseThreshold and self.imageYCenter > self.ellipseYCoor*2
     def droneUnderEllipse(self):
-        return math.fabs(self.imageYCenter - self.ellipseYCoor) > self.ellipseThreshold and self.imageYCenter < self.ellipseYCoor
+        return math.fabs(self.imageYCenter - self.ellipseYCoor*2) > self.ellipseThreshold and self.imageYCenter < self.ellipseYCoor*2
     
+    def circleDiameterEqualToHeight(self):
+        return math.fabs(self.circleRadius - self.circleYCoor) < self.maximumCircleRadius or math.fabs(self.circleRadius - self.circleXCoor) < self.maximumCircleRadius
     
     
     
@@ -205,7 +211,8 @@ class State(object):
                 return False
         return None
                 
-    
+    def resetCircleInfo(self):
+      self.circleSeen = False  
     
     
     
