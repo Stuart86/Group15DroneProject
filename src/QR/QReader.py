@@ -373,14 +373,20 @@ if __name__ == "__main__":
     if cap.isOpened() == False:
         cap.open("tcp://192.168.1.1:5555")
     while 1:
-        n = (n+1)%2
+
         ret , frame = cap.read()
 
-        if ret and n%2 == 0:
+        if ret:
+            print len(frame[0])
+            print len(frame)
             tBefore = time.time()
             #hsv = doStuff(frame)
+            cv2.imshow("Window" , frame)
             #cv2.imshow("Window", hsv)
             results = findAndReadQR(frame)
+            if results is not None:
+                print results.x , " " , results.y
+
             tPassed = time.time() - tBefore
         cv2.waitKey(1)
     cap.release()
