@@ -272,7 +272,7 @@ class Recorder:
                 break
     
         # When everything done, release the capture
-        cap.release()
+        #cap.release()
         cv2.destroyAllWindows()
     
     

@@ -1,9 +1,11 @@
-import libardrone
 import time
+
+import libardrone
+
 
 drone = libardrone.ARDrone()
 
-def main():
+def main(args):
     testMethod()
 
 def testMethod():

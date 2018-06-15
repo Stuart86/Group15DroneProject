@@ -1,7 +1,10 @@
-import pygame
-import cv2
-import libardrone
 import time
+
+import cv2
+import pygame
+
+import libardrone
+
 
 video_capture = cv2.VideoCapture()
 video_capture.open('tcp://192.168.1.1:5555')

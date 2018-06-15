@@ -28,33 +28,176 @@ stream.
 """
 
 
-import pygame
+import time
+
 import cv2
+import pygame
+
+from QR.QReader import findAndReadQR
 import libardrone
 
-video_capture = cv2.VideoCapture()
-video_capture.open('tcp://192.168.1.1:5555')
+
+#video_capture = cv2.VideoCapture()
+#video_capture.open('tcp://192.168.1.1:5555')
+qFound = False
+running = True
+takeoff = False
+leftRightFix = 0.0201
+backwardsForwardsFix = 0.0119
+
+def qrRoutine(drone):
+    global takeoff
+    global qFound
+    t1  = time.time()
+    drone.move(leftRightFix , backwardsForwardsFix , drone.speed , 0)
+    while (time.time() - t1) < 5:
+        #video_capture.read()
+        time.sleep(0.05)
+    t1 = time.time()
+    drone.move(leftRightFix , backwardsForwardsFix-drone.speed , 0 ,0)
+    while (time.time() - t1) < 2:
+        #video_capture.read()
+        time.sleep(0.05)
+    drone.land()
+    takeoff = False
+    qFound = False
+
+def move_vertically(millimeters , drone):
+    n = drone.navdata
+
+def map(value, inMin, inMax, outMin, outMax):
+    # Figure out how 'wide' each range is
+    leftSpan = inMax - inMin
+    rightSpan = outMax - outMin
+
+    # Convert the left range into a 0-1 range (float)
+    valueScaled = float(value - inMin) / float(leftSpan)
+
+    # Convert the 0-1 range into a value in the right range.
+    return outMin + (valueScaled * rightSpan)
+def stable_hover(drone):
+    n = drone.navdata
+    expectedVx = 0
+    expectedVy = 0
+    correctedVxSpeed = 0
+    correctedVySpeed = 0
+    threshold = 20
+    maxSpeed = float(11110)
+    t1 = time.time()
+
+    while (time.time() - t1) < 5:
+        ret , n = drone.getNavData()
+        if ret:
+            vx = n[0]['vx']
+            vy = n[0]['vy']
+            differenceX = 0
+            differenceY = 0
+            differenceX = (expectedVx - vx) / maxSpeed
+            differenceY = (expectedVy - vy) / maxSpeed
+            #if vx > threshold or vx < -threshold:
+            #    differenceX = (expectedVx - vx)/maxSpeed
+            #
+            #if vy > threshold or vy < -threshold:
+            #    differenceY = (expectedVy - vy)/maxSpeed
+            print "PreviousCorrectX: " , correctedVxSpeed , " PreviousCorrectY: " , correctedVySpeed
+            correctedVxSpeed = (float(4)/float(8))*correctedVxSpeed +(float(4)/float(8))*differenceX
+            correctedVySpeed = (float(4)/float(8))*correctedVySpeed + (float(4)/float(8))*differenceY
+            print "CorrectVX: " , correctedVxSpeed , "CorrectedVY: ", correctedVySpeed
+            print "diffx: " , differenceX , " diffY: " , differenceY
+            print "vx " , vx , " vy ", vy, "\n"
+
+            drone.move(correctedVySpeed*2 , -(correctedVxSpeed*2) , 0 , 0)
+            time.sleep(0.1)
+            drone.move(0 , 0 , 0, 0)
+            time.sleep(0.3)
+    drone.move(0 , 0 ,0 ,0)
+
+def stable_move(drone , eLR , eBF , eUD , eTURN):
+    RAD2DEG = 57.2957795131
+    euler_max = 0.20943952*RAD2DEG
+    vx = 0 ,
+    vy = 0
+    theta = 0
+    phi = 0
+    t1 = 0
+
+    lastvx = 0
+    lastvy = 0
+    movedX = 0 #in millimeters
+    movedY = 0 #in millimeters
+    a = 0
+    ts = time.time()
+    t2 = -1
+    while (time.time() - ts ) < 6:
+        ret , n = drone.getNavData()
+        if t2 == -1:
+            lastvx = n[0]["vx"]
+            lastvy = n[0]["vy"]
+            t2 = n["timestamp"] - ts
+            continue
+        if ret:
+            vx = n[0]["vx"]
+            vy = n[0]["vy"]
+            theta = n[0]["theta"]
+            phi = n[0]["phi"]
+            t1 = n["timestamp"] - ts
+            dt = t1 - t2
+            ax = (vx - lastvx) / dt
+            ay = (vy - lastvy) / dt
+            movedX += 0.5*ax*(t1**2) - 0.5*ax*(t2**2)
+            movedY += 0.5 * ay * (t1 ** 2) - 0.5* ay * (t2 ** 2)
+            offsetLR = eLR - phi / euler_max*0.5
+            offsetBF = eBF - theta / euler_max*0.5
+            offsetUD = 0
+            offsetTURN = 0
+            lastvy = vy
+            lastvx = vx
+            t2 = t1
+            drone.move(eLR + offsetLR, eBF + offsetBF, eUD + offsetUD, eTURN + offsetTURN)
+    print "moved in x direction " , -movedX/float(1000)
+    print "moved in y direction " , movedY/float(1000)
+    drone.land()
+
 
 
 def main():
+    global qFound
+    global running
+    global takeoff
     pygame.init()
     W, H = 320, 240
     screen = pygame.display.set_mode((W, H))
     drone = libardrone.ARDrone()
     clock = pygame.time.Clock()
     running = True
-
+    n = 0
+    takeoff = False
+    t1 = time.time()
+    i = 0
     while running:
 
         # Capture frame-by-frame
-        ret, frame = video_capture.read()
+        #ret, frame = video_capture.read()
 
         # Our operations on the frame come here
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        ret , frame = drone.readVideo()
+        if ret == True:
+            #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            #cv2.imshow('frame', frame)
+            n = (n+1)%2
+            if n == 0:
+                None
+                #res = findAndReadQR(frame)
+
+                #if len(res) > 0 and qFound == False:
+                    #qFound = True
+                #    print i , " " ,res[0].data
+                #    i += 1
+        #            qrRoutine(drone)
+
 
         # Display the resulting frame
-        cv2.imshow('frame',gray)
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False 
@@ -65,10 +208,24 @@ def main():
                     drone.reset()
                     running = False
                 # takeoff / land
+                elif event.key == pygame.K_k:
+                    drone.calibrate(0)
+                elif event.key == pygame.K_h:
+                    #stable_move(drone , 0, 0, 0, 0)
+                    drone.calibrate(1)
+                elif event.key == pygame.K_j:
+                    drone.calibrate(2)
+                elif event.key == pygame.K_l:
+                    drone.calibrate(3)
+                elif event.key == pygame.K_o:
+                    drone.getConfigurationInfo()
                 elif event.key == pygame.K_RETURN:
+                    t1 = time.time()
                     drone.takeoff()
+                    takeoff = True
                 elif event.key == pygame.K_SPACE:
                     drone.land()
+                    takeoff = False
                 # emergency
                 elif event.key == pygame.K_BACKSPACE:
                     drone.reset()
@@ -113,7 +270,11 @@ def main():
                     drone.speed = 0.9
                 elif event.key == pygame.K_0:
                     drone.speed = 1.0
-
+        if (takeoff and (time.time() - t1) > 2):
+            None
+            #leftRight = 0.0201
+            #backwardsForward = 0.0119
+            #drone.move(leftRight , backwardsForward ,0 ,0)
         try:
             surface = pygame.image.fromstring(drone.image, (W, H), 'RGB')
             # battery status
