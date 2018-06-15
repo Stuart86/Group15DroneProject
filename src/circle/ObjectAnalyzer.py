@@ -1,11 +1,12 @@
 from PIL import ImageEnhance, Image
 from PIL import ImageOps
-from cv2 import imshow
+from cv2 import imshow, circle
 import cv2
 
 import PIL as p
 from circle import Circle as cl
 import numpy as np
+from imageop import rgb2grey
 
 
 #cap = cv2.VideoCapture(0)
@@ -104,6 +105,13 @@ class ObjectAnalyzer:
     labAMax = 0
     labBMin = 0
     labBMax = 0
+    LabTrackbarName = "lTrackbar"
+    labLMinName = "LMin"
+    labLMaxName = "LMax"
+    labAMinName = "AMin"
+    labAMaxName = "AMax"
+    labBMinName = "BMin"
+    labBMaxName = "BMax"
 
         
     def map(self, value, inMin, inMax, outMin, outMax):
@@ -127,9 +135,14 @@ class ObjectAnalyzer:
     cv2.namedWindow('ImageSettings')
     cv2.namedWindow('Trackbar')
     cv2.namedWindow('EllipseHSV')
+    cv2.namedWindow(LabTrackbarName)
+    
+    
     cv2.resizeWindow('Trackbar',780,780)
     cv2.resizeWindow('HSV',780,780)
     cv2.resizeWindow('EllipseHSV',780,780)
+    cv2.resizeWindow(LabTrackbarName,780,780)
+
     # create trackbars for color change
     
     
@@ -169,13 +182,7 @@ class ObjectAnalyzer:
     cv2.createTrackbar('ellipsehighMaskHighVal12','EllipseHSV',0,255,nothing)
     
     
-    LabTrackbarName = "lTrackbar"
-    labLMinName = "LMin"
-    labLMaxName = "LMax"
-    labAMinName = "AMin"
-    labAMaxName = "AMax"
-    labBMinName = "BMin"
-    labBMaxName = "BMax"
+    
 
     
     cv2.createTrackbar(labLMinName,LabTrackbarName,0,255,nothing)
@@ -501,47 +508,70 @@ class ObjectAnalyzer:
     
      
     def findCircle(self, frame, state):
+        grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
-        grayscaled = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-        #blur1 = cv2.medianBlur(grayscaled,5)
-        blur2 = cv2.GaussianBlur(grayscaled,(5,5),0)
+        #grayscaled = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+        blur1 = cv2.medianBlur(grey,5)
+        blur2 = cv2.GaussianBlur(grey,(5,5),0)
+        circleBlurred = cv2.GaussianBlur(grey, (self.blurValue,self.blurValue), 0)
 
-        #ret,th1 = cv2.threshold(grayscaled,127,255,cv2.THRESH_BINARY)
-        #th2 = cv2.adaptiveThreshold(grayscaled,255,cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY,self.threshLow,self.threshHigh)
-        th3 = cv2.adaptiveThreshold(grayscaled, self.edgedHighLimit, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,self.threshLow,self.threshHigh)
+        #ret,th1 = cv2.threshold(grey,127,255,cv2.THRESH_BINARY)
+        #th2 = cv2.adaptiveThreshold(grey,255,cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY,self.threshLow,self.threshHigh)
+        th3 = cv2.adaptiveThreshold(grey, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,1)        
         
-        
-        
-        ret4,th4 = cv2.threshold(blur2,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-        ## Otsu's thresholding
-        #ret5,th5 = cv2.threshold(grayscaled,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-        
-        #imshow("MedianBlur",blur1)
-        #imshow("GaussianBlur", blur2)
+        #ret4,th4 = cv2.threshold(blur2,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+        # Otsu's thresholding
+        #ret5,th5 = cv2.threshold(grey,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+        _,th = cv2.threshold(circleBlurred,self.threshLow,self.threshHigh, 0)
+
+        cv2.imshow("thresholdCircle",th)
+        imshow("MedianBlur",blur1)
+        imshow("GaussianBlur", blur2)
+        grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)       
+        #equ = cv2.equalizeHist(grey)
+        #imshow("equalizeHist", equ)
         
         
         #imshow("Binary", th1)
         #imshow("Adaptive mean",th2)
         imshow("Adaptive Gaussion",th3)
-        imshow("Otsu", th4)
-        #imshow("Otsu no blur or greyscale",th5)
-        grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        #imshow("Otsu", th4)
+        #simshow("Otsu no blur",th5)
+        
+        
         #OGrey = cv2.cvtColor(originalPic, cv2.COLOR_BGR2GRAY)
-        circleBlurred = cv2.GaussianBlur(grey, (7,7), 0)
+        
+        #circleBlurred = cv2.GaussianBlur(equ, (self.blurValue,self.blurValue), 0)
+        imshow("Gauussian blur, blurvalue", circleBlurred)
         #oCircle = cv2.GaussianBlur(OGrey, (7,7), 0)
         #imshow("OCircle",oCircle)
         #blurred = cv2.medianBlur(grey,self.blurValue)        #Might be better for filtering noise. 
-        
-        edged = cv2.Canny(th3, self.edgedLowLimit, self.edgedHighLimit)
-        #edged1 = cv2.Canny(blurred1, self.edgedLowLimit, self.edgedHighLimit)
+        #imshow("Medianblur, blurvalue",blurred)
+        #edged = cv2.Canny(th, self.edgedLowLimit, self.edgedHighLimit)
+        #edged1 = cv2.Canny(blurred, self.edgedLowLimit, self.edgedHighLimit)
         #cv2.imshow("Edged",edged)
         #cv2.imshow("Edged1", edged1)
         
         #Test
         
-        
-        
-        circles = cv2.HoughCircles(edged, cv2.HOUGH_GRADIENT, self.houghDP, self.houghMinDist, param1 = self.houghParam1, param2 = self.houghParam2, minRadius = self.houghMinRadius, maxRadius = self.houghMaxRadius)
+        adaptiveFrame = frame.copy()
+        circles1 = cv2.HoughCircles(th, cv2.HOUGH_GRADIENT, self.houghDP, self.houghMinDist, param1 = self.houghParam1, param2 = self.houghParam2, minRadius = self.houghMinRadius, maxRadius = self.houghMaxRadius)
+        if circles1 is not None:
+            circles1 = np.uint16(np.around(circles1))
+            for i in circles1[0, :]:
+                #If radius is zero, circle doesn't exist..
+                if i[2] == 0:
+                    break
+                #Create the new circle.
+                newCircle = ([i[0],i[1],i[2]])
+          
+                self.circleObj.circleKnown(newCircle)
+                self.circleObj.enoughNewCircles(adaptiveFrame, width, height, state)
+                
+                
+                # Display the resulting frame
+        imshow('adaptiveFrame', adaptiveFrame)
+        circles = cv2.HoughCircles(th, cv2.HOUGH_GRADIENT, self.houghDP, self.houghMinDist, param1 = self.houghParam1, param2 = self.houghParam2, minRadius = self.houghMinRadius, maxRadius = self.houghMaxRadius)
 
         if circles is not None:
             circles = np.uint16(np.around(circles))
@@ -565,7 +595,7 @@ class ObjectAnalyzer:
         blurred1 = cv2.GaussianBlur(grey, (self.blurValue, self.blurValue), 0)  #For ellipse
         imshow("Ellipse Blured", blurred1)
         #--- First obtain the threshold using the greyscale image ---
-        _,th = cv2.threshold(blurred1,self.threshLow,self.threshHigh, 0)
+        _,th = cv2.threshold(blurred1,0,255, 0)
 
         cv2.imshow("threshold",th)
         
@@ -618,26 +648,61 @@ class ObjectAnalyzer:
         frame = np.array(unsharp)
         
         imshow("UnsharpMask",frame)
+        
+        
+        
+        
+        
             
         frame = self.setImageBrightNess(frame, self.brightness)
+        
+        
+        bgr = [127, 127, 127]
+
+        #LAB = cv2.cvtColor(frame, cv2.COLOR_BGR2Lab)[0][0]
+        lab = cv2.cvtColor( np.uint8([[bgr]] ), cv2.COLOR_BGR2LAB)[0][0]
+
+        #lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)[0][0] 
+        minLAB = np.array([lab[0] - self.labLMin, lab[1] - self.labAMin, lab[2] - self.labBMin])
+        maxLAB = np.array([lab[0] + self.labLMax, lab[1] + self.labAMax, lab[2] + self.labBMax])
+        
+        
+        maskLAB = cv2.inRange(frame, minLAB, maxLAB)
+        imshow("maskLAB", maskLAB)
+        resultLAB = cv2.bitwise_and(frame, frame, mask = maskLAB)
+        imshow("resultLAB Adjust values",resultLAB)
+        
+        
         self.setTestValues(frame)
-        redCircleImage = self.getRedHSVImage(frame)
+        redCircleImage = self.getRedHSVImage(resultLAB)
         redEllipseImage = self.getRedEllipseHSVImage(frame)
+
+        #LAB = cv2.cvtColor(redEllipseImage, cv2.COLOR_BGR2Lab) 
         
-        brightLAB = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB) 
-        lab = cv2.cvtColor( frame, cv2.COLOR_BGR2LAB)[0][0]
-        thresh = 40
-        minLAB = np.array([lab[0] - thresh, lab[1] - thresh, lab[2] - thresh])
-        maxLAB = np.array([lab[0] + thresh, lab[1] + thresh, lab[2] + thresh])
+
+        #l_channel, a_channel, b_channel = cv2.split(LAB)
+        #clahe = cv2.createCLAHE(clipLimit=3.0,tileGridSize=(8,8))
+
+        #l_channel = clahe.apply(l_channel)
+        #imshow("a_channel",a_channel)
+        #imshow("b_channel",b_channel)
+
         
-        maskLAB = cv2.inRange(brightLAB, minLAB, maxLAB)
-        resultLAB = cv2.bitwise_and(brightLAB, brightLAB, mask = maskLAB)
-        imshow("ResultLab",resultLAB)
+        
+
+        #lab = cv2.merge((l_channel,a_channel,b_channel))
+
+        
+        #resultRGB = cv2.cvtColor(lab,cv2.COLOR_LAB2BGR)
+        #imshow("ResultLab",lab)
+        #imshow("ResultRGB",resultRGB )
+        
+        
 
         #Maps perceived brigthness to masklimit. Only used in the final version. Requires further testing. 
         #self.maskLimit = self.map(self.perceivedBrightness, self.inMin, self.inMax, self.outMin, self.outMax)
             
-        self.findCircle(redCircleImage, state)
+        self.findCircle(redCircleImage, state)  
         self.findEllipse(redEllipseImage, state)
         #imshow('Red Ellipse', redEllipseImage)
         imshow("Red Circle", redCircleImage)

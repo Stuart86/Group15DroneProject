@@ -128,7 +128,7 @@ class Controller(object):
             #imshow("0",lab_planes[0])
             #imshow("1",lab_planes[1])
             #imshow("2",lab_planes[2])
-            
+            #lab_planes = cv2.split(lab)
             #clahe = cv2.createCLAHE(clipLimit=2.0,tileGridSize=(10,10))
 
             #lab_planes[0] = clahe.apply(lab_planes[0])
@@ -138,7 +138,7 @@ class Controller(object):
             # bgr = cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
             #imshow("BGR",bgr)
             #Scan the image for different figures. 
-            #self.getQRResult(frame)
+            self.getQRResult(frame)
             analyzer.analyzeFrame(frame, self.state)
             #print "CircleSeen: ", self.state.circleSeen
             self.updateTrackbarValues()
@@ -151,7 +151,7 @@ class Controller(object):
             
             
             if cv2.waitKey(1) & 0xFF == ord('q'):
-                self.drone.land()
+                # self.drone.land()
                 break
 
         # When everything done, release the capture
