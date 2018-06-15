@@ -26,7 +26,7 @@ FocalLength = 709.107575363 #In pixels for drone cam (different than Focal)
 horizontalAngleOfView = 84.1352126
 verticalAngleOfView = 53.8320221
 Focal = PixelPerCm*distanceCm*QRSide
-dict = {"P.00" : 102 , "P.01":101 , "P.02": 90.5 , "P.03":90 , "P.04":120 , "P.05" : 0 , "P.06":81.5}
+dict = {"P.00" : 102 , "P.01":101 , "P.02": 90.5 , "P.03":90 , "P.04":120 , "P.05" : 0 , "P.06":81.5 , "P.07":70}
 
 class Point():
     def __init__(self , x , y):
@@ -35,14 +35,21 @@ class Point():
     def __str__(self):
         return "(%d,%d)" % (self.x , self.y)
 class QRresult():
-    def __init__(self , data , (x,y) , distance , circleWidth):
+    def __init__(self , data , (x,y) , distance , circleWidth , QRRotatedRight , QRRotatedLeft , rightSide, lowerSide , leftSide , upperSide):
         self.x = x
         self.y = y
         self.data = data
         self.distance = distance
         self.circleWidth = circleWidth
+        self.QRRotatedRight = QRRotatedRight
+        self.QRRotatedLeft = QRRotatedLeft
+        self.rightSide = rightSide
+        self.lowerSide = lowerSide
+        self.leftSide = leftSide
+        self.upperSide = upperSide
     def __str__(self):
-        return "data=%s" % (self.data)
+        return "data=%s x=%d , y=%d , dist=%d , circleWidth=%d , QR Rotated Right=%s , QR Rorated Left=%s" % \
+               (self.data , self.x , self.y , self.distance , self.circleWidth , self.QRRotatedRight , self.QRRotatedLeft)
 
 
 def determinant(x1 , x2 , y1 , y2):
@@ -176,98 +183,63 @@ def convertToPoints(contour):
     for p in contour:
         result.append(Point(p[0][0] , p[0][1]))
     return result
-def findAndReadQR(img):
-    #cv2.imshow("Window" , img)
-    results = decode(img, [ZBarSymbol.QRCODE])
-    #cv2.imshow("Window" , img)
-    closestQR = None
-    for result in results:
-        p1 = result[3][0]
-        p2 = result[3][1]
-        p3 = result[3][2]
-        p4 = result[3][3]
-        side1 = math.sqrt((p1.x - p2.x)**2 + (p1.y - p2.y)**2)
-        side2 = math.sqrt((p1.x - p4.x) ** 2 + (p1.y - p4.y) ** 2)
-        side3 = math.sqrt((p2.x - p3.x) ** 2 + (p2.y - p3.y) ** 2)
-        side4 = math.sqrt((p3.x - p4.x) ** 2 + (p3.y - p4.y) ** 2)
-        sideAvg = (side1 + side2 + side3 + side4)/4
-        distance = Focal/sideAvg
-        centerX = (p1.x + p2.x + p3.x + p4.x)/4
-        centerY = (p1.y + p2.y + p3.y + p4.y)/4
-        #ctr = np.array([centerX , centerY]).reshape((-1, 1, 2)).astype(np.int32)
-        #corners = [[p1.x , p1.y], [p2.x , p2.y] , [p3.x , p3.y] , [p4.x , p4.y]]
-        #corn2 = np.array(corners).reshape((-1, 1, 2)).astype(np.int32)
-        #cv2.drawContours(img , [corn2] , 0 , (0 , 255 , 0) , 5)
-        #cv2.drawContours(img , ctr , 0, (255 , 0 , 0) , 5)
-        #cv2.putText(img, '1', (p1.x, p1.y), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2, cv2.LINE_AA)
-        #cv2.putText(img, '2', (p2.x, p2.y), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2, cv2.LINE_AA)
-        #cv2.putText(img, '3', (p3.x, p3.y), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2, cv2.LINE_AA)
-        #cv2.putText(img, '4', (p4.x, p4.y), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2, cv2.LINE_AA)
-        #cv2.imshow("Window" , img)
-        print result[0]
-        if result[0] not in dict:
-            continue
-        if closestQR == None:
-            closestQR = QRresult(result[0] , (centerX , centerY) , distance, dict[result[0]])
-        elif closestQR.distance > distance:
-            closestQR = QRresult(result[0], (centerX, centerY), distance, dict[result[0]])
-    #cv2.imshow("Window" , img)
-    return closestQR
+
+def findAndReadQR_OldVer(img):
     grayScale = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    #blurred = cv2.GaussianBlur(grayScale , (5,5) ,1)
-    #blurred = cv2.medianBlur(grayScale , 5)
+    # blurred = cv2.GaussianBlur(grayScale , (5,5) ,1)
+    # blurred = cv2.medianBlur(grayScale , 5)
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
 
     grayScale = clahe.apply(grayScale)
-    thresh = cv2.adaptiveThreshold(grayScale , 255 , cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY, 23, 4)
-    cv2.imshow("Gray" , thresh)
-    _ , cnts , heiarchy = cv2.findContours(thresh , cv2.RETR_TREE , cv2.CHAIN_APPROX_SIMPLE)
-    #cv2.drawContours(img , cnts, -1, (0, 255, 0), 3)
+    thresh = cv2.adaptiveThreshold(grayScale, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 63, 4)
+    #cv2.imshow("Gray", thresh)
+    _, cnts, heiarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    # cv2.drawContours(img , cnts, -1, (0, 255, 0), 3)
     qrResults = []
     if heiarchy is not None:
-        #Go through contour heiarchy and find the 3 squares(Finder patterns) in the QR code
-        allPatterns = traverseHeiarchy(heiarchy[0] , 0 , cnts)
-        if allPatterns:#allPatterns contains sets of 3 finder patterns
+        # Go through contour heiarchy and find the 3 squares(Finder patterns) in the QR code
+        allPatterns = traverseHeiarchy(heiarchy[0], 0, cnts)
+        if allPatterns:  # allPatterns contains sets of 3 finder patterns
             for patterns in allPatterns:
                 bottom = 0
                 right = 0
                 orientation = -1
-                #Use image moments to calculate the centers of the finder patterns and then figure out
-                #which two of them are part of the longest side in the triangle
-                M = [cv2.moments(patterns[0]), cv2.moments(patterns[1]) , cv2.moments(patterns[2])]
-                centers = [Point(M[0]['m10']/M[0]['m00'] , M[0]['m01']/M[0]['m00']) ,
-                            Point(M[1]['m10'] / M[1]['m00'], M[1]['m01']/M[1]['m00']),
-                            Point(M[2]['m10'] / M[2]['m00'], M[2]['m01']/M[2]['m00'])]
-                len1 = distSq(centers[0] , centers[1])
-                len2 = distSq(centers[0] ,centers[2])
-                len3 = distSq(centers[1] , centers[2])
+                # Use image moments to calculate the centers of the finder patterns and then figure out
+                # which two of them are part of the longest side in the triangle
+                M = [cv2.moments(patterns[0]), cv2.moments(patterns[1]), cv2.moments(patterns[2])]
+                centers = [Point(M[0]['m10'] / M[0]['m00'], M[0]['m01'] / M[0]['m00']),
+                           Point(M[1]['m10'] / M[1]['m00'], M[1]['m01'] / M[1]['m00']),
+                           Point(M[2]['m10'] / M[2]['m00'], M[2]['m01'] / M[2]['m00'])]
+                len1 = distSq(centers[0], centers[1])
+                len2 = distSq(centers[0], centers[2])
+                len3 = distSq(centers[1], centers[2])
                 patternPoints = []
                 for c in patterns:
-                   patternPoints.append(convertToPoints(c))
-                max = len1 if len1> len2 else len2
+                    patternPoints.append(convertToPoints(c))
+                max = len1 if len1 > len2 else len2
                 max = len3 if len3 > max else max
                 top = 1
-                #Time to figure out the indice of the pattern that's top
-                rm = [0,2]
+                # Time to figure out the indice of the pattern that's top
+                rm = [0, 2]
                 if max == len1:
                     top = 2
-                    rm =[0,1]
+                    rm = [0, 1]
                 elif max == len2:
                     top = 1
-                    rm = [0,2]
+                    rm = [0, 2]
                 elif max == len3:
                     top = 0
-                    rm = [1,2]
-                sideCenters = [centers[rm[0]] , centers[rm[1]]]
+                    rm = [1, 2]
+                sideCenters = [centers[rm[0]], centers[rm[1]]]
 
-                #We'll use the equation for the line ax+by+c=0 to figure out how the qr code is oriented
-                #Once we've figured that out we know which finder pattern is the "bottom" and the "right"
-                a , b , c = linearEquation(sideCenters[0] , sideCenters[1])
+                # We'll use the equation for the line ax+by+c=0 to figure out how the qr code is oriented
+                # Once we've figured that out we know which finder pattern is the "bottom" and the "right"
+                a, b, c = linearEquation(sideCenters[0], sideCenters[1])
                 if b == 0:
                     continue
-                dist = distFromPointToLine(a, b, c , centers[top])
+                dist = distFromPointToLine(a, b, c, centers[top])
 
-                a = a/b
+                a = a / b
                 if a > 0 and dist < 0:
                     orientation = NORTH_ORIENTATION
                     bottom = rm[0]
@@ -285,72 +257,130 @@ def findAndReadQR(img):
                     bottom = rm[0]
                     right = rm[1]
 
-                #Now we want to find the 4 point in the finder pattern like if it was a square
-                bottomVerticies = getVertices(patterns[bottom] , -a)
-                rightVerticies = getVertices(patterns[right],-a)
-                topVerticies = getVertices(patterns[top] , -a)
-                #We'll rotate the points with respect to the orientation
-                bottomVerticies = rotateCorners(bottomVerticies , orientation)
+                # Now we want to find the 4 point in the finder pattern like if it was a square
+                bottomVerticies = getVertices(patterns[bottom], -a)
+                rightVerticies = getVertices(patterns[right], -a)
+                topVerticies = getVertices(patterns[top], -a)
+                # We'll rotate the points with respect to the orientation
+                bottomVerticies = rotateCorners(bottomVerticies, orientation)
                 rightVerticies = rotateCorners(rightVerticies, orientation)
                 topVerticies = rotateCorners(topVerticies, orientation)
 
-                lastCorner = lineIntersection(rightVerticies[1], rightVerticies[2], bottomVerticies[3],bottomVerticies[2])
+                lastCorner = lineIntersection(rightVerticies[1], rightVerticies[2], bottomVerticies[3],
+                                              bottomVerticies[2])
                 maxX = len(img[0])
                 maxY = len(img)
-                #This would mean that the entire qr code is not in the picture, so we can't read it
+                # This would mean that the entire qr code is not in the picture, so we can't read it
                 if lastCorner.x < 0 or lastCorner.x >= maxX or lastCorner.y < 0 or lastCorner.y >= maxY:
-                    #print "Possible QR Found"
+                    # print "Possible QR Found"
                     continue
 
-                qrCorners = [[topVerticies[0].x  , topVerticies[0].y], [rightVerticies[1].x , rightVerticies[1].y] ,
-                             [bottomVerticies[3].x , bottomVerticies[3].y] , [lastCorner.x , lastCorner.y]]
+                qrCorners = [[topVerticies[0].x, topVerticies[0].y], [rightVerticies[1].x, rightVerticies[1].y],
+                             [bottomVerticies[3].x, bottomVerticies[3].y], [lastCorner.x, lastCorner.y]]
                 qrX = (qrCorners[0][0] + qrCorners[1][0] + qrCorners[2][0] + qrCorners[3][0]) / 4
                 qrY = (qrCorners[0][1] + qrCorners[1][1] + qrCorners[2][1] + qrCorners[3][1]) / 4
 
-
                 src = np.float32(qrCorners)
-                dst = np.float32([[0,0],[300 , 0],[0 , 300],[300, 300]])
+                dst = np.float32([[0, 0], [300, 0], [0, 300], [300, 300]])
                 ##We have to transform the part of the image where the qr code is, to something our qr reader can read
                 matrix = cv2.getPerspectiveTransform(src, dst)
 
-                final = cv2.warpPerspective(thresh , matrix , (300, 300))
-                #cv2.imshow("Gray" , final)
-                qrResult = decode(final , [ZBarSymbol.QRCODE])
+                final = cv2.warpPerspective(thresh, matrix, (300, 300))
+                cv2.imshow("Gray" , final)
+                qrResult = decode(final, [ZBarSymbol.QRCODE])
                 if len(qrResult) is not 0:
-                    #circleWidthArray = [102, 101, 90.5, 90, 120, 0, 81.5]
+                    # circleWidthArray = [102, 101, 90.5, 90, 120, 0, 81.5]
 
+                    # print "Width %d" % dict[text]
 
-                    #print "Width %d" % dict[text]
-
-                    side1 = ((qrCorners[0][0]-qrCorners[1][0])**2 + (qrCorners[0][1]-qrCorners[1][1])**2)
-                    side2 = (qrCorners[0][0]-qrCorners[2][0])**2 + (qrCorners[0][1]-qrCorners[2][1])**2
-                    side3 = (qrCorners[1][0]-qrCorners[3][0])**2 + (qrCorners[1][1]-qrCorners[3][1])**2
+                    side1 = ((qrCorners[0][0] - qrCorners[1][0]) ** 2 + (qrCorners[0][1] - qrCorners[1][1]) ** 2)
+                    side2 = (qrCorners[0][0] - qrCorners[2][0]) ** 2 + (qrCorners[0][1] - qrCorners[2][1]) ** 2
+                    side3 = (qrCorners[1][0] - qrCorners[3][0]) ** 2 + (qrCorners[1][1] - qrCorners[3][1]) ** 2
                     side4 = (qrCorners[2][0] - qrCorners[3][0]) ** 2 + (qrCorners[2][1] - qrCorners[3][1]) ** 2
                     side1 = math.sqrt(side1)
                     side2 = math.sqrt(side2)
                     side3 = math.sqrt(side3)
                     side4 = math.sqrt(side4)
-                    dist = Focal/((side1+side2+side3+side4)/4)
-                    #nv = [np.array([[qrX, qrY], [qrX+normVec[0], qrY+normVec[1]]], dtype=np.int32)]
-                    #cv2.drawContours(img, nv, -1, (0, 255, 0), 3)
+                    dist = Focal / ((side1 + side2 + side3 + side4) / 4)
+
+                    # nv = [np.array([[qrX, qrY], [qrX+normVec[0], qrY+normVec[1]]], dtype=np.int32)]
+                    # cv2.drawContours(img, nv, -1, (0, 255, 0), 3)
 
                     text = qrResult[0][0]
+                    print(text)
                     if text in dict:
                         qrResults.append(QRresult(text, (qrX, qrY), dist, dict[text]))
 
-                    #print "Circle width: ",dict[text], "cm"
+                    # print "Circle width: ",dict[text], "cm"
                 else:
-                    #qrX = (qrCorners[0][0] + qrCorners[1][0] + qrCorners[2][0] + qrCorners[3][0]) / 4
-                    #qrY = (qrCorners[0][1] + qrCorners[1][1] + qrCorners[2][1] + qrCorners[3][1]) / 4
-                    #side1 = ((qrCorners[0][0] - qrCorners[1][0]) ** 2 + (qrCorners[0][1] - qrCorners[1][1]) ** 2)
-                    #side2 = (qrCorners[0][0] - qrCorners[2][0]) ** 2 + (qrCorners[0][1] - qrCorners[2][1]) ** 2
-                    #side1 = math.sqrt(side1)
-                    #side2 = math.sqrt(side2)
-                    #dist = Focal / ((side1 + side2) / 2)
-                    #text = "CAN'T READ"
-                    #qrResults.append(QRresult(text, (qrX, qrY), dist))
+                    # qrX = (qrCorners[0][0] + qrCorners[1][0] + qrCorners[2][0] + qrCorners[3][0]) / 4
+                    # qrY = (qrCorners[0][1] + qrCorners[1][1] + qrCorners[2][1] + qrCorners[3][1]) / 4
+                    # side1 = ((qrCorners[0][0] - qrCorners[1][0]) ** 2 + (qrCorners[0][1] - qrCorners[1][1]) ** 2)
+                    # side2 = (qrCorners[0][0] - qrCorners[2][0]) ** 2 + (qrCorners[0][1] - qrCorners[2][1]) ** 2
+                    # side1 = math.sqrt(side1)
+                    # side2 = math.sqrt(side2)
+                    # dist = Focal / ((side1 + side2) / 2)
+                    # text = "CAN'T READ"
+                    # qrResults.append(QRresult(text, (qrX, qrY), dist))
                     continue
     return qrResults
+def findAndReadQR(img):
+    #cv2.imshow("Window" , img)
+    results = decode(img, [ZBarSymbol.QRCODE])
+    #cv2.imshow("Window" , img)
+    closestQR = None
+    for result in results:
+        p1 = result[3][0]
+        p2 = result[3][1]
+        p3 = result[3][2]
+        p4 = result[3][3]
+        QRRotatedRight = False
+        QRRotatedLeft = False
+        leftSide = 0 #Left most side
+        rightSide = 0 #Right Most Side
+        lowerSide = 0
+        upperSide = 0
+
+        if  (p1.y <= p2.y and p2.y >= p3.y and p3.x >= p4.x and p2.x <= p4.x ):
+            leftSide = math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2)
+            rightSide = math.sqrt((p3.x - p4.x) ** 2 + (p3.y - p4.y) ** 2)
+            lowerSide = math.sqrt( (p2.x - p3.x)**2 + (p2.y - p3.y)**2)
+            upperSide = math.sqrt( (p1.x - p4.x)**2 + (p1.y - p4.y)**2 )
+            sideAvg = (leftSide + rightSide)/2
+        else:
+            leftSide = math.sqrt((p1.x - p4.x) ** 2 + (p1.y - p4.y) ** 2)
+            rightSide = math.sqrt((p2.x - p3.x) ** 2 + (p2.y - p3.y) ** 2)
+            lowerSide = math.sqrt( ( p1.x - p2.x)**2 + (p1.y - p2.y)**2 )
+            upperSide = math.sqrt( (p3.x - p4.x)**2 +(p3.y - p4.y)**2 )
+            sideAvg = (leftSide + rightSide)/2
+
+        p = leftSide / rightSide
+        print p
+        if p <= 0.95:
+            QRRotatedLeft = True
+        elif p >= 1.05:
+            QRRotatedRight = True
+        distance = Focal/sideAvg
+        centerX = (p1.x + p2.x + p3.x + p4.x)/4
+        centerY = (p1.y + p2.y + p3.y + p4.y)/4
+        #ctr = np.array([centerX , centerY]).reshape((-1, 1, 2)).astype(np.int32)
+        #corners = [[p1.x , p1.y], [p2.x , p2.y] , [p3.x , p3.y] , [p4.x , p4.y]]
+        #corn2 = np.array(corners).reshape((-1, 1, 2)).astype(np.int32)
+        #cv2.drawContours(img , [corn2] , 0 , (0 , 255 , 0) , 5)
+        #cv2.drawContours(img , ctr , 0, (255 , 0 , 0) , 5)
+        #cv2.putText(img, '1', (p1.x, p1.y), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2, cv2.LINE_AA)
+        #cv2.putText(img, '2', (p2.x, p2.y), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2, cv2.LINE_AA)
+        #cv2.putText(img, '3', (p3.x, p3.y), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2, cv2.LINE_AA)
+        #cv2.putText(img, '4', (p4.x, p4.y), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2, cv2.LINE_AA)
+        #cv2.imshow("Window" , img)
+        if result[0] not in dict:
+            continue
+        if closestQR == None:
+            closestQR = QRresult(result[0] , (centerX , centerY) , distance, dict[result[0]] , QRRotatedRight , QRRotatedLeft , rightSide , lowerSide , leftSide , upperSide)
+        elif closestQR.distance > distance:
+            closestQR = QRresult(result[0] , (centerX , centerY) , distance, dict[result[0]] , QRRotatedRight , QRRotatedLeft , rightSide , lowerSide , leftSide , upperSide)
+    #cv2.imshow("Window" , img)
+    return closestQR
 ##This main is just for testing
 def doStuff(img):
     res = cv2.cvtColor(img , cv2.COLOR_BGR2HSV)
@@ -363,31 +393,32 @@ def doStuff(img):
 
 
 if __name__ == "__main__":
-    cap = cv2.VideoCapture("tcp://192.168.1.1:5555")
-    #cap = cv2.VideoCapture(0)
+    #cap = cv2.VideoCapture("tcp://192.168.1.1:5555")
+    cap = cv2.VideoCapture(0)
     cv2.namedWindow("Window" , cv2.WINDOW_AUTOSIZE)
-    #cv2.namedWindow("Gray" , cv2.WINDOW_NORMAL)
+    cv2.namedWindow("Gray" , cv2.WINDOW_NORMAL)
     n = 0
     lastDistance = 50
     lastTime = time.time()
     if cap.isOpened() == False:
-        cap.open("tcp://192.168.1.1:5555")
+        cap.open(0)
     while 1:
 
         ret , frame = cap.read()
 
         if ret:
-            print len(frame[0])
-            print len(frame)
-            tBefore = time.time()
+            #print len(frame[0])
+            #print len(frame)
+
             #hsv = doStuff(frame)
             cv2.imshow("Window" , frame)
             #cv2.imshow("Window", hsv)
+            tBefore = time.time()
             results = findAndReadQR(frame)
-            if results is not None:
-                print results.x , " " , results.y
-
             tPassed = time.time() - tBefore
+            if results is not None:
+                print results
+            #print tPassed
         cv2.waitKey(1)
     cap.release()
 
