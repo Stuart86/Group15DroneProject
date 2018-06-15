@@ -7,6 +7,7 @@ from state import DroneState
 from QR.QReader import findAndReadQR
 from circle import ObjectAnalyzer as oa
 from styrringsalgoritmer import libardrone
+from test.test_functools import capture
 
 
 #from circle import ImageCreater as IC
@@ -14,8 +15,9 @@ from styrringsalgoritmer import libardrone
 class Controller(object):
 
     
-    capture = cv2.VideoCapture()
-    drone = libardrone.ARDrone()
+    capture = cv2.VideoCapture("output.mkv")
+    
+    #drone = libardrone.ARDrone()
     
     time1 = 0
     time1Set = False
@@ -24,6 +26,7 @@ class Controller(object):
     classdocs
     '''
     state = DroneState.State()
+    
     
     
     LR = 0
@@ -78,21 +81,21 @@ class Controller(object):
         '''
         
     def main(self):
-        #self.initializeCamera()
+        self.initializeCamera()
         analyzer = oa.ObjectAnalyzer()
         #imageCreaterObj = IC.ImageCreater()
 
         
 
-        while (True):
+        while (False):
             if cv2.waitKey(1) & 0xFF == ord('w'):
                 print "Take off"
                 break
-        self.drone.takeoff()
-        self.drone.asyncCommand(-0.7, 0.5, 0, 0, 1, 0)
-        time.sleep(5)
-        while (True):
-            
+        #self.drone.takeoff()
+        #self.drone.asyncCommand(-0.7, 0.5, 0, 0, 1, 0)
+        #time.sleep(5)
+        continueGrabbing = True
+        while (self.capture.isOpened()):
             #imageCreaterObj.updateTrackbarValues()
             #imageCreaterObj.drawEllipse()
             #frame = imageCreaterObj.getImage()
@@ -100,18 +103,46 @@ class Controller(object):
             #grabbed, readFrame = self.capture.read()
             #if grabbed:
             #    imshow("Webcam", readFrame)
+            if cv2.waitKey(1) & 0xFF == ord('w'):
+                print "Yo"
+                if continueGrabbing:
+                    continueGrabbing = False
+                else:
+                    continueGrabbing = True
+            #grabbed, frame = self.drone.readVideo()
+            if continueGrabbing:
+                grabbed, frame = self.capture.read()
                 
-            grabbed, frame = self.drone.readVideo()
-            if not grabbed:
-                #print("Frame not grabbed")
-                continue
+                
+                if not grabbed:
+                    print("Frame not grabbed")
+                    continue
+            imshow("Frame",frame)
+                
             
+            
+            #lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
+                
+            #imshow("Lab",lab)
+            #lab_planes = cv2.split(lab)
+            #imshow("0",lab_planes[0])
+            #imshow("1",lab_planes[1])
+            #imshow("2",lab_planes[2])
+            
+            #clahe = cv2.createCLAHE(clipLimit=2.0,tileGridSize=(10,10))
+
+            #lab_planes[0] = clahe.apply(lab_planes[0])
+
+            # lab = cv2.merge(lab_planes)
+
+            # bgr = cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
+            #imshow("BGR",bgr)
             #Scan the image for different figures. 
-            self.getQRResult(frame)
+            #self.getQRResult(frame)
             analyzer.analyzeFrame(frame, self.state)
             #print "CircleSeen: ", self.state.circleSeen
             self.updateTrackbarValues()
-            self.navigate()
+            #self.navigate()
             self.state.updateCounters()
             
             
@@ -126,12 +157,12 @@ class Controller(object):
         # When everything done, release the capture
         #self.capture.release()
         cv2.destroyAllWindows()
-        self.drone.land()
+        #self.drone.land()
     
         
     def initializeCamera(self):
         #self.capture.open("tcp://192.168.1.1:5555")
-        self.capture.open(0)
+        self.capture.open("output.mkv")
 
     def getQRResult(self,frame):
         result = findAndReadQR(frame)
@@ -185,9 +216,9 @@ class Controller(object):
                 #Check if circle is in the center of the image
                 if not self.state.droneRightOfCenter() and not self.state.droneLeftOfCenter():
                     if self.state.droneCentered():
-                        self.drone.asyncCommand(0.01, -0.3, 0.05, 0, 0.25, 0)
+                        self.drone.asyncCommand(0, -0.3, 0.05, 0, 0.5, 0)
                         if self.state.circleDiameterEqualToHeight():
-                            self.drone.asyncCommand(0.01, -0.3, 0.1, 0, 0.5, 0)
+                            self.drone.asyncCommand(0, -0.3, 0, 0, 0.5, 0)
                         print "moveForward"
                         
                 else:
