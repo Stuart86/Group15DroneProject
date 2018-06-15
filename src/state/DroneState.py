@@ -4,6 +4,7 @@ Created on 6. jun. 2018
 @author: Bruger
 '''
 import math
+
 import numpy as np
 
 

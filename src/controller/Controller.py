@@ -1,14 +1,16 @@
+import time
+
+from cv2 import imshow
 import cv2
 from state import DroneState
-from circle import ObjectAnalyzer as oa
-from QR.QReader import findAndReadQR
-import time
-from styrringsalgoritmer import libardrone
-#from circle import ImageCreater as IC
-from cv2 import imshow
-    #Camera
-    
 
+from QR.QReader import findAndReadQR
+from circle import ObjectAnalyzer as oa
+from styrringsalgoritmer import libardrone
+
+
+#from circle import ImageCreater as IC
+    #Camera
 class Controller(object):
 
     

@@ -28,11 +28,14 @@ stream.
 """
 
 
-import pygame
-import cv2
-import libardrone
-from QR.QReader import findAndReadQR
 import time
+
+import cv2
+import pygame
+
+from QR.QReader import findAndReadQR
+import libardrone
+
 
 #video_capture = cv2.VideoCapture()
 #video_capture.open('tcp://192.168.1.1:5555')

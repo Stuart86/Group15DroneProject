@@ -1,9 +1,9 @@
 from PIL import ImageEnhance, Image
+from PIL import ImageOps
 from cv2 import imshow
 import cv2
 
 import PIL as p
-from PIL import ImageOps
 from circle import Circle as cl
 import numpy as np
 
