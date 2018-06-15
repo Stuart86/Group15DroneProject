@@ -36,6 +36,7 @@ import datetime
 import struct
 import sys
 
+
 try:
     import psyco
 except ImportError:

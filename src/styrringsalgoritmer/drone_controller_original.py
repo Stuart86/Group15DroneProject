@@ -1,5 +1,7 @@
-import libardrone
 import time
+
+import libardrone
+
 
 drone = libardrone.ARDrone()
 

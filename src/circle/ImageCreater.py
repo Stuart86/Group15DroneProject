@@ -3,8 +3,10 @@ Created on 12. jun. 2018
 
 @author: lasse
 '''
-import numpy as np
 import cv2
+
+import numpy as np
+
 if __name__ == '__main__':
     pass
 

@@ -144,7 +144,7 @@ class NavDataThread(threading.Thread):
 
                         if 0 in navdata:
                             self.drone.navdata = navdata
-                            self.onNavdataReceive(self.drone , navdata)
+                            self.onNavdataReceive(navdata)
                 except IOError:
                     break
         nav_socket.close()
