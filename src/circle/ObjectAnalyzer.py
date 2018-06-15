@@ -3,6 +3,7 @@ from cv2 import imshow
 import cv2
 
 import PIL as p
+from PIL import ImageOps
 from circle import Circle as cl
 import numpy as np
 
@@ -38,11 +39,28 @@ class ObjectAnalyzer:
     highMaskLowVal = 0
     highMaskHighVal = 255
     
+    #Mask 
+    ellipselowMaskLowHue = 0
+    ellipselowMaskHighHue = 10
+    ellipselowMaskLowSat = 0
+    ellipselowMaskHighSat = 255
+    ellipselowMaskLowVal = 0
+    ellipselowMaskHighVal = 255
+    
+    ellipsehighMaskLowHue = 170
+    ellipsehighMaskHighHue = 180
+    ellipsehighMaskLowSat = 0
+    ellipsehighMaskHighSat = 255
+    ellipsehighMaskLowVal = 0
+    ellipsehighMaskHighVal = 255
+    
+    
     
     
     #Requires further testing
     edgedLowLimit = 0
     edgedHighLimit = 0
+    blurValue = 1
     
     #Requires further testing
     houghDP = 1
@@ -71,6 +89,14 @@ class ObjectAnalyzer:
     inMax = 1
     outMin = 2
     outMax = 3
+
+    threshLow = 0
+    threshHigh = 0
+
+    constrastCutoff = 0
+    unSharpMaskRadius = 0
+    unSharpMaskPercent = 0
+    unSharpMaskThreshhold = 0
     
 
         
@@ -83,7 +109,8 @@ class ObjectAnalyzer:
         # Convert the left range into a 0-1 range (float)
         valueScaled = float(value - inMin) / float(leftSpan)
         
-        # Convert the 0-1 range into a value in the right range.    
+        # Convert the 0-1 range into a value in the right range.
+            
         return int(outMin + (valueScaled * rightSpan))
 
     
@@ -91,17 +118,20 @@ class ObjectAnalyzer:
         pass
     
     cv2.namedWindow('HSV')
+    cv2.namedWindow('ImageSettings')
     cv2.namedWindow('Trackbar')
+    cv2.namedWindow('EllipseHSV')
     cv2.resizeWindow('Trackbar',780,780)
     cv2.resizeWindow('HSV',780,780)
+    cv2.resizeWindow('EllipseHSV',780,780)
     # create trackbars for color change
     
     
     #HSV Hue
-    cv2.createTrackbar('lowMaskLowHue1','HSV',0,255,nothing)
-    cv2.createTrackbar('lowMaskHighHue2','HSV',0,255,nothing)
-    cv2.createTrackbar('highMaskLowHue3','HSV',0,255,nothing)
-    cv2.createTrackbar('highMaskHighHue4','HSV',0,255,nothing)
+    cv2.createTrackbar('lowMaskLowHue1','HSV',0,180,nothing)
+    cv2.createTrackbar('lowMaskHighHue2','HSV',0,180,nothing)
+    cv2.createTrackbar('highMaskLowHue3','HSV',0,180,nothing)
+    cv2.createTrackbar('highMaskHighHue4','HSV',0,180,nothing)
     
     #HSV saturation
     cv2.createTrackbar('lowMaskLowSat5','HSV',0,255,nothing)
@@ -114,7 +144,23 @@ class ObjectAnalyzer:
     cv2.createTrackbar('highMaskLowVal11','HSV',0,255,nothing)
     cv2.createTrackbar('highMaskHighVal12','HSV',0,255,nothing)
     
+    #ellipse
+    #HSV Hue
+    cv2.createTrackbar('ellipselowMaskLowHue1','EllipseHSV',0,180,nothing)
+    cv2.createTrackbar('ellipselowMaskHighHue2','EllipseHSV',0,180,nothing)
+    cv2.createTrackbar('ellipsehighMaskLowHue3','EllipseHSV',0,180,nothing)
+    cv2.createTrackbar('ellipsehighMaskHighHue4','EllipseHSV',0,180,nothing)
     
+    #HSV saturation
+    cv2.createTrackbar('ellipselowMaskLowSat5','EllipseHSV',0,255,nothing)
+    cv2.createTrackbar('ellipselowMaskHighSat6','EllipseHSV',0,255,nothing)
+    cv2.createTrackbar('ellipsehighMaskLowSat7','EllipseHSV',0,255,nothing)
+    cv2.createTrackbar('ellipsehighMaskHighSat8','EllipseHSV',0,255,nothing)
+    #HSV value
+    cv2.createTrackbar('ellipselowMaskLowVal9','EllipseHSV',0,255,nothing)
+    cv2.createTrackbar('ellipselowMaskHighVal10','EllipseHSV',0,255,nothing)
+    cv2.createTrackbar('ellipsehighMaskLowVal11','EllipseHSV',0,255,nothing)
+    cv2.createTrackbar('ellipsehighMaskHighVal12','EllipseHSV',0,255,nothing)
     
         
     #cv2.createTrackbar('MaskLimit','Trackbar',0,255,nothing)
@@ -133,6 +179,7 @@ class ObjectAnalyzer:
     #Used for testing. 
     cv2.createTrackbar('Edged low limit','Trackbar',0,255,nothing)
     cv2.createTrackbar('Edged high limit','Trackbar',0,255,nothing)
+    cv2.createTrackbar('blur','Trackbar',1,100,nothing)
     
     #hough circles
     cv2.createTrackbar('Hough: dp','Trackbar',1,100,nothing) # Inverse ratio of the accumulator resolution to the image resolution. For example, if dp=1 , the accumulator has the same resolution as the input image. If dp=2 , the accumulator has half as big width and height.
@@ -149,8 +196,65 @@ class ObjectAnalyzer:
     #cv2.createTrackbar('inMax','Trackbar',1,180,nothing)
     #cv2.createTrackbar('outMin','Trackbar',2,180,nothing)
     #cv2.createTrackbar('outMax','Trackbar',3,180,nothing)
-                       
+
+    #cv2.setTrackbarPos('Un-radius','ImageSettings',100)
+    #cv2.setTrackbarPos('Un-percent','ImageSettings',75)
+
+    cv2.createTrackbar('tLow','Trackbar',0,255,nothing)
+    cv2.createTrackbar('tHigh','Trackbar',0,255,nothing)
     
+    #Test
+    cv2.createTrackbar('C-cutoff','ImageSettings',0,100,nothing)
+    cv2.createTrackbar('Un-radius','ImageSettings',0,100,nothing)
+    cv2.createTrackbar('Un-percent','ImageSettings',0,100,nothing)
+    cv2.createTrackbar('Un-thresh','ImageSettings',0,100,nothing)
+    
+    
+    
+    #Normal values that we use
+    cv2.setTrackbarPos('Error','Trackbar',20)
+    cv2.setTrackbarPos('Amount of Circles','Trackbar',2)
+    cv2.setTrackbarPos('Hough: dp','Trackbar',10)
+    cv2.setTrackbarPos('Hough: min dist','Trackbar',2000)
+    cv2.setTrackbarPos('maxRadius','Trackbar',2000)
+    cv2.setTrackbarPos('Hough: param2','Trackbar',20)
+    
+    cv2.setTrackbarPos('blur','Trackbar',100)
+    cv2.setTrackbarPos('tHigh','Trackbar',255)
+    cv2.setTrackbarPos('Brightness','Trackbar',1000)
+
+
+    cv2.setTrackbarPos('lowMaskLowHue1','HSV',0)
+    cv2.setTrackbarPos('lowMaskHighHue2','HSV',10)
+    cv2.setTrackbarPos('highMaskLowHue3','HSV',160)
+    cv2.setTrackbarPos('highMaskHighHue4','HSV',180)
+
+    cv2.setTrackbarPos('lowMaskLowSat5','HSV',100)
+    cv2.setTrackbarPos('lowMaskHighSat6','HSV',255)
+    cv2.setTrackbarPos('highMaskLowSat7','HSV',81)
+    cv2.setTrackbarPos('highMaskHighSat8','HSV',255)
+
+    cv2.setTrackbarPos('lowMaskLowVal9','HSV',55)
+    cv2.setTrackbarPos('lowMaskHighVal10','HSV',255)
+    cv2.setTrackbarPos('highMaskLowVal11','HSV',1)
+    cv2.setTrackbarPos('highMaskHighVal12','HSV',255)
+
+    cv2.setTrackbarPos('ellipselowMaskLowHue1','EllipseHSV',0)
+    cv2.setTrackbarPos('ellipselowMaskHighHue2','EllipseHSV',10)
+    cv2.setTrackbarPos('ellipsehighMaskLowHue3','EllipseHSV',160)
+    cv2.setTrackbarPos('ellipsehighMaskHighHue4','EllipseHSV',180)
+
+    cv2.setTrackbarPos('ellipselowMaskLowSat5','EllipseHSV',100)
+    cv2.setTrackbarPos('ellipselowMaskHighSat6','EllipseHSV',255)
+    cv2.setTrackbarPos('ellipsehighMaskLowSat7','EllipseHSV',81)
+    cv2.setTrackbarPos('ellipsehighMaskHighSat8','EllipseHSV',255)
+
+    cv2.setTrackbarPos('ellipselowMaskLowVal9','EllipseHSV',55)
+    cv2.setTrackbarPos('ellipselowMaskHighVal10','EllipseHSV',255)
+    cv2.setTrackbarPos('ellipsehighMaskLowVal11','EllipseHSV',1)
+    cv2.setTrackbarPos('ellipsehighMaskHighVal12','EllipseHSV',255)
+
+
     def calculateBrightness(self,image):
         pImage = Image.fromarray(image)
         stat = p.ImageStat.Stat(pImage)
@@ -161,6 +265,11 @@ class ObjectAnalyzer:
     
     def setImageBrightNess(self,image,value):
         PilImage = Image.fromarray(image)
+        autocontrast = ImageOps.autocontrast(PilImage, self.constrastCutoff, None)
+        autocontrastFrame = np.array(autocontrast)
+        
+        #imshow("AutoConstrast",autocontrastFrame)
+        
         enhancer = ImageEnhance.Brightness(PilImage)        
         image = enhancer.enhance(value)
         return image
@@ -192,11 +301,32 @@ class ObjectAnalyzer:
         self.highMaskHighVal = cv2.getTrackbarPos('highMaskHighVal12','HSV')
         
  
+        #HSV 
+        self.ellipselowMaskLowHue = cv2.getTrackbarPos('ellipselowMaskLowHue1','EllipseHSV')
+        self.ellipselowMaskHighHue = cv2.getTrackbarPos('ellipselowMaskHighHue2','EllipseHSV')
+        self.ellipsehighMaskLowHue = cv2.getTrackbarPos('ellipsehighMaskLowHue3','EllipseHSV')
+        self.ellipsehighMaskHighHue = cv2.getTrackbarPos('ellipsehighMaskHighHue4','EllipseHSV')
         
+        self.ellipselowMaskLowSat = cv2.getTrackbarPos('ellipselowMaskLowSat5','EllipseHSV')
+        self.ellipselowMaskHighSat = cv2.getTrackbarPos('ellipselowMaskHighSat6','EllipseHSV')
+        self.ellipsehighMaskLowSat = cv2.getTrackbarPos('ellipsehighMaskLowSat7','EllipseHSV')
+        self.ellipsehighMaskHighSat = cv2.getTrackbarPos('ellipsehighMaskHighSat8','EllipseHSV')
+        
+        self.ellipselowMaskLowVal = cv2.getTrackbarPos('ellipselowMaskLowVal9','EllipseHSV')
+        self.ellipselowMaskHighVal = cv2.getTrackbarPos('ellipselowMaskHighVal10','EllipseHSV')
+        self.ellipsehighMaskLowVal = cv2.getTrackbarPos('ellipsehighMaskLowVal11','EllipseHSV')
+        self.ellipsehighMaskHighVal = cv2.getTrackbarPos('ellipsehighMaskHighVal12','EllipseHSV')
+        
+ 
+ 
         error = cv2.getTrackbarPos('Error','Trackbar')
         amountOfCircles = cv2.getTrackbarPos('Amount of Circles','Trackbar')
         self.edgedLowLimit = cv2.getTrackbarPos('Edged low limit','Trackbar')
         self.edgedHighLimit = cv2.getTrackbarPos('Edged high limit','Trackbar')
+        self.blurValue = cv2.getTrackbarPos('blur','Trackbar')
+        if self.blurValue%2 == 0:
+            self.blurValue += 1
+        
         
         self.houghDP = cv2.getTrackbarPos('Hough: dp','Trackbar')/10
         
@@ -221,6 +351,18 @@ class ObjectAnalyzer:
         self.houghMaxRadius = cv2.getTrackbarPos('maxRadius','Trackbar')
         if self.houghMaxRadius == 0:
                 self.houghMaxRadius = 1
+
+
+        self.threshLow = cv2.getTrackbarPos('tLow','Trackbar')
+        self.threshHigh = cv2.getTrackbarPos('tHigh', 'Trackbar')
+        
+        
+        self.constrastCutoff = cv2.getTrackbarPos('C-cutoff','ImageSettings')
+        self.unSharpMaskRadius = cv2.getTrackbarPos('Un-radius','ImageSettings')
+        self.unSharpMaskPercent = cv2.getTrackbarPos('Un-percent','ImageSettings')
+        self.unSharpMaskThreshhold = cv2.getTrackbarPos('Un-thresh','ImageSettings')
+        
+       
         
         if error == 0:
                 error = 1
@@ -255,7 +397,7 @@ class ObjectAnalyzer:
     def getRedHSVImage(self, frame):
         # lower mask (0-10)
         red_hsv = cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
-        imshow("RedHSV",red_hsv)
+        #imshow("RedHSV",red_hsv)
             
         
         #Create the boundary of the first mask. 
@@ -273,31 +415,71 @@ class ObjectAnalyzer:
         
         # join my masks
         mask = mask0 + mask1
-        imshow('Mask',mask)
+        #imshow('Mask',mask)
         
         # set my output img to zero everywhere except my mask
         red_output = frame.copy()
-        red_output[np.where(mask==0)] = 0
-        #red_output = cv2.bitwise_and(red_output, red_output, mask = mask)
+        #red_output[np.where(mask==0)] = 0
+        red_output = cv2.bitwise_and(red_output, red_output, mask = mask)
         
         
-        imshow("Red", red_output)
+        #imshow("Red", red_output)
+        return red_output
+    
+    
+    def getRedEllipseHSVImage(self, frame):
+        # lower mask (0-10)
+        red_hsv = cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
+        #imshow("RedHSV",red_hsv)
+            
+        
+        #Create the boundary of the first mask. 
+        lowMask_lower_red = np.array([self.ellipselowMaskLowHue,self.ellipselowMaskLowSat,self.ellipselowMaskLowVal])
+        lowMask_upper_red = np.array([self.ellipselowMaskHighHue,self.ellipselowMaskHighSat,self.ellipselowMaskHighVal])           
+            
+        mask0 = cv2.inRange(red_hsv, lowMask_lower_red, lowMask_upper_red)
+            
+            
+        #Create the boundary of the second mask. 
+        highMask_lower_red = np.array([self.ellipsehighMaskLowHue,self.ellipsehighMaskLowSat,self.ellipsehighMaskLowVal])
+        highMask_upper_red = np.array([self.ellipsehighMaskHighHue,self.ellipsehighMaskHighSat,self.ellipsehighMaskHighVal])
+        
+        mask1 = cv2.inRange(red_hsv, highMask_lower_red, highMask_upper_red)
+        
+        # join my masks
+        mask = mask0 + mask1
+        #imshow('Mask',mask)
+        
+        # set my output img to zero everywhere except my mask
+        red_output = frame.copy()
+        #red_output[np.where(mask==0)] = 0
+        red_output = cv2.bitwise_and(red_output, red_output, mask = mask)
+        
+        
+        #imshow("Red", red_output)
         return red_output
     
     
     
-    def findCircle(self, frame):
+    def findCircle(self, frame, state):
+        
         grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        #blurred = cv2.GaussianBlur(grey, (7, 7), 0)
-        blurred = cv2.medianBlur(grey.copy(),7)        #Might be better for filtering noise. 
-<<<<<<< HEAD
-        imshow("blurred",blurred)
-=======
-        edged = cv2.Canny(blurred, self.edgedLowLimit, self.edgedHighLimit)
-        cv2.imshow("Edged",edged)
+        #OGrey = cv2.cvtColor(originalPic, cv2.COLOR_BGR2GRAY)
+        circleBlurred = cv2.GaussianBlur(grey, (7,7), 0)
+        #oCircle = cv2.GaussianBlur(OGrey, (7,7), 0)
+        #imshow("OCircle",oCircle)
+        #blurred = cv2.medianBlur(grey,self.blurValue)        #Might be better for filtering noise. 
+        
+        edged = cv2.Canny(circleBlurred, self.edgedLowLimit, self.edgedHighLimit)
+        #edged1 = cv2.Canny(blurred1, self.edgedLowLimit, self.edgedHighLimit)
+        #cv2.imshow("Edged",edged)
+        #cv2.imshow("Edged1", edged1)
+        
+        #Test
         
         
-        circles = cv2.HoughCircles(edged.copy(), cv2.HOUGH_GRADIENT, self.houghDP, self.houghMinDist, param1 = self.houghParam1, param2 = self.houghParam2, minRadius = self.houghMinRadius, maxRadius = self.houghMaxRadius)
+        
+        circles = cv2.HoughCircles(edged, cv2.HOUGH_GRADIENT, self.houghDP, self.houghMinDist, param1 = self.houghParam1, param2 = self.houghParam2, minRadius = self.houghMinRadius, maxRadius = self.houghMaxRadius)
 
         if circles is not None:
             circles = np.uint16(np.around(circles))
@@ -309,132 +491,87 @@ class ObjectAnalyzer:
                 newCircle = ([i[0],i[1],i[2]])
           
                 self.circleObj.circleKnown(newCircle)
-                self.circleObj.enoughNewCircles(frame, width, height)
+                self.circleObj.enoughNewCircles(frame, width, height, state)
                 
                 
                 # Display the resulting frame
-        cv2.imshow('frame', frame)
+        #cv2.imshow('frame', frame)
         cv2.moveWindow('frame', 20, 20)
-        
+                
+    def findEllipse(self, frame, state):    
+        grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        blurred1 = cv2.GaussianBlur(grey, (self.blurValue, self.blurValue), 0)  #For ellipse
+        imshow("Ellipse Blured", blurred1)
         #--- First obtain the threshold using the greyscale image ---
-        _,th = cv2.threshold(edged,127,255, 0)
+        _,th = cv2.threshold(blurred1,self.threshLow,self.threshHigh, 0)
+
+        cv2.imshow("threshold,",th)
         
         #--- Find all the contours in the binary image ---
-        _, contours,hierarchy = cv2.findContours(th,2,1)
+        _, contours,hierarchy = cv2.findContours(th,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
         cnt = contours
         big_contour = []
         maxArea = 0
+        i = 0
         for i in cnt:
             area = cv2.contourArea(i) #--- find the contour having biggest area ---
             if(area > maxArea):
                 maxArea = area
-                big_contour = i 
+                big_contour = i
+        
+        
+        #print(hierarchy)
+        #print "BigContour: ", big_contour
+        cX = 0
+        cY = 0
+        if len(cnt) > 0 and len(big_contour) > 0:
+            M = cv2.moments(big_contour)
+            cX = M["m10"]/M["m00"]
+            cY = M["m01"]/M["m00"]
+            state.ellipseXCoor = cX
+            state.ellipseYCoor = cY
+            #print "Ellipse x Coor: ", cX
+            #print "Ellipse y Coor: ", cY
             
         final = cv2.drawContours(frame.copy(), big_contour, -1, (0,255,0), 3)
         cv2.imshow('final', final)
         
-       
+        state.ellipseArea = maxArea
+        state.ellipseSeen = True
+        state.resetEllipseCounter()
+
         
         
         
         
         
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
 
 
         
-    def analyzeFrame(self,frame):
-<<<<<<< HEAD
-    
+    def analyzeFrame(self,frame, state):
+        #imshow("Original Image",frame)
+        #PilImage = Image.fromarray(frame)
+        #unsharpmask = p.ImageFilter.UnsharpMask(self.unSharpMaskRadius, self.unSharpMaskPercent, self.unSharpMaskThreshhold)
+        #unsharp = PilImage.filter(unsharpmask)    
+        #unsharpFrame = np.array(unsharp)
+        
+            #imshow("UnsharpMask",unsharpFrame)
+            
+        #self.setImageBrightNess(frame, self.brightness)
         self.setTestValues(frame)
-        brightnessFrame = self.setImageBrightNess(frame, self.brightness)
-        frame = np.array(brightnessFrame)
-        
-        
+        redCircleImage = self.getRedHSVImage(frame)
+        redEllipseImage = self.getRedEllipseHSVImage(frame)
+
         #Maps perceived brigthness to masklimit. Only used in the final version. Requires further testing. 
         #self.maskLimit = self.map(self.perceivedBrightness, self.inMin, self.inMax, self.outMin, self.outMax)
-        
-        redImage = self.getRedHSVImage(frame)
-      
-        self.findCircle(redImage)
-      
-        #bilateral = cv2.bilateralFilter(red_output, 5, 250, 250)
-        #imgray = cv2.cvtColor(bilateral, cv2.COLOR_BGR2GRAY)
-        #blur = cv2.GaussianBlur(imgray, (5, 5), 0)
-        #ret, thresh = cv2.threshold(blur, 40, 255, 0)
-        
-        grey = cv2.cvtColor(redImage, cv2.COLOR_BGR2GRAY)
-        #cv2.imshow("Grey",grey)
-        
-        
-        
-        
-        #waitKey(2500)
-        blurred = cv2.GaussianBlur(grey, (7, 7), 0)
-        #blurred1 = cv2.medianBlur(grey.copy(),5)
-        
-        #Test Try and change the values above. 
-        
-        #cv2.imshow("blurred",blurred)
-        #cv2.imshow("blurred1", blurred1)
-
-        edged = cv2.Canny(blurred, self.edgedLowLimit, self.edgedHighLimit)
-        #edged1 = cv2.Canny(blurred1, self.edgedLowLimit, self.edgedHighLimit)
-        cv2.imshow("Edged",edged)
-        #cv2.imshow("edged1",edged1)
-        #_, contours, hierarchy = cv2.findContours(edged1.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
-        circles = cv2.HoughCircles(edged.copy(), cv2.HOUGH_GRADIENT, self.houghDP, self.houghMinDist, param1 = self.houghParam1, param2 = self.houghParam2, minRadius = self.houghMinRadius, maxRadius = self.houghMaxRadius)
-        #ret,thresh = cv2.threshold(grey,127,255,0)
-        #
-        #edged2 = cv2.Canny(thresh, self.edgedLowLimit, self.edgedHighLimit)
-        #cv2.imshow("edged2",edged2)
-        #adaptive = cv2.adaptiveThreshold(blurred,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
-        #th3 = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
-        #_, contours = cv2.findContours(thresh, 1, 2)
-        
-        #cv2.imshow("thresh",thresh)
-        #ellipse = cv2.fitEllipse(contours)
-        #ellipse = cv2.ellipse(img, ellipse, (0,255,0), 2)
-        #cv2.imshow("Adaptive", adaptive)
-        
-        #rows = thresh.shape[0]
-        
-        #circles = cv2.HoughCircles(blur, cv2.HOUGH_GRADIENT, 1, rows / 8, param1=100, param2=30, minRadius=40, maxRadius=400)
-        
-        if circles is not None:
-            circles = np.uint16(np.around(circles))
-            for i in circles[0, :]:
-                #If radius is zero, circle doesn't exist..
-                if i[2] == 0:
-                    break
-                #Create the new circle.
-                newCircle = ([i[0],i[1],i[2]])
-          
-                self.circleObj.circleKnown(newCircle)
-                self.circleObj.enoughNewCircles(frame, width, height)
-                # Display the resulting frame
-        cv2.imshow('frame', frame)
-       
-=======
-        while (True):
-            self.setTestValues(frame)
             
-            #Maps perceived brigthness to masklimit. Only used in the final version. Requires further testing. 
-            #self.maskLimit = self.map(self.perceivedBrightness, self.inMin, self.inMax, self.outMin, self.outMax)
-            
-            redImage = self.getRedHSVImage(frame)
-            self.findCircle(redImage)
-          
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-    
-        cv2.destroyAllWindows()
-    
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
-    
+        self.findCircle(redCircleImage, state)
+        self.findEllipse(redEllipseImage, state)
+        #imshow('Red Ellipse', redEllipseImage)
+        imshow("Red Circle", redCircleImage)
 
-    
-    
+     
+        
 #recorderObj = Recorder()
 #recorderObj.main()
 

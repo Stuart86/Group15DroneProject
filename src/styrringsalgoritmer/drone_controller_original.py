@@ -3,7 +3,7 @@ import time
 
 drone = libardrone.ARDrone()
 
-def main():
+def main(args):
     testMethod()
 
 def testMethod():
