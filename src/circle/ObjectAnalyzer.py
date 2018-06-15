@@ -4,7 +4,6 @@ from cv2 import imshow
 import cv2
 
 import PIL as p
-from PIL import ImageOps
 from circle import Circle as cl
 import numpy as np
 
@@ -198,12 +197,9 @@ class ObjectAnalyzer:
     #cv2.createTrackbar('outMin','Trackbar',2,180,nothing)
     #cv2.createTrackbar('outMax','Trackbar',3,180,nothing)
 
-<<<<<<< HEAD
-=======
     #cv2.setTrackbarPos('Un-radius','ImageSettings',100)
     #cv2.setTrackbarPos('Un-percent','ImageSettings',75)
 
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
     cv2.createTrackbar('tLow','Trackbar',0,255,nothing)
     cv2.createTrackbar('tHigh','Trackbar',0,255,nothing)
     
@@ -216,27 +212,6 @@ class ObjectAnalyzer:
     
     
     #Normal values that we use
-<<<<<<< HEAD
-    cv2.setTrackbarPos('blur','Trackbar',100)
-    cv2.setTrackbarPos('tHigh','Trackbar',255)
-    cv2.setTrackbarPos('Brightness','Trackbar',1000)
-
-
-    cv2.setTrackbarPos('lowMaskLowHue1','HSV',0)
-    cv2.setTrackbarPos('lowMaskHighHue2','HSV',10)
-    cv2.setTrackbarPos('highMaskLowHue3','HSV',160)
-    cv2.setTrackbarPos('highMaskHighHue4','HSV',180)
-
-    cv2.setTrackbarPos('lowMaskLowSat5','HSV',115)
-    cv2.setTrackbarPos('lowMaskHighSat6','HSV',255)
-    cv2.setTrackbarPos('highMaskLowSat7','HSV',81)
-    cv2.setTrackbarPos('highMaskHighSat8','HSV',255)
-
-    cv2.setTrackbarPos('lowMaskLowVal9','HSV',55)
-    cv2.setTrackbarPos('lowMaskHighVal10','HSV',255)
-    cv2.setTrackbarPos('highMaskLowVal11','HSV',1)
-    cv2.setTrackbarPos('highMaskHighVal12','HSV',255)
-=======
     cv2.setTrackbarPos('Error','Trackbar',20)
     cv2.setTrackbarPos('Amount of Circles','Trackbar',2)
     cv2.setTrackbarPos('Hough: dp','Trackbar',10)
@@ -278,7 +253,6 @@ class ObjectAnalyzer:
     cv2.setTrackbarPos('ellipselowMaskHighVal10','EllipseHSV',255)
     cv2.setTrackbarPos('ellipsehighMaskLowVal11','EllipseHSV',1)
     cv2.setTrackbarPos('ellipsehighMaskHighVal12','EllipseHSV',255)
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
 
 
     def calculateBrightness(self,image):
@@ -294,11 +268,7 @@ class ObjectAnalyzer:
         autocontrast = ImageOps.autocontrast(PilImage, self.constrastCutoff, None)
         autocontrastFrame = np.array(autocontrast)
         
-<<<<<<< HEAD
-        imshow("AutoConstrast",autocontrastFrame)
-=======
         #imshow("AutoConstrast",autocontrastFrame)
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
         
         enhancer = ImageEnhance.Brightness(PilImage)        
         image = enhancer.enhance(value)
@@ -331,8 +301,6 @@ class ObjectAnalyzer:
         self.highMaskHighVal = cv2.getTrackbarPos('highMaskHighVal12','HSV')
         
  
-<<<<<<< HEAD
-=======
         #HSV 
         self.ellipselowMaskLowHue = cv2.getTrackbarPos('ellipselowMaskLowHue1','EllipseHSV')
         self.ellipselowMaskHighHue = cv2.getTrackbarPos('ellipselowMaskHighHue2','EllipseHSV')
@@ -351,7 +319,6 @@ class ObjectAnalyzer:
         
  
  
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
         error = cv2.getTrackbarPos('Error','Trackbar')
         amountOfCircles = cv2.getTrackbarPos('Amount of Circles','Trackbar')
         self.edgedLowLimit = cv2.getTrackbarPos('Edged low limit','Trackbar')
@@ -494,29 +461,9 @@ class ObjectAnalyzer:
     
     
     
-<<<<<<< HEAD
-    def findCircle(self, frame, originalPic, state):
-=======
     def findCircle(self, frame, state):
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
         
         grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-<<<<<<< HEAD
-        OGrey = cv2.cvtColor(originalPic, cv2.COLOR_BGR2GRAY)
-        blurred1 = cv2.GaussianBlur(grey, (self.blurValue, self.blurValue), 0)
-        circleBlurred = cv2.GaussianBlur(grey, (7,7), 0)
-        oCircle = cv2.GaussianBlur(OGrey, (7,7), 0)
-        imshow("OCircle",oCircle)
-        blurred = cv2.medianBlur(grey,self.blurValue)        #Might be better for filtering noise. 
-        
-        edged = cv2.Canny(circleBlurred, self.edgedLowLimit, self.edgedHighLimit)
-        edged1 = cv2.Canny(blurred1, self.edgedLowLimit, self.edgedHighLimit)
-        #cv2.imshow("Edged",edged)
-        #cv2.imshow("Edged1", edged1)
-        
-        #Test
-        
-=======
         #OGrey = cv2.cvtColor(originalPic, cv2.COLOR_BGR2GRAY)
         circleBlurred = cv2.GaussianBlur(grey, (7,7), 0)
         #oCircle = cv2.GaussianBlur(OGrey, (7,7), 0)
@@ -529,7 +476,6 @@ class ObjectAnalyzer:
         #cv2.imshow("Edged1", edged1)
         
         #Test
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
         
         
         
@@ -572,10 +518,6 @@ class ObjectAnalyzer:
             if(area > maxArea):
                 maxArea = area
                 big_contour = i
-<<<<<<< HEAD
-
-        #print(hierarchy)
-=======
         
         
         #print(hierarchy)
@@ -591,7 +533,6 @@ class ObjectAnalyzer:
             #print "Ellipse x Coor: ", cX
             #print "Ellipse y Coor: ", cY
             
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
         final = cv2.drawContours(frame.copy(), big_contour, -1, (0,255,0), 3)
         cv2.imshow('final', final)
         
@@ -608,18 +549,6 @@ class ObjectAnalyzer:
 
         
     def analyzeFrame(self,frame, state):
-<<<<<<< HEAD
-        imshow("Original Image",frame)
-        PilImage = Image.fromarray(frame)
-        unsharpmask = p.ImageFilter.UnsharpMask(self.unSharpMaskRadius, self.unSharpMaskPercent, self.unSharpMaskThreshhold)
-        unsharp = PilImage.filter(unsharpmask)
-        
-        unsharpFrame = np.array(unsharp)
-        
-        imshow("UnsharpMask",unsharpFrame)
-        
-        self.setImageBrightNess(frame, self.brightness)
-=======
         #imshow("Original Image",frame)
         #PilImage = Image.fromarray(frame)
         #unsharpmask = p.ImageFilter.UnsharpMask(self.unSharpMaskRadius, self.unSharpMaskPercent, self.unSharpMaskThreshhold)
@@ -629,26 +558,13 @@ class ObjectAnalyzer:
             #imshow("UnsharpMask",unsharpFrame)
             
         #self.setImageBrightNess(frame, self.brightness)
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
         self.setTestValues(frame)
-<<<<<<< HEAD
-        redImage = self.getRedHSVImage(unsharpFrame)
-        
-
-=======
         redCircleImage = self.getRedHSVImage(frame)
         redEllipseImage = self.getRedEllipseHSVImage(frame)
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
 
         #Maps perceived brigthness to masklimit. Only used in the final version. Requires further testing. 
         #self.maskLimit = self.map(self.perceivedBrightness, self.inMin, self.inMax, self.outMin, self.outMax)
             
-<<<<<<< HEAD
-        self.findCircle(redImage, frame, state)
-      
-        
-    
-=======
         self.findCircle(redCircleImage, state)
         self.findEllipse(redEllipseImage, state)
         #imshow('Red Ellipse', redEllipseImage)
@@ -656,7 +572,6 @@ class ObjectAnalyzer:
 
      
         
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
 #recorderObj = Recorder()
 #recorderObj.main()
 

@@ -1,17 +1,8 @@
-<<<<<<< HEAD
-import cv2
-from state import DroneState
-from circle import ObjectAnalyzer as oa
-from QR.QReader import findAndReadQR
-from styrringsalgoritmer import libardrone
-import time
-=======
 import time
 
 from cv2 import imshow
 import cv2
 from state import DroneState
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
 
 from QR.QReader import findAndReadQR
 from circle import ObjectAnalyzer as oa
@@ -24,23 +15,15 @@ class Controller(object):
 
     
     capture = cv2.VideoCapture()
-<<<<<<< HEAD
-    #drone = libardrone.ARDrone()
-
-=======
     drone = libardrone.ARDrone()
     
     time1 = 0
     time1Set = False
     
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
     '''
     classdocs
     '''
     state = DroneState.State()
-<<<<<<< HEAD
-
-=======
     
     
     LR = 0
@@ -87,7 +70,6 @@ class Controller(object):
     
     
     
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
 
     
     def __init__(self):
@@ -98,21 +80,11 @@ class Controller(object):
     def main(self):
         #self.initializeCamera()
         analyzer = oa.ObjectAnalyzer()
-<<<<<<< HEAD
-        frameCounter = 0
-        #self.drone.takeoff()
-=======
         #imageCreaterObj = IC.ImageCreater()
 
         
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
 
         while (True):
-<<<<<<< HEAD
-            t1 = time.time()
-
-
-=======
             if cv2.waitKey(1) & 0xFF == ord('w'):
                 print "Take off"
                 break
@@ -124,7 +96,6 @@ class Controller(object):
             #imageCreaterObj.updateTrackbarValues()
             #imageCreaterObj.drawEllipse()
             #frame = imageCreaterObj.getImage()
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
             
             #grabbed, readFrame = self.capture.read()
             #if grabbed:
@@ -134,47 +105,6 @@ class Controller(object):
             if not grabbed:
                 #print("Frame not grabbed")
                 continue
-<<<<<<< HEAD
-            frameCounter = (frameCounter + 1)%2
-
-            if (frameCounter % 2 == 0):
-
-                continue
-            #-----Converting image to LAB Color model----------------------------------- 
-            lab= cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
-            cv2.imshow("lab",lab)
-            
-            #-----Splitting the LAB image to different channels-------------------------
-            l, a, b = cv2.split(lab)
-            cv2.imshow('l_channel', l)
-            cv2.imshow('a_channel', a)
-            cv2.imshow('b_channel', b)
-            
-            #-----Applying CLAHE to L-channel-------------------------------------------
-            clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
-            cl = clahe.apply(l)
-            cv2.imshow('CLAHE output', cl)
-            
-            #-----Merge the CLAHE enhanced L-channel with the a and b channel-----------
-            limg = cv2.merge((cl,a,b))
-            cv2.imshow('limg', limg)
-            
-            #-----Converting image from LAB Color model to RGB model--------------------
-            final = cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
-            cv2.imshow('final', final)
-
-            result = findAndReadQR(frame)
-            if(len(result) > 0):
-                for i in result:
-                    print (i)
-
-            analyzer.analyzeFrame(frame, self.state)
-
-            t2 = time.time()
-            #print("Time: ", t2-t1)
-
-            #self.state.printInfo()
-=======
             
             #Scan the image for different figures. 
             self.getQRResult(frame)
@@ -187,14 +117,10 @@ class Controller(object):
             
 
 
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
             
             
             if cv2.waitKey(1) & 0xFF == ord('q'):
-<<<<<<< HEAD
-=======
                 self.drone.land()
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
                 break
 
         # When everything done, release the capture
@@ -207,11 +133,6 @@ class Controller(object):
         #self.capture.open("tcp://192.168.1.1:5555")
         self.capture.open(0)
 
-<<<<<<< HEAD
-
-
-
-=======
     def getQRResult(self,frame):
         result = findAndReadQR(frame)
         if result is not None:                   
@@ -365,6 +286,5 @@ class Controller(object):
                 #time.sleep(0.01)
                 print "Fly down"
         
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
 controllerObj = Controller()
 controllerObj.main()

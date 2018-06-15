@@ -20,10 +20,6 @@ class State(object):
     #Do we see the circle or QR-code
     circleSeen = False
     QRCodeSeen = False
-<<<<<<< HEAD
-    
-    mostRecentCircle = None
-=======
     ellipseSeen = False
     
     #When was it that we saw the circle and QR-code last time? Counter for setting circleSeen and QRCodeSeen to false. 
@@ -40,7 +36,6 @@ class State(object):
     #The circle and QR-code object. 
     mostRecentCircle = None
     mostRecentQR = None
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
     
 
 
@@ -95,8 +90,6 @@ class State(object):
     
 
 
-<<<<<<< HEAD
-=======
 
 
 
@@ -108,7 +101,6 @@ class State(object):
 
 
 
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
     def __init__(self):
         '''
         Constructor
@@ -166,14 +158,6 @@ class State(object):
         if self.routineStarted:
             return True
 
-<<<<<<< HEAD
-    def printInfo(self): 
-        print("DroneState:")
-        print("aboveCenter: ", self.aboveCenter)
-        print("underCenter: ", self.underCenter)
-        print("rightOfCenter: ", self.rightOfCenter)
-        print("leftOfCenter: ", self.leftOfCenter)
-=======
         if math.fabs(self.imageXCenter-self.circleXCoor*2) < self.centerThreshold:
             if math.fabs(self.imageYCenter-self.circleYCoor*2) < self.centerThreshold:
                 return True
@@ -197,21 +181,8 @@ class State(object):
         return math.fabs(self.imageXCenter - self.circleXCoor*2) > self.centerThreshold and self.imageXCenter > self.circleXCoor*2
     def droneLeftOfCenter(self):
         return math.fabs(self.imageXCenter - self.circleXCoor*2) > self.centerThreshold and self.imageXCenter < self.circleXCoor*2
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
         
     
-<<<<<<< HEAD
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-=======
     def droneLeftOfEllipse(self):
         return math.fabs(self.imageXCenter - self.ellipseXCoor*2) > self.ellipseThreshold and self.imageXCenter < self.ellipseXCoor*2
     def droneRightOfEllipse(self):
@@ -243,7 +214,6 @@ class State(object):
                 
     def resetCircleInfo(self):
       self.circleSeen = False  
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
     
     
     

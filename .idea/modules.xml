@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-<<<<<<< HEAD
-      <module fileurl="file://$PROJECT_DIR$/.idea/Group15DroneProject.iml" filepath="$PROJECT_DIR$/.idea/Group15DroneProject.iml" />
-=======
       <module fileurl="file://$PROJECT_DIR$/.idea/Group15DroneProject4.iml" filepath="$PROJECT_DIR$/.idea/Group15DroneProject4.iml" />
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
     </modules>
   </component>
 </project>

@@ -6,8 +6,6 @@ from state import DroneState
 
 import numpy as np
 
-from state import DroneState
-
 
 #Variables
 #Frames and such
@@ -41,54 +39,6 @@ class Circle:
         State.resetCircleCounter()
         imshow("Circle", frame)
         
-<<<<<<< HEAD
-        #textCenter = (avarageCenter[0]+50,avarageCenter[1]-60)
-        #cv2.putText(frame, str(textCenter), textCenter, cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
-    
-        #trackedCenter = (avarageCenter[0],avarageCenter[1]-60)
-        #cv2.putText(frame, 'Tracked', trackedCenter, cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 2, cv2.LINE_AA)
-
-
-        print(width/2)
-        print(height/2)
-        print(avarageCenter)
-        #Return to this and make it more efficient. No if statements.
-        if (width/2) < avarageCenter[0]*2:
-            State.leftOfCenter = True
-        else:
-            State.leftOfCenter = False
-        if (width / 2) > avarageCenter[0]*2:
-            State.rightOfCenter = True
-        else: 
-            State.rightOfCenter = False
-        if (height / 2) < avarageCenter[1]*2:
-            State.underCenter = True
-        else:
-            State.underCenter = False
-        if (height / 2) > avarageCenter[1]*2:
-            State.aboveCenter = True
-        else:
-            State.aboveCenter = False
-        
-
-        #cv2.line(frame, (int(width / 2), int(height / 2)), avarageCenter, (0, 255, 0), 5)
-    
-        #x = math.sqrt((int(width / 2) - avarageCenter[0]) ** 2 + (int(height / 2) - avarageCenter[1]) ** 2)
-    
-    #    cv2.putText(frame, "Distance" + str(math.ceil(x)), (int(width / 2) - 100, int(height / 2) + 100),
-    #                cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255),
-    #                1, cv2.LINE_AA)
-
-        #if (x <= 40):
-           # cv2.drawMarker(frame, (int(width / 2), int(height / 2)), (0, 0, 255), markerType=cv2.MARKER_CROSS,
-            #               markerSize=10,
-             #              thickness=2, line_type=cv2.LINE_AA)
-            #cv2.putText(frame, "Locked", (int(width / 2) - 100, int(height / 2) + 150),
-            #            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255),
-            #            2, cv2.LINE_AA)
-
-=======
->>>>>>> branch 'Objektgenkendelse' of https://github.com/Stuart86/Group15DroneProject
 
 
 
