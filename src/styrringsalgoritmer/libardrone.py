@@ -26,12 +26,13 @@ This module was tested with Python 2.6.6 and AR.Drone vanilla firmware 1.5.1.
 """
 
 
-import os
 import socket
 import struct
 import sys
 import threading
 import time
+import csv
+import os
 
 import arnetwork
 
@@ -71,6 +72,7 @@ class ARDrone(object):
         self.time = 0
         self.command_thread = arnetwork.CommandThread(self)
         self.command_thread.start()
+        self.isCollectingData = False
 
 
     def asyncCommand(self , lr , bf , ud , rot, sleep1 , sleep2):
@@ -106,6 +108,7 @@ class ARDrone(object):
     def takeoff(self):
         """Make the drone takeoff."""
         self.at(at_ftrim)
+        time.sleep(2)
         self.at(at_config, "control:altitude_max", "20000")
         self.at(at_ref, True)
 
@@ -373,23 +376,28 @@ def at(command, seq, params):
         print "Couldn't send Command"
 
 NAV_COUNTER = 0
-
-def onNavDataReceive(data):
-    global NAV_COUNTER
-    b = 1
-    NAV_COUNTER = (NAV_COUNTER + 1)%10
-    if NAV_COUNTER%10 == 0 and b == 0:
+rows = []
+def onNavDataReceive(drone, data):
+    #global NAV_COUNTER
+    global rows
+    #NAV_COUNTER = (NAV_COUNTER + 1)%10
+    if drone.isCollectingData:
         theta = data[0]['theta']
-        #psi = data[0]['psi']
+        psi = data[0]['psi']
         phi = data[0]['phi']
         vx = data[0]["vx"]
-        vz = data[0]["vz"]
         vy = data[0]["vy"]
         alt = data[0]["altitude"]
-        bat = data[0]["battery"]
-
+        time = data["timestamp"]
+        rows.append([theta , phi , psi , vx  , vy , alt , time])
         #print "theta: " , theta , " phi: ", phi
-        print "vx: ",vx , " vy: ",vy , " altitude: ", alt, "POWER: " , bat, "%"
+        #print "vx: ",vx , " vy: ",vy , " altitude: ", alt, "POWER: " , bat, "%"
+
+def saveToCSV():
+    with open('hover.csv', 'wb') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=' ',
+                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        spamwriter.writerows(rows)
 
 
 def f2i(f):

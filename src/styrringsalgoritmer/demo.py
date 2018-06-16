@@ -28,14 +28,11 @@ stream.
 """
 
 
-import time
-
-import cv2
 import pygame
-
-from QR.QReader import findAndReadQR
+import cv2
 import libardrone
-
+from QR.QReader import findAndReadQR
+import time
 
 #video_capture = cv2.VideoCapture()
 #video_capture.open('tcp://192.168.1.1:5555')
@@ -203,6 +200,7 @@ def main():
                 running = False 
             elif event.type == pygame.KEYUP:
                 drone.hover()
+                drone.isCollectingData = True
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     drone.reset()
@@ -225,6 +223,8 @@ def main():
                     takeoff = True
                 elif event.key == pygame.K_SPACE:
                     drone.land()
+                    drone.isCollectingData = False
+                    libardrone.saveToCSV()
                     takeoff = False
                 # emergency
                 elif event.key == pygame.K_BACKSPACE:

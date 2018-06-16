@@ -2,15 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="85e3e3ed-61c9-462f-81b9-748605eba83c" name="Default" comment="">
-<<<<<<< HEAD
-      <change beforePath="$PROJECT_DIR$/.idea/Group15DroneProject.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Group15DroneProject.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/circle/ObjectAnalyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/circle/ObjectAnalyzer.py" afterDir="false" />
-=======
+      <change beforePath="" afterPath="$PROJECT_DIR$/src/controller/alternate_controller.py" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/src/styrringsalgoritmer/libardrone.py" afterPath="$PROJECT_DIR$/src/styrringsalgoritmer/libardrone.py" />
->>>>>>> branch 'Windows-version' of https://github.com/Stuart86/Group15DroneProject
+      <change beforePath="$PROJECT_DIR$/src/QR/QReader.py" afterPath="$PROJECT_DIR$/src/QR/QReader.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -20,63 +14,12 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
       <file leaf-file-name="Main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/circle/Main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1149">
-              <caret line="231" selection-start-line="231" selection-end-line="231" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="arnetwork.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/arnetwork.py">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file leaf-file-name="Controller.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/controller/Controller.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="680">
-              <caret line="172" column="32" lean-forward="true" selection-start-line="172" selection-start-column="32" selection-end-line="172" selection-end-column="32" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/controller/__init__.py">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file leaf-file-name="forking.py" pinned="false" current-in-tab="false">
-        <entry file="file://C:/Python27/Lib/multiprocessing/forking.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5950">
-              <caret line="355" selection-start-line="355" selection-end-line="355" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/__init__.py">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file leaf-file-name="DroneState.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/state/DroneState.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1564">
-              <caret line="92" column="20" selection-start-line="92" selection-start-column="20" selection-end-line="92" selection-end-column="20" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Main.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/circle/Main.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2864">
-              <caret line="265" column="61" lean-forward="true" selection-start-line="265" selection-start-column="61" selection-end-line="265" selection-end-column="61" />
+            <state relative-caret-position="421">
+              <caret line="265" column="61" lean-forward="false" selection-start-line="265" selection-start-column="61" selection-end-line="265" selection-end-column="61" />
               <folding />
             </state>
           </provider>
@@ -85,22 +28,8 @@
       <file leaf-file-name="ObjectAnalyzer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/circle/ObjectAnalyzer.py">
           <provider selected="true" editor-type-id="text-editor">
-<<<<<<< HEAD
-            <state relative-caret-position="6273">
-              <caret line="376" column="9" selection-start-line="376" selection-start-column="9" selection-end-line="376" selection-end-column="9" />
-=======
-            <state relative-caret-position="-6691">
-              <caret line="89" column="35" lean-forward="true" selection-start-line="89" selection-start-column="35" selection-end-line="89" selection-end-column="35" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DroneState.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/state/DroneState.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="77">
-              <caret line="27" column="11" lean-forward="false" selection-start-line="27" selection-start-column="11" selection-end-line="27" selection-end-column="11" />
+            <state relative-caret-position="449">
+              <caret line="89" column="14" lean-forward="true" selection-start-line="89" selection-start-column="14" selection-end-line="89" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -109,20 +38,54 @@
       <file leaf-file-name="QReader.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/QR/QReader.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
-              <caret line="237" column="82" lean-forward="false" selection-start-line="237" selection-start-column="59" selection-end-line="237" selection-end-column="82" />
->>>>>>> branch 'Windows-version' of https://github.com/Stuart86/Group15DroneProject
+            <state relative-caret-position="300">
+              <caret line="379" column="30" lean-forward="false" selection-start-line="379" selection-start-column="30" selection-end-line="379" selection-end-column="30" />
               <folding>
-                <element signature="e#0#35#0" expanded="true" />
+                <element signature="e#2#13#0" expanded="true" />
+                <element signature="e#4309#5830#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-<<<<<<< HEAD
-=======
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/__init__.py">
+      <file leaf-file-name="Controller.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/controller/Controller.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="216">
+              <caret line="73" column="12" lean-forward="false" selection-start-line="73" selection-start-column="12" selection-end-line="75" selection-end-column="21" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="demo.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/demo.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="123">
+              <caret line="112" column="4" lean-forward="false" selection-start-line="112" selection-start-column="4" selection-end-line="113" selection-end-column="34" />
+              <folding>
+                <element signature="e#2457#3877#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="alternate_controller.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/controller/alternate_controller.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="191">
+              <caret line="54" column="42" lean-forward="true" selection-start-line="54" selection-start-column="42" selection-end-line="54" selection-end-column="42" />
+              <folding>
+                <element signature="e#0#54#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="hover.csv" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/hover.csv">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -131,46 +94,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Controller.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/controller/Controller.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="21">
-              <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
->>>>>>> branch 'Windows-version' of https://github.com/Stuart86/Group15DroneProject
-      <file leaf-file-name="demo.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/demo.py">
-          <provider selected="true" editor-type-id="text-editor">
-<<<<<<< HEAD
-            <state relative-caret-position="2550">
-              <caret line="152" column="18" selection-start-line="152" selection-start-column="18" selection-end-line="152" selection-end-column="18" />
-=======
-            <state relative-caret-position="508">
-              <caret line="215" column="37" lean-forward="false" selection-start-line="215" selection-start-column="37" selection-end-line="215" selection-end-column="37" />
->>>>>>> branch 'Windows-version' of https://github.com/Stuart86/Group15DroneProject
-              <folding>
-                <element signature="e#1242#1255#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-<<<<<<< HEAD
       <file leaf-file-name="libardrone.py" pinned="false" current-in-tab="false">
-=======
-      <file leaf-file-name="libardrone.py" pinned="false" current-in-tab="true">
->>>>>>> branch 'Windows-version' of https://github.com/Stuart86/Group15DroneProject
         <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/libardrone.py">
-<<<<<<< HEAD
-          <provider selected="true" editor-type-id="text-editor" />
-=======
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="74" column="0" lean-forward="true" selection-start-line="74" selection-start-column="0" selection-end-line="74" selection-end-column="0" />
+            <state relative-caret-position="1603">
+              <caret line="383" column="4" lean-forward="false" selection-start-line="383" selection-start-column="4" selection-end-line="383" selection-end-column="4" />
               <folding>
                 <element signature="e#1218#1231#0" expanded="true" />
               </folding>
@@ -181,14 +109,23 @@
       <file leaf-file-name="arnetwork.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/arnetwork.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-860">
-              <caret line="131" column="36" lean-forward="false" selection-start-line="131" selection-start-column="36" selection-end-line="131" selection-end-column="36" />
+            <state relative-caret-position="147">
+              <caret line="190" column="35" lean-forward="true" selection-start-line="190" selection-start-column="35" selection-end-line="190" selection-end-column="35" />
               <folding>
                 <element signature="e#1171#1184#0" expanded="true" />
               </folding>
             </state>
           </provider>
->>>>>>> branch 'Windows-version' of https://github.com/Stuart86/Group15DroneProject
+        </entry>
+      </file>
+      <file leaf-file-name="ImageCreater.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/circle/ImageCreater.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1660">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
         </entry>
       </file>
     </leaf>
@@ -202,31 +139,32 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>lowMask</find>
-      <find>thresh</find>
-      <find>findCoun</find>
-      <find>edged</find>
+      <find>drone.move</find>
+      <find>qrRoutine</find>
+      <find>leftRightFix</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/state/State.py" />
         <option value="$PROJECT_DIR$/src/state/DroneState.py" />
-        <option value="$PROJECT_DIR$/src/controller/__init__.py" />
-        <option value="$PROJECT_DIR$/src/QR/QReader.py" />
-<<<<<<< HEAD
-        <option value="$PROJECT_DIR$/src/circle/ObjectAnalyzer.py" />
-        <option value="$PROJECT_DIR$/src/styrringsalgoritmer/__init__.py" />
-        <option value="$PROJECT_DIR$/src/controller/Controller.py" />
-=======
+        <option value="$PROJECT_DIR$/src/styrringsalgoritmer/drone_controller_original.py" />
+        <option value="$PROJECT_DIR$/src/styrringsalgoritmer/commTest.py" />
+        <option value="$PROJECT_DIR$/src/styrringsalgoritmer/arvideo.py" />
         <option value="$PROJECT_DIR$/src/styrringsalgoritmer/demo.py" />
-        <option value="$PROJECT_DIR$/src/styrringsalgoritmer/arnetwork.py" />
         <option value="$PROJECT_DIR$/src/styrringsalgoritmer/libardrone.py" />
->>>>>>> branch 'Windows-version' of https://github.com/Stuart86/Group15DroneProject
+        <option value="$PROJECT_DIR$/src/styrringsalgoritmer/arnetwork.py" />
+        <option value="$PROJECT_DIR$/src/QR/QReader.py" />
+        <option value="$PROJECT_DIR$/src/controller/alternate_controller.py" />
       </list>
     </option>
   </component>
@@ -237,32 +175,37 @@
     <option name="height" value="1000" />
   </component>
   <component name="ProjectView">
-    <navigator proportions="" version="1">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
       <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
-              <item name="Group15DroneProject" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Group15DroneProject" type="462c0819:PsiDirectoryNode" />
+              <item name="Group15DroneProject5" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Group15DroneProject5" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="Group15DroneProject" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Group15DroneProject" type="462c0819:PsiDirectoryNode" />
+              <item name="Group15DroneProject5" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Group15DroneProject5" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="Group15DroneProject" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Group15DroneProject" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="circle" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Group15DroneProject" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Group15DroneProject" type="462c0819:PsiDirectoryNode" />
+              <item name="Group15DroneProject5" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Group15DroneProject5" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="circle" type="462c0819:PsiDirectoryNode" />
             </path>
@@ -273,20 +216,14 @@
               <item name="controller" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="Group15DroneProject" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Group15DroneProject" type="462c0819:PsiDirectoryNode" />
+              <item name="Group15DroneProject5" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Group15DroneProject5" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="QR" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="Group15DroneProject" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Group15DroneProject" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="state" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Group15DroneProject" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Group15DroneProject" type="462c0819:PsiDirectoryNode" />
+              <item name="Group15DroneProject5" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Group15DroneProject5" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="state" type="462c0819:PsiDirectoryNode" />
             </path>
@@ -306,6 +243,14 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings module-name="Group15DroneProject4" is-module-sdk="true">
+        <option name="myUseModuleSdk" value="true" />
+        <option name="myModuleName" value="Group15DroneProject4" />
+      </console-settings>
+    </option>
+  </component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -318,9 +263,44 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Controller">
-    <configuration name="Controller" type="PythonConfigurationType" factoryName="Python" temporary="true">
+  <component name="RunManager" selected="Python.alternate_controller">
+    <configuration name="QReader" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/QR" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Group15DroneProject4" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/QR/QReader.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="Group15DroneProject" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="alternate_controller" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -331,14 +311,14 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/controller/Controller.py" />
+      <module name="Group15DroneProject4" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/controller/alternate_controller.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
-    <configuration name="demo" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="Group15DroneProject" />
+    <configuration name="commTest" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -349,22 +329,135 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Group15DroneProject4" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/styrringsalgoritmer/commTest.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="demo" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/styrringsalgoritmer" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Group15DroneProject4" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/styrringsalgoritmer/demo.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
-    <list>
-      <item itemvalue="Python.Controller" />
-      <item itemvalue="Python.demo" />
+    <configuration default="true" type="Tox" factoryName="Tox">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Group15DroneProject" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Doctests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Group15DroneProject" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Nosetests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Group15DroneProject" />
+      <option name="_new_regexPattern" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Twisted Trial">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Group15DroneProject" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Unittests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Group15DroneProject" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="py.test">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Group15DroneProject" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+    </configuration>
+    <list size="4">
+      <item index="0" class="java.lang.String" itemvalue="Python.QReader" />
+      <item index="1" class="java.lang.String" itemvalue="Python.commTest" />
+      <item index="2" class="java.lang.String" itemvalue="Python.demo" />
+      <item index="3" class="java.lang.String" itemvalue="Python.alternate_controller" />
     </list>
     <recent_temporary>
-      <list>
-        <item itemvalue="Python.Controller" />
-        <item itemvalue="Python.demo" />
+      <list size="4">
+        <item index="0" class="java.lang.String" itemvalue="Python.alternate_controller" />
+        <item index="1" class="java.lang.String" itemvalue="Python.QReader" />
+        <item index="2" class="java.lang.String" itemvalue="Python.demo" />
+        <item index="3" class="java.lang.String" itemvalue="Python.commTest" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -377,8 +470,6 @@
       <option name="presentableId" value="Default" />
       <updated>1528369873319</updated>
     </task>
-<<<<<<< HEAD
-=======
     <task id="LOCAL-00001" summary="Works on windows">
       <created>1528625433035</created>
       <option name="number" value="00001" />
@@ -435,109 +526,177 @@
       <option name="project" value="LOCAL" />
       <updated>1528814712735</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
->>>>>>> branch 'Windows-version' of https://github.com/Stuart86/Group15DroneProject
+    <task id="LOCAL-00009" summary="Merge remote-tracking branch 'origin/Objektgenkendelse' into Windows-version&#10;&#10;# Conflicts:&#10;#&#9;.idea/modules.xml&#10;#&#9;.idea/workspace.xml">
+      <created>1528814850655</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1528814850655</updated>
+    </task>
+    <task id="LOCAL-00010" summary="records data in csv file when using demo">
+      <created>1528877077492</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1528877077492</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Merge remote-tracking branch 'origin/Objektgenkendelse' into Windows-version&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml">
+      <created>1528877408798</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1528877408798</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="878" extended-state="6" />
+    <frame x="-9" y="-9" width="1938" height="1048" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1796875" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" weight="0.32996634" />
-      <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32036316" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.3994812" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Messages" order="7" weight="0.3294423" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1796875" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4248079" sideWeight="0.34635416" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4248079" sideWeight="0.6536458" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32930845" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32930845" sideWeight="0.7963542" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
-    <layout-to-restore>
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="9" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="8" weight="0.25" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.22526042" />
-      <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="bottom" id="TODO" order="10" />
-      <window_info anchor="bottom" id="Run" order="6" visible="true" weight="0.3294423" />
-      <window_info anchor="bottom" id="Find" order="5" />
-      <window_info anchor="bottom" id="Debug" order="7" weight="0.4" />
-      <window_info anchor="bottom" id="Terminal" order="1" />
-      <window_info anchor="bottom" id="Event Log" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Version Control" order="3" />
-      <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="4" />
-      <window_info anchor="bottom" id="Python Console" order="0" />
-    </layout-to-restore>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Works on windows" />
+    <MESSAGE value="Works on windows, done more tests" />
+    <MESSAGE value="more demo work done" />
+    <MESSAGE value="Merge remote-tracking branch 'origin/Objektgenkendelse' into Windows-version&#10;&#10;# Conflicts:&#10;#&#9;.idea/modules.xml&#10;#&#9;.idea/workspace.xml" />
+    <MESSAGE value="records data in csv file when using demo" />
+    <MESSAGE value="Merge remote-tracking branch 'origin/Objektgenkendelse' into Windows-version&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge remote-tracking branch 'origin/Objektgenkendelse' into Windows-version&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="3" />
+    </breakpoint-manager>
+    <watches-manager />
+  </component>
   <component name="editorHistoryManager">
-<<<<<<< HEAD
-    <entry file="file://$PROJECT_DIR$/src/circle/Main.py">
+    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/drone_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3825">
-          <caret line="231" lean-forward="true" selection-start-line="231" selection-end-line="231" />
+        <state relative-caret-position="63">
+          <caret line="6" column="19" lean-forward="false" selection-start-line="6" selection-start-column="19" selection-end-line="6" selection-end-column="43" />
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/Python27/Lib/multiprocessing/forking.py">
-=======
-    <entry file="file://$PROJECT_DIR$/src/controller/Controller.py">
->>>>>>> branch 'Windows-version' of https://github.com/Stuart86/Group15DroneProject
+    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/arnetwork.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5950">
-          <caret line="355" lean-forward="true" selection-start-line="355" selection-end-line="355" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/state/DroneState.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="27" column="20" selection-start-line="27" selection-start-column="20" selection-end-line="27" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/circle/ObjectAnalyzer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6103">
-          <caret line="366" column="9" selection-start-line="366" selection-start-column="9" selection-end-line="366" selection-end-column="9" />
+        <state relative-caret-position="2814">
+          <caret line="141" column="0" lean-forward="false" selection-start-line="141" selection-start-column="0" selection-end-line="141" selection-end-column="0" />
           <folding>
-            <element signature="e#0#35#0" expanded="true" />
+            <element signature="e#1171#1184#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/demo.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="748">
-          <caret line="46" column="18" lean-forward="true" selection-start-line="46" selection-start-column="18" selection-end-line="46" selection-end-column="18" />
+        <state relative-caret-position="2877">
+          <caret line="141" column="20" lean-forward="false" selection-start-line="141" selection-start-column="20" selection-end-line="141" selection-end-column="20" />
           <folding>
-            <element signature="e#1242#1255#0" expanded="true" />
+            <element signature="e#2457#3877#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-<<<<<<< HEAD
+    <entry file="file://$PROJECT_DIR$/src/circle/Circle.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="21">
+          <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/circle/ObjectAnalyzer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1449">
+          <caret line="76" column="4" lean-forward="false" selection-start-line="76" selection-start-column="4" selection-end-line="86" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/QR/QReader.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3843">
+          <caret line="183" column="38" lean-forward="false" selection-start-line="183" selection-start-column="38" selection-end-line="183" selection-end-column="38" />
+          <folding>
+            <element signature="e#2#13#0" expanded="true" />
+            <element signature="e#4309#5830#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/controller/Controller.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="21">
+          <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/controller/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/libardrone.py">
-      <provider selected="true" editor-type-id="text-editor" />
-=======
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1491">
+          <caret line="71" column="27" lean-forward="false" selection-start-line="71" selection-start-column="27" selection-end-line="71" selection-end-column="27" />
+          <folding>
+            <element signature="e#1218#1231#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/arnetwork.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2961">
+          <caret line="141" column="0" lean-forward="false" selection-start-line="141" selection-start-column="0" selection-end-line="141" selection-end-column="0" />
+          <folding>
+            <element signature="e#1171#1184#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/demo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2982">
+          <caret line="142" column="26" lean-forward="false" selection-start-line="142" selection-start-column="26" selection-end-line="142" selection-end-column="26" />
+          <folding>
+            <element signature="e#2457#3877#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/circle/Circle.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -553,27 +712,28 @@
           <folding />
         </state>
       </provider>
->>>>>>> branch 'Windows-version' of https://github.com/Stuart86/Group15DroneProject
     </entry>
     <entry file="file://$PROJECT_DIR$/src/QR/QReader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5015">
-          <caret line="302" selection-start-line="302" selection-end-line="302" />
+        <state relative-caret-position="6489">
+          <caret line="316" column="4" lean-forward="false" selection-start-line="316" selection-start-column="4" selection-end-line="316" selection-end-column="4" />
           <folding>
             <element signature="e#2#13#0" expanded="true" />
+            <element signature="e#4309#5830#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/QR/QRresult.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/controller/Controller.py">
+    <entry file="file://$PROJECT_DIR$/src/circle/Circle.py">
       <provider selected="true" editor-type-id="text-editor">
-<<<<<<< HEAD
-        <state relative-caret-position="170">
-          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
-=======
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/state/DroneState.py">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="567">
           <caret line="27" column="11" lean-forward="false" selection-start-line="27" selection-start-column="11" selection-end-line="27" selection-end-column="11" />
           <folding />
@@ -671,54 +831,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/drone_controller_original.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
-          <caret line="5" column="13" lean-forward="false" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
->>>>>>> branch 'Windows-version' of https://github.com/Stuart86/Group15DroneProject
-        </state>
-      </provider>
-    </entry>
-<<<<<<< HEAD
-    <entry file="file://$PROJECT_DIR$/src/circle/Main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1972">
-          <caret line="122" column="54" selection-start-line="122" selection-start-column="54" selection-end-line="122" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/state/DroneState.py">
-=======
     <entry file="file://$PROJECT_DIR$/src/circle/CircleResult.py" />
     <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/README.md">
->>>>>>> branch 'Windows-version' of https://github.com/Stuart86/Group15DroneProject
       <provider selected="true" editor-type-id="text-editor">
-<<<<<<< HEAD
-        <state relative-caret-position="459">
-          <caret line="27" column="11" selection-start-line="27" selection-start-column="11" selection-end-line="27" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/circle/ObjectAnalyzer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/controller/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/QR/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/QR/QReader.py">
-=======
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -726,226 +843,139 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/drone_controller.py">
->>>>>>> branch 'Windows-version' of https://github.com/Stuart86/Group15DroneProject
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" selection-start-line="8" selection-end-line="8" />
-          <folding>
-            <element signature="e#2#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/QR/QRresult.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/circle/Circle.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/controller/Controller.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="4" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/circle/Main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1632">
-          <caret line="102" selection-start-line="102" selection-end-line="102" />
+        <state relative-caret-position="63">
+          <caret line="6" column="19" lean-forward="false" selection-start-line="6" selection-start-column="19" selection-end-line="6" selection-end-column="43" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/state/DroneState.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="77">
+        <state relative-caret-position="567">
           <caret line="27" column="11" lean-forward="false" selection-start-line="27" selection-start-column="11" selection-end-line="27" selection-end-column="11" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/circle/ObjectAnalyzer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-6691">
-          <caret line="89" column="35" lean-forward="true" selection-start-line="89" selection-start-column="35" selection-end-line="89" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/circle/Circle.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="21">
+        <state relative-caret-position="126">
           <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/circle/Main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2864">
-          <caret line="265" column="61" lean-forward="true" selection-start-line="265" selection-start-column="61" selection-end-line="265" selection-end-column="61" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/demo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="508">
-          <caret line="215" column="37" lean-forward="false" selection-start-line="215" selection-start-column="37" selection-end-line="215" selection-end-column="37" />
-          <folding>
-            <element signature="e#1242#1255#0" expanded="true" />
-            <element signature="e#2457#3877#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/QR/QReader.py">
-      <provider selected="true" editor-type-id="text-editor">
-<<<<<<< HEAD
-        <state relative-caret-position="5576">
-          <caret line="335" column="43" selection-start-line="335" selection-start-column="43" selection-end-line="335" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/QR/QRresult.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/circle/Circle.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/circle/Circle.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/QR/QReader.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="320" column="43" selection-start-line="320" selection-start-column="43" selection-end-line="320" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/controller/state.py" />
-    <entry file="file://$PROJECT_DIR$/src/circle/Circle.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/state/State.py" />
-    <entry file="file://$PROJECT_DIR$/src/QR/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/QR/QRresult.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/QR/QReader.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5644">
-          <caret line="339" selection-start-line="339" selection-end-line="339" />
-=======
-        <state relative-caret-position="216">
-          <caret line="237" column="82" lean-forward="false" selection-start-line="237" selection-start-column="59" selection-end-line="237" selection-end-column="82" />
->>>>>>> branch 'Windows-version' of https://github.com/Stuart86/Group15DroneProject
-          <folding>
-            <element signature="e#2#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/state/DroneState.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1564">
-          <caret line="92" column="20" selection-start-line="92" selection-start-column="20" selection-end-line="92" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/circle/ObjectAnalyzer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6273">
-          <caret line="376" column="9" selection-start-line="376" selection-start-column="9" selection-end-line="376" selection-end-column="9" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.project">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/demo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2550">
-          <caret line="152" column="18" selection-start-line="152" selection-start-column="18" selection-end-line="152" selection-end-column="18" />
-          <folding>
-            <element signature="e#1242#1255#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-<<<<<<< HEAD
-    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/libardrone.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://C:/Python27/Lib/multiprocessing/forking.py">
-=======
-    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/__init__.py">
->>>>>>> branch 'Windows-version' of https://github.com/Stuart86/Group15DroneProject
       <provider selected="true" editor-type-id="text-editor">
-<<<<<<< HEAD
-        <state relative-caret-position="5950">
-          <caret line="355" selection-start-line="355" selection-end-line="355" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/controller/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/circle/Main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1149">
-          <caret line="231" selection-start-line="231" selection-end-line="231" />
-=======
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
->>>>>>> branch 'Windows-version' of https://github.com/Stuart86/Group15DroneProject
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/.csv" />
+    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/drone_controller_original.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="84">
+          <caret line="5" column="13" lean-forward="false" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/hover.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/arnetwork.py">
-<<<<<<< HEAD
-      <provider selected="true" editor-type-id="text-editor" />
-=======
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-860">
-          <caret line="131" column="36" lean-forward="false" selection-start-line="131" selection-start-column="36" selection-end-line="131" selection-end-column="36" />
+        <state relative-caret-position="147">
+          <caret line="190" column="35" lean-forward="true" selection-start-line="190" selection-start-column="35" selection-end-line="190" selection-end-column="35" />
           <folding>
             <element signature="e#1171#1184#0" expanded="true" />
           </folding>
         </state>
       </provider>
->>>>>>> branch 'Windows-version' of https://github.com/Stuart86/Group15DroneProject
     </entry>
-<<<<<<< HEAD
-    <entry file="file://$PROJECT_DIR$/src/controller/Controller.py">
-=======
-    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/libardrone.py">
->>>>>>> branch 'Windows-version' of https://github.com/Stuart86/Group15DroneProject
+    <entry file="file://$PROJECT_DIR$/src/circle/ImageCreater.py">
       <provider selected="true" editor-type-id="text-editor">
-<<<<<<< HEAD
-        <state relative-caret-position="680">
-          <caret line="172" column="32" lean-forward="true" selection-start-line="172" selection-start-column="32" selection-end-line="172" selection-end-column="32" />
-=======
-        <state relative-caret-position="240">
-          <caret line="74" column="0" lean-forward="true" selection-start-line="74" selection-start-column="0" selection-end-line="74" selection-end-column="0" />
+        <state relative-caret-position="-1660">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/circle/Main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="421">
+          <caret line="265" column="61" lean-forward="false" selection-start-line="265" selection-start-column="61" selection-end-line="265" selection-end-column="61" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/circle/ObjectAnalyzer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="449">
+          <caret line="89" column="14" lean-forward="true" selection-start-line="89" selection-start-column="14" selection-end-line="89" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/controller/Controller.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="73" column="12" lean-forward="false" selection-start-line="73" selection-start-column="12" selection-end-line="75" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/demo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="123">
+          <caret line="112" column="4" lean-forward="false" selection-start-line="112" selection-start-column="4" selection-end-line="113" selection-end-column="34" />
+          <folding>
+            <element signature="e#2457#3877#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/styrringsalgoritmer/libardrone.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1603">
+          <caret line="383" column="4" lean-forward="false" selection-start-line="383" selection-start-column="4" selection-end-line="383" selection-end-column="4" />
           <folding>
             <element signature="e#1218#1231#0" expanded="true" />
           </folding>
->>>>>>> branch 'Windows-version' of https://github.com/Stuart86/Group15DroneProject
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/QR/QReader.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="379" column="30" lean-forward="false" selection-start-line="379" selection-start-column="30" selection-end-line="379" selection-end-column="30" />
+          <folding>
+            <element signature="e#2#13#0" expanded="true" />
+            <element signature="e#4309#5830#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/controller/alternate_controller.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="191">
+          <caret line="54" column="42" lean-forward="true" selection-start-line="54" selection-start-column="42" selection-end-line="54" selection-end-column="42" />
+          <folding>
+            <element signature="e#0#54#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
