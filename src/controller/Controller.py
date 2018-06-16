@@ -3,7 +3,6 @@ import time
 from cv2 import imshow
 import cv2
 from state import DroneState
-
 from QR.QReader import findAndReadQR
 from circle import ObjectAnalyzer as oa
 from styrringsalgoritmer import libardrone
