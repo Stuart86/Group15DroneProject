@@ -1,12 +1,13 @@
 from PIL import ImageEnhance, Image
 from PIL import ImageOps
-from cv2 import imshow, circle
+from cv2 import imshow, circle, adaptiveThreshold
 import cv2
 
 import PIL as p
 from circle import Circle as cl
+from circle import scanningVariables as sv
 import numpy as np
-from imageop import rgb2grey
+from _sqlite3 import adapt
 
 
 #cap = cv2.VideoCapture(0)
@@ -21,8 +22,6 @@ class ObjectAnalyzer:
     #Variables: 
     circleObj = cl.Circle()
     
-    maskLimit = 100
-    #upperMaskLimit = 255
     
     
     #Mask 
@@ -236,9 +235,9 @@ class ObjectAnalyzer:
     
     #Test
     cv2.createTrackbar('C-cutoff','ImageSettings',0,100,nothing)
-    cv2.createTrackbar('Un-radius','ImageSettings',0,100,nothing)
-    cv2.createTrackbar('Un-percent','ImageSettings',0,100,nothing)
-    cv2.createTrackbar('Un-thresh','ImageSettings',0,100,nothing)
+    cv2.createTrackbar('Un-radius','ImageSettings',0,1000,nothing)
+    cv2.createTrackbar('Un-percent','ImageSettings',0,1000,nothing)
+    cv2.createTrackbar('Un-thresh','ImageSettings',0,1000,  nothing)
     
     
     cv2.setTrackbarPos('C-cutoff','ImageSettings',20)
@@ -305,6 +304,7 @@ class ObjectAnalyzer:
         
         enhancer = ImageEnhance.Brightness(autocontrast)        
         image = enhancer.enhance(value)
+        
         autocontrastFrame = np.array(image)
             
         imshow("AutoConstrast",autocontrastFrame)
@@ -517,6 +517,7 @@ class ObjectAnalyzer:
 
         #ret,th1 = cv2.threshold(grey,127,255,cv2.THRESH_BINARY)
         #th2 = cv2.adaptiveThreshold(grey,255,cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY,self.threshLow,self.threshHigh)
+        
         th3 = cv2.adaptiveThreshold(grey, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,1)        
         
         #ret4,th4 = cv2.threshold(blur2,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
@@ -638,7 +639,8 @@ class ObjectAnalyzer:
         
         
 
-
+    
+    
         
     def analyzeFrame(self,frame, state):
         #imshow("Original Image",frame)
@@ -657,24 +659,10 @@ class ObjectAnalyzer:
         frame = self.setImageBrightNess(frame, self.brightness)
         
         
-        bgr = [127, 127, 127]
-
-        #LAB = cv2.cvtColor(frame, cv2.COLOR_BGR2Lab)[0][0]
-        lab = cv2.cvtColor( np.uint8([[bgr]] ), cv2.COLOR_BGR2LAB)[0][0]
-
-        #lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)[0][0] 
-        minLAB = np.array([lab[0] - self.labLMin, lab[1] - self.labAMin, lab[2] - self.labBMin])
-        maxLAB = np.array([lab[0] + self.labLMax, lab[1] + self.labAMax, lab[2] + self.labBMax])
-        
-        
-        maskLAB = cv2.inRange(frame, minLAB, maxLAB)
-        imshow("maskLAB", maskLAB)
-        resultLAB = cv2.bitwise_and(frame, frame, mask = maskLAB)
-        imshow("resultLAB Adjust values",resultLAB)
-        
+                
         
         self.setTestValues(frame)
-        redCircleImage = self.getRedHSVImage(resultLAB)
+        #redCircleImage = self.getRedHSVImage(resultLAB)
         redEllipseImage = self.getRedEllipseHSVImage(frame)
 
         #LAB = cv2.cvtColor(redEllipseImage, cv2.COLOR_BGR2Lab) 
@@ -707,7 +695,136 @@ class ObjectAnalyzer:
         #imshow('Red Ellipse', redEllipseImage)
         imshow("Red Circle", redCircleImage)
 
-     
+    def getModifiedFrame(self, frame, circleIndex):
+        claheFrame = self.applyClahe(frame)
+        contrastFrame = self.getPILFrame(claheFrame)
+        LABFrame = self.getLABFrame(contrastFrame, circleIndex)
+        imshow("LABFrame", LABFrame)
+        redFrame = self.getRedHSVImage(LABFrame)
+        grey = cv2.cvtColor(redFrame, cv2.COLOR_BGR2GRAY)
+        values = sv.getCircleValues(circleIndex)
+        blur = values.blur
+        circleBlurred = cv2.GaussianBlur(grey, (blur, blur), 0)
+        adaptiveThreshold = cv2.adaptiveThreshold(grey, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,1)        
+        _,threshold = cv2.threshold(circleBlurred,self.threshLow,self.threshHigh, 0)
+        imshow("adaptivethreshold",adaptiveThreshold)
+        imshow("Threshold",threshold)
+        return adaptiveThreshold
+        
+        
+    def getPILFrame(self, frame):   
+        PilImage = Image.fromarray(frame)
+        #20% cutoff seems to be the best generally. 
+        autocontrast = ImageOps.autocontrast(PilImage, self.constrastCutoff, None)
+        unsharpmask = p.ImageFilter.UnsharpMask(self.unSharpMaskRadius, self.unSharpMaskPercent, self.unSharpMaskThreshhold)
+        unsharp = autocontrast.filter(unsharpmask)    
+        frame = np.array(unsharp)
+                
+        return frame
+        
+        
+        
+    def getLABFrame(self, frame, circleIndex):
+        bgr = [127, 127, 127]
+        values = sv.getLAPValues(circleIndex)
+        labLMin = values.labLMin
+        labLMax = values.labLMax
+        labAMin = values.labAMin
+        labAMax = values.labAMax
+        labBMin = values.labBMin
+        labBMax = values.labBMax
+
+        #LAB = cv2.cvtColor(frame, cv2.COLOR_BGR2Lab)[0][0]
+        
+        lab = cv2.cvtColor( np.uint8([[bgr]] ), cv2.COLOR_BGR2LAB)[0][0]
+
+        #lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)[0][0] 
+        minLAB = np.array([lab[0] - labLMin, lab[1] - labAMin, lab[2] - labBMin])
+        maxLAB = np.array([lab[0] + labLMax, lab[1] + labAMax, lab[2] + labBMax])
+        
+        
+        maskLAB = cv2.inRange(frame, minLAB, maxLAB)
+        imshow("maskLAB", maskLAB)
+        resultLAB = cv2.bitwise_and(frame, frame, mask = maskLAB)
+        imshow("resultLAB Adjust values",resultLAB)
+        return resultLAB
+        
+        
+    def applyClahe(self, frame):
+        LAB = cv2.cvtColor(frame, cv2.COLOR_BGR2Lab) 
+
+        l_channel, a_channel, b_channel = cv2.split(LAB)
+        clahe = cv2.createCLAHE(clipLimit=2.0,tileGridSize=(8,8))
+
+        l_channel = clahe.apply(l_channel)
+
+        return frame
+        
+        
+
+        #lab = cv2.merge((l_channel,a_channel,b_channel))
+    def normalCircleScanning(self, frame, state):
+        circleImage = self.getModifiedFrame(frame, state.circleReached)
+        #imshow("frame",circleImage)
+        values = sv.getCircleValues(state.circleReached)
+        
+        blur = values.blur
+        dp = values.dp
+        minDist = values.minDist
+        param1 = values.param1
+        param2 =  values.param2
+        minRadius = values.minRadius
+        maxRadius = values.maxRadius
+        
+        
+        circles = cv2.HoughCircles(circleImage, cv2.HOUGH_GRADIENT, dp, minDist, param1 = param1, param2 = param2, minRadius = minRadius, maxRadius = maxRadius)
+
+        if circles is not None:
+            circles = np.uint16(np.around(circles))
+            for i in circles[0, :]:
+                #If radius is zero, circle doesn't exist..
+                if i[2] == 0:
+                    break
+                #Create the new circle.
+                newCircle = ([i[0],i[1],i[2]])
+          
+                self.circleObj.circleKnown(newCircle)
+                self.circleObj.enoughNewCircles(frame.copy(), width, height, state)
+
+    def advancedCircleScanning(self, frame, state):
+        circleImage = self.getModifiedFrame(frame, state.circleReached)
+        values = sv.getCircleValues(state.circleIndex)
+        dp = values.dp
+        minDist = values.minDist
+        param1 = values.param1
+        param2 =  values.param2
+        
+        
+    
+        diameterThreshold = 50
+        circleDiameter = state.calculateCircleDiameter()
+        minDiameter = circleDiameter - diameterThreshold
+        maxDiameter = circleDiameter + diameterThreshold
+       
+        
+        circles = cv2.HoughCircles(circleImage, cv2.HOUGH_GRADIENT, dp, minDist, param1 = param1, param2 = param2, minRadius = minDiameter, maxRadius = maxDiameter)
+
+        if circles is not None:
+            circles = np.uint16(np.around(circles))
+            for i in circles[0, :]:
+                #If radius is zero, circle doesn't exist..
+                if i[2] == 0:
+                    break
+                #Create the new circle.
+                newCircle = ([i[0],i[1],i[2]])
+          
+                self.circleObj.circleKnown(newCircle)
+                self.circleObj.enoughNewCircles(frame, width, height, state)
+                
+        
+    
+    
+    
         
 #recorderObj = Recorder()
 #recorderObj.main()

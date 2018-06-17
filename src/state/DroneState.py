@@ -78,17 +78,29 @@ class State(object):
     
     #QR information
     dict = ["P.00", "P.01", "P.02", "P.03", "P.04", "P.05", "P.06"]
+    circleIndex = {"P.00" : 0 , "P.01" : 1 , "P.02": 2 , "P.03": 3 , "P.04": 4 , "P.05" : 5 , "P.06": 6 , "P.07": 7}
+
     indexReached = 0            #Circle number that we've reached. 
     QRdistance = None
     QRdata = None
     circleDiameter = None
     QRxCoor = None
     QRyCoor = None
+    QRRotatedRight = None
+    QRRotatedLeft = None
+    QRRightside = None
+    QRLeftside = None
+    QRLowerside = None
+    QRUpperside = None
     
     areaThreshold = 30
     
     
-
+    
+    
+    #track
+    circleReached = 1           #Where are we on the track. 
+    
 
 
 
@@ -105,6 +117,19 @@ class State(object):
         '''
         Constructor
         '''
+        
+    
+    def setCircleReached(self):
+        self.circleReached = self.circleIndex[self.QRdata]
+    
+    def calculateCircleDiameter(self):
+        qrSideMean = (self.QRRightside + self.QRLeftside + self.QRUpperside + self.QRLowerside) / 4
+        qrLenghtCM = 19.6
+        circleDiameterCM = dict[self.circleReached]
+        
+        diameter = qrSideMean/qrLenghtCM * circleDiameterCM 
+        return diameter
+        
         
    
     def printInfo(self): 

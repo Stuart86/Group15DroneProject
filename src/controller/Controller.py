@@ -6,7 +6,6 @@ from state import DroneState
 from QR.QReader import findAndReadQR
 from circle import ObjectAnalyzer as oa
 from styrringsalgoritmer import libardrone
-from test.test_functools import capture
 
 
 #from circle import ImageCreater as IC
@@ -20,6 +19,9 @@ class Controller(object):
     
     time1 = 0
     time1Set = False
+    
+    QRFoundThisIteration = False
+    
     
     '''
     classdocs
@@ -102,12 +104,33 @@ class Controller(object):
             #grabbed, readFrame = self.capture.read()
             #if grabbed:
             #    imshow("Webcam", readFrame)
+            if cv2.waitKey(1) & 0xFF == ord('1'):
+                self.state.circleReached = 1
+                print "1"
+            elif cv2.waitKey(1) & 0xFF == ord('2'):
+                self.state.circleReached = 2
+                print "2"
+            elif cv2.waitKey(1) & 0xFF == ord('3'):
+                self.state.circleReached = 3
+                print "3"
+            elif cv2.waitKey(1) & 0xFF == ord('4'):
+                self.state.circleReached = 4
+                print "4"
+            elif cv2.waitKey(1) & 0xFF == ord('5'):
+                self.state.circleReached = 5
+                print "5"
+            elif cv2.waitKey(1) & 0xFF == ord('6'):
+                self.state.circleReached = 6
+                print "6"
+            
             if cv2.waitKey(1) & 0xFF == ord('w'):
-                print "Yo"
+                
                 if continueGrabbing:
                     continueGrabbing = False
+                    print "Pause"
                 else:
                     continueGrabbing = True
+                    print "Continue"
             #grabbed, frame = self.drone.readVideo()
             if continueGrabbing:
                 grabbed, frame = self.capture.read()
@@ -119,26 +142,14 @@ class Controller(object):
             imshow("Frame",frame)
                 
             
-            
-            #lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
-                
-            #imshow("Lab",lab)
-            #lab_planes = cv2.split(lab)
-            #imshow("0",lab_planes[0])
-            #imshow("1",lab_planes[1])
-            #imshow("2",lab_planes[2])
-            #lab_planes = cv2.split(lab)
-            #clahe = cv2.createCLAHE(clipLimit=2.0,tileGridSize=(10,10))
-
-            #lab_planes[0] = clahe.apply(lab_planes[0])
-
-            # lab = cv2.merge(lab_planes)
-
-            # bgr = cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
-            #imshow("BGR",bgr)
-            #Scan the image for different figures. 
             self.getQRResult(frame)
-            analyzer.analyzeFrame(frame, self.state)
+            if self.QRFoundThisIteration:
+                analyzer.advancedCircleScanning(frame, self.state)
+                self.QRFoundThisIteration = False               #Reset for next loop
+
+            else:
+                analyzer.normalCircleScanning(frame, self.state)
+            
             #print "CircleSeen: ", self.state.circleSeen
             self.updateTrackbarValues()
             #self.navigate()
@@ -173,6 +184,13 @@ class Controller(object):
             self.state.QRyCoor = result.y
             self.state.QRdata = result.data
             self.state.resetQRCounter()
+
+            self.state.QRRotatedRight = result.QRRotatedRight
+            self.state.QRRotatedLeft = result.QRRotatedLeft
+            self.state.QRRightside = result.rightSide
+            self.state.QRLeftside = result.leftSide
+            self.state.QRLowerside = result.lowerSide
+            self.state.QRUpperside = result.upperSide
 
 
     def navigate(self):
