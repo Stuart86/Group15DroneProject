@@ -654,6 +654,7 @@ class ObjectAnalyzer:
 
 
     def getModifiedFrame(self, frame, circleIndex):
+        imshow("Normal frame",frame)
         self.setTestValues(frame)
         claheFrame = self.applyClahe(frame)
         imshow("ClaheFrame", claheFrame)
@@ -666,6 +667,7 @@ class ObjectAnalyzer:
         grey = cv2.cvtColor(redFrame, cv2.COLOR_BGR2GRAY)
         values = sv.getCircleValues(circleIndex)
         blur = values.blur
+        blur = self.blurValue
         circleBlurred = cv2.GaussianBlur(grey, (blur, blur), 0)
         adaptiveThreshold = cv2.adaptiveThreshold(grey, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,1)        
         _,threshold = cv2.threshold(circleBlurred,self.threshLow,self.threshHigh, 0)
@@ -740,7 +742,7 @@ class ObjectAnalyzer:
         
         
         circles = cv2.HoughCircles(circleImage, cv2.HOUGH_GRADIENT, dp, minDist, param1 = param1, param2 = param2, minRadius = minRadius, maxRadius = maxRadius)
-
+        circleFrame = frame.copy()
         if circles is not None:
             circles = np.uint16(np.around(circles))
             for i in circles[0, :]:
@@ -751,8 +753,8 @@ class ObjectAnalyzer:
                 newCircle = ([i[0],i[1],i[2]])
           
                 self.circleObj.circleKnown(newCircle)
-                self.circleObj.enoughNewCircles(frame.copy(), width, height, state)
-
+                self.circleObj.enoughNewCircles(circleFrame, width, height, state)
+        imshow("CircleFrame", circleFrame)        
     def advancedCircleScanning(self, frame, state):
         circleImage = self.getModifiedFrame(frame, state.circleReached)
         values = sv.getCircleValues(state.circleIndex)

@@ -378,20 +378,7 @@ def at(command, seq, params):
 NAV_COUNTER = 0
 rows = []
 def onNavDataReceive(drone, data):
-    #global NAV_COUNTER
-    global rows
-    #NAV_COUNTER = (NAV_COUNTER + 1)%10
-    if drone.isCollectingData:
-        theta = data[0]['theta']
-        psi = data[0]['psi']
-        phi = data[0]['phi']
-        vx = data[0]["vx"]
-        vy = data[0]["vy"]
-        alt = data[0]["altitude"]
-        time = data["timestamp"]
-        rows.append([theta , phi , psi , vx  , vy , alt , time])
-        #print "theta: " , theta , " phi: ", phi
-        #print "vx: ",vx , " vy: ",vy , " altitude: ", alt, "POWER: " , bat, "%"
+    None
 
 def saveToCSV():
     with open('hover.csv', 'wb') as csvfile:

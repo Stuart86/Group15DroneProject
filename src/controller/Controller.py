@@ -15,7 +15,7 @@ class Controller(object):
     
     capture = cv2.VideoCapture("output.mkv")
     
-    #drone = libardrone.ARDrone()
+    drone = libardrone.ARDrone()
     
     time1 = 0
     time1Set = False
@@ -55,8 +55,8 @@ class Controller(object):
     cv2.createTrackbar(trackbarUDName,trackbarName,0,1000,nothing)
     cv2.createTrackbar(trackbarROTName,trackbarName,0,1000,nothing)
     
-    cv2.setTrackbarPos(trackbarLRName,trackbarName,20)
-    cv2.setTrackbarPos(trackbarBFName,trackbarName,30)
+    cv2.setTrackbarPos(trackbarLRName,trackbarName,0)
+    cv2.setTrackbarPos(trackbarBFName,trackbarName,0)
     cv2.setTrackbarPos(trackbarUDName,trackbarName,0)
     cv2.setTrackbarPos(trackbarROTName,trackbarName,0)
     
@@ -88,15 +88,17 @@ class Controller(object):
 
         
 
-        while (False):
+        while (True):
             if cv2.waitKey(1) & 0xFF == ord('w'):
                 print "Take off"
                 break
-        #self.drone.takeoff()
+        self.drone.takeoff()
         #self.drone.asyncCommand(-0.7, 0.5, 0, 0, 1, 0)
-        #time.sleep(5)
+        time.sleep(5)
         continueGrabbing = True
-        while (self.capture.isOpened()):
+        #while (self.capture.isOpened()):
+
+        while (True):
             #imageCreaterObj.updateTrackbarValues()
             #imageCreaterObj.drawEllipse()
             #frame = imageCreaterObj.getImage()
@@ -131,15 +133,15 @@ class Controller(object):
                 else:
                     continueGrabbing = True
                     print "Continue"
-            #grabbed, frame = self.drone.readVideo()
-            if continueGrabbing:
-                grabbed, frame = self.capture.read()
+            grabbed, frame = self.drone.readVideo()
+            #if continueGrabbing:
+            #    grabbed, frame = self.capture.read()
+            #    
                 
-                
-                if not grabbed:
+            if not grabbed:
                     print("Frame not grabbed")
                     continue
-            imshow("Frame",frame)
+            #imshow("Frame",frame)
                 
             
             self.getQRResult(frame)
@@ -152,7 +154,7 @@ class Controller(object):
             
             #print "CircleSeen: ", self.state.circleSeen
             self.updateTrackbarValues()
-            #self.navigate()
+            self.navigate()
             self.state.updateCounters()
             
             
@@ -161,7 +163,7 @@ class Controller(object):
             
             
             if cv2.waitKey(1) & 0xFF == ord('q'):
-                # self.drone.land()
+                self.drone.land()
                 break
 
         # When everything done, release the capture
@@ -197,7 +199,7 @@ class Controller(object):
         if not self.state.flownOnce:
             print "FLY "
             self.state.flownOnce = True
-            self.drone.asyncCommand(-0.02, 0.02, 0.5, 0, 1, 0)
+            self.drone.asyncCommand(0, -0.175, 0.5, 0, 1, 0)
             time.sleep(1.5)
             print "afterFly"
             
@@ -211,7 +213,7 @@ class Controller(object):
             return
         self.time1Set = False
         
-        if self.state.ellipseSeen: 
+        if True: 
             #print "Ellipse seen"
             #Are the ellipse in the center of the screen?
             if not self.state.droneCenteredWithEllipse():           #We don't give a shit if the drone is centered at the ellipse center
@@ -233,9 +235,9 @@ class Controller(object):
                 #Check if circle is in the center of the image
                 if not self.state.droneRightOfCenter() and not self.state.droneLeftOfCenter():
                     if self.state.droneCentered():
-                        self.drone.asyncCommand(0, -0.3, 0.05, 0, 0.5, 0)
+                        self.drone.asyncCommand(0, -0.1, 0.05, 0, 0.5, 0.75)
                         if self.state.circleDiameterEqualToHeight():
-                            self.drone.asyncCommand(0, -0.3, 0, 0, 0.5, 0)
+                            self.drone.asyncCommand(0, -0.3, 0, 0, 0.1, 0.75)
                         print "moveForward"
                         
                 else:

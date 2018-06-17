@@ -28,7 +28,7 @@ class State(object):
     ellipseLastSeen = 0
     
     #The maximum value for the counter
-    counterMaxValue = 25
+    counterMaxValue = 20
     
     routineStarted = False
     flownOnce = False
