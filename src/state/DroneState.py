@@ -28,7 +28,7 @@ class State(object):
     ellipseLastSeen = 0
     
     #The maximum value for the counter
-    counterMaxValue = 20
+    counterMaxValue = 25
     
     routineStarted = False
     flownOnce = False
@@ -70,7 +70,7 @@ class State(object):
     ellipseCircleThreshold = 35
     
     
-
+    
     # Distance
     distance = None
     
@@ -82,16 +82,16 @@ class State(object):
 
     indexReached = 0            #Circle number that we've reached. 
     QRdistance = None
-    QRdata = None
-    circleDiameter = None
+    QRdata = 0
+    circleDiameter = 0
     QRxCoor = None
     QRyCoor = None
     QRRotatedRight = None
     QRRotatedLeft = None
-    QRRightside = None
-    QRLeftside = None
-    QRLowerside = None
-    QRUpperside = None
+    QRRightside = False
+    QRLeftside = False
+    QRLowerside = False
+    QRUpperside = False
     
     areaThreshold = 30
     
@@ -180,8 +180,7 @@ class State(object):
         return math.fabs(self.circleXCoor-self.ellipseXCoor) < self.ellipseCircleThreshold and math.fabs(self.circleYCoor-self.ellipseYCoor) < self.ellipseCircleThreshold
             
     def droneCentered(self):
-        if self.routineStarted:
-            return True
+       
 
         if math.fabs(self.imageXCenter-self.circleXCoor*2) < self.centerThreshold:
             if math.fabs(self.imageYCenter-self.circleYCoor*2) < self.centerThreshold:
@@ -219,6 +218,32 @@ class State(object):
     
     def circleDiameterEqualToHeight(self):
         return math.fabs(self.circleRadius - self.circleYCoor) < self.maximumCircleRadius or math.fabs(self.circleRadius - self.circleXCoor) < self.maximumCircleRadius
+    
+    
+    
+    def QRAboveCenter(self):
+        return math.fabs(320 - self.QRyCoor*2) > self.centerThreshold and 320 > self.QRyCoor*2
+    def QRUnderCenter(self):
+        return math.fabs(320 - self.QRyCoor*2) > self.centerThreshold and 320 < self.QRyCoor*2
+    def QRRightOfCenter(self):
+        return math.fabs(640 - self.QRxCoor*2) > self.centerThreshold and 640 < self.QRxCoor*2
+    def QRLeftOfCenter(self):
+        return math.fabs(640 - self.QRxCoor*2) > self.centerThreshold and 640 > self.QRxCoor*2
+    
+    
+    def QRminDist(self):
+        return self.QRdistance < 160
+    
+    
+    def QRCentered(self):
+       
+
+        if math.fabs(self.imageXCenter-self.QRxCoor*2) < self.centerThreshold:
+            if math.fabs(self.imageYCenter-self.QRyCoor*2) < self.centerThreshold:
+                return True
+        return False       
+    
+    
     
     
     
