@@ -32,7 +32,7 @@ import time
 
 import libardrone
 import arvideo
-
+from state import StateEstimation
 
 class ARDroneNetworkProcess(multiprocessing.Process):
     """ARDrone Network Process.
@@ -130,23 +130,40 @@ class NavDataThread(threading.Thread):
 
     def run(self):
         print "Nav data thread ready"
-        nav_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        nav_socket.setblocking(1)
-        nav_socket.bind(('', libardrone.ARDRONE_NAVDATA_PORT))
-        nav_socket.sendto("\x01\x00\x00\x00", ('192.168.1.1', libardrone.ARDRONE_NAVDATA_PORT))
+
         data = ""
         while not self.stopping:
+            nav_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            nav_socket.setblocking(1)
+            nav_socket.bind(('', libardrone.ARDRONE_NAVDATA_PORT))
+            nav_socket.sendto("\x01\x00\x00\x00", ('192.168.1.1', libardrone.ARDRONE_NAVDATA_PORT))
+            nav_socket.settimeout(40)
+            b = 0
+            while b == 0:
+                try:
+                    data = nav_socket.recv(65535)
+                    if data is not None:
+                        navdata = libardrone.decode_navdata(data)
+                        if 0 in navdata:
+                            self.drone.navdata = navdata
+                            self.drone.estimator = StateEstimation.StateEstimator(0 , 0 , 0 , navdata[0]["vx"] , navdata[0]["vy"] , 0 , navdata[0]["psi"] , navdata[0]["theta"] , navdata[0]["phi"] , time.time())
+                            b = 1
+                except IOError:
+                    break
             while 1:
                 try:
                     data = nav_socket.recv(65535)
+                    #print navdata
                     if data is not None:
                         navdata = libardrone.decode_navdata(data)
 
                         if 0 in navdata:
                             self.drone.navdata = navdata
-                            self.onNavdataReceive(navdata)
+                            self.onNavdataReceive(self.drone , navdata)
                 except IOError:
+                    print IOError
                     break
+
         nav_socket.close()
 
     def stop(self):

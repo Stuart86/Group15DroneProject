@@ -394,14 +394,15 @@ def doStuff(img):
 
 if __name__ == "__main__":
     #cap = cv2.VideoCapture("tcp://192.168.1.1:5555")
-    cap = cv2.VideoCapture(0)
+    #cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture("output.mkv")
     cv2.namedWindow("Window" , cv2.WINDOW_AUTOSIZE)
     cv2.namedWindow("Gray" , cv2.WINDOW_NORMAL)
     n = 0
     lastDistance = 50
     lastTime = time.time()
     if cap.isOpened() == False:
-        cap.open(0)
+        cap.open("output.mkv")
     while 1:
 
         ret , frame = cap.read()
@@ -413,11 +414,9 @@ if __name__ == "__main__":
             #hsv = doStuff(frame)
             cv2.imshow("Window" , frame)
             #cv2.imshow("Window", hsv)
-            tBefore = time.time()
+            #tBefore = time.time()
             results = findAndReadQR(frame)
-            tPassed = time.time() - tBefore
-            if results is not None:
-                print results
+            #tPassed = time.time() - tBefore
             #print tPassed
         cv2.waitKey(1)
     cap.release()

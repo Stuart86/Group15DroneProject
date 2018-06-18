@@ -25,7 +25,7 @@ Python library for the AR.Drone.
 This module was tested with Python 2.6.6 and AR.Drone vanilla firmware 1.5.1.
 """
 
-
+from state import StateEstimation
 import socket
 import struct
 import sys
@@ -73,6 +73,7 @@ class ARDrone(object):
         self.command_thread = arnetwork.CommandThread(self)
         self.command_thread.start()
         self.isCollectingData = False
+        self.estimator =  StateEstimation.StateEstimator(0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0)
 
 
     def asyncCommand(self , lr , bf , ud , rot, sleep1 , sleep2):
@@ -378,20 +379,7 @@ def at(command, seq, params):
 NAV_COUNTER = 0
 rows = []
 def onNavDataReceive(drone, data):
-    #global NAV_COUNTER
-    global rows
-    #NAV_COUNTER = (NAV_COUNTER + 1)%10
-    if drone.isCollectingData:
-        theta = data[0]['theta']
-        psi = data[0]['psi']
-        phi = data[0]['phi']
-        vx = data[0]["vx"]
-        vy = data[0]["vy"]
-        alt = data[0]["altitude"]
-        time = data["timestamp"]
-        rows.append([theta , phi , psi , vx  , vy , alt , time])
-        #print "theta: " , theta , " phi: ", phi
-        #print "vx: ",vx , " vy: ",vy , " altitude: ", alt, "POWER: " , bat, "%"
+    drone.estimator.measurement_update(data[0]["vx"] , data[0]["vy"] , data[0]["psi"] , data[0]["theta"], data[0]["phi"] , data[0]["altitude"])
 
 def saveToCSV():
     with open('hover.csv', 'wb') as csvfile:
